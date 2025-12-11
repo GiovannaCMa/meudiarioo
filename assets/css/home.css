@@ -1,0 +1,733 @@
+:root {
+  --cor-primaria: #6d41d8;
+  --cor-primaria-hover: #5a35b6;
+  --cor-borda: #d5bfff;
+  --cor-input-bg: #f8f3ff;
+  --cor-label: #8b7bb9;
+  --cor-lilas: #b69bff;
+  --cor-rosa: #ff91d9;
+  --cor-azul: #7ad7ff;
+  --cor-menta: #a8ffb0;
+  --cor-amarelo: #ffcf87;
+  --grad1: #f3e8ff;
+  --grad2: #d9c4ff;
+  --grad3: #b69bff;
+  --texto: #4b3375;
+  --branco: #ffffff;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Body e layout */
+body {
+  background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ===== MENU LATERAL ===== */
+aside {
+  width: 230px;
+  background: linear-gradient(
+    180deg,
+    var(--cor-lilas),
+    var(--grad3),
+    var(--grad2)
+  );
+  height: 100vh;
+  padding: 30px 20px;
+  border-right: 4px dashed var(--cor-borda);
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+aside h1 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  color: var(--cor-primaria);
+}
+aside ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+aside li {
+  padding: 12px 14px;
+  background: #ffffffaa;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  backdrop-filter: blur(6px);
+}
+aside li:hover {
+  background: #ffffffdd;
+  transform: translateX(4px);
+}
+
+/* Botão para mobile */
+#toggleMenu {
+  display: none; /* só aparece no mobile */
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 200;
+  font-size: 24px;
+  background: var(--cor-lilas);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* Botão para mobile */
+#toggleMenu {
+  display: block;
+  position: fixed;
+  top: 20px; /* distância do topo */
+  left: 20px;
+  z-index: 200;
+  background: var(--cor-primaria);
+  color: var(--branco);
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+/* Main */
+main {
+  flex: 1;
+  padding: 60px;
+  margin-left: 230px;
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  padding: 60px;
+  margin-left: 230px;
+}
+
+/* ------------------------Cards-------------------------------- */
+.cardcal,
+.cardlist,
+.cardlemb {
+  display: flex;
+  gap: 30px;
+  padding: 25px;
+  border-radius: 20px;
+  background: var(--branco);
+  border: 2px dashed var(--cor-borda);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.cardcal {
+  min-width: 360px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 440px; /* altura máxima */
+}
+.cardlist,
+.cardlemb {
+  min-width: 360px;
+  max-width: 300px;
+  width: 100%;
+  max-height: 440px; /* altura máxima */
+  overflow-y: auto; /* aparece scroll se passar do limite */
+}
+.carddiario {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 25px;
+  border-radius: 20px;
+  background: var(--branco);
+  border: 2px dashed var(--cor-borda);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+  margin-bottom: 8px;
+  width: 100%;
+  max-width: 700px;
+  min-width: 360px;
+} /*---------------- Calendário ------------*/
+.calendario-box {
+  flex: 1;
+  max-width: 400px;
+}
+.calendario-box h2 {
+  color: var(--cor-primaria);
+  font-size: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mini-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.day {
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: 700;
+  background: var(--grad1);
+  color: var(--cor-primaria);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+  position: relative;
+}
+.day:hover {
+  transform: scale(1.1);
+  background: var(--grad2);
+}
+.day.today {
+  background: var(--cor-rosa);
+  color: var(--branco);
+}
+.day.evento {
+  background: var(--cor-menta);
+  color: var(--texto);
+}
+.day.evento:hover::after {
+  content: attr(data-evento);
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--cor-lilas);
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+} /* -----------------Lista de eventos------------ */
+.eventos-box {
+  flex: 2;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-left: 15px;
+  border-left: 2px dashed var(--cor-borda);
+}
+.eventos-box h2 {
+  color: var(--cor-primaria);
+  font-size: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eventos-box ul {
+  list-style: none;
+  line-height: 1.6;
+  font-size: 14px;
+  padding-left: 10px;
+} /* -----------------Botões -----------------*/
+.btn {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--cor-lilas);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.btn:hover {
+  background: var(--cor-rosa);
+  transform: translateY(-2px);
+} /* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+.modal-content {
+  background: var(--branco);
+  padding: 25px 30px;
+  border-radius: 20px;
+  width: 360px;
+  max-width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--cor-primaria);
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+}
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--cor-label);
+}
+.modal-content input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-input-bg);
+  font-size: 14px;
+  transition: 0.2s;
+}
+.modal-content input:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 6px var(--cor-primaria);
+}
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+.btn-save {
+  background: var(--cor-lilas);
+  color: #fff;
+}
+.btn-save:hover {
+  background: var(--cor-rosa);
+}
+.btn-cancel {
+  background: #eee;
+  color: #555;
+}
+.btn-cancel:hover {
+  background: #ddd;
+} /* ----------- diario ---------------*/
+.diario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.diario-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+} /* ===== CARROSSEL ===== */
+.diario-carrossel {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+.diario-carrossel::-webkit-scrollbar {
+  height: 8px;
+}
+.diario-carrossel::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+  border-radius: 10px;
+} /* ===== CARDS DO CARROSSEL ===== */
+.diario-card {
+  min-width: 200px;
+  height: 150px;
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  border-radius: 16px;
+  padding: 15px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: 0.25s;
+}
+.diario-card:hover {
+  transform: scale(1.05);
+}
+.diario-card h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.diario-card p {
+  font-size: 13px;
+  opacity: 0.8;
+} /* ===== TEXTO QUANDO VAZIO ===== */
+.diario-vazio {
+  opacity: 0.6;
+  font-style: italic;
+  padding: 15px;
+  font-size: 15px;
+} /* Listas */
+.listas-box {
+  flex: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-left: 20px;
+  border-left: 2px dashed var(--cor-borda);
+}
+.listas-box h2 {
+  color: var(--cor-primaria);
+  font-size: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.listas-box ul {
+  list-style: none;
+  padding-left: 0;
+  font-size: 14px;
+}
+.listas-box li {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: #f8f3ff;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+.listas-box li:hover {
+  background: var(--grad2);
+}
+#addListBtn,
+#addReminderBtn,
+#addDiaryBtn {
+  margin-bottom: 12px;
+}
+#listasContainer {
+  margin-top: 5px;
+} /* Visualizar lista */
+#viewListItems {
+  list-style: none;
+  padding-left: 0;
+}
+#viewListItems li {
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  background: #f3e8ff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#viewListItems li.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* ====================================================== */
+/* ================== 900px ============================= */
+/* ====================================================== */
+@media (max-width: 900px) {
+  main {
+    margin-left: 0;
+    padding: 40px 30px;
+    justify-content: center;
+    gap: 25px;
+  }
+
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  .cardcal {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .calendario-box {
+    width: 100%;
+  }
+
+  .eventos-box {
+    width: 100%;
+    margin-top: 20px;
+    padding-left: 0;
+    border-left: none;
+  }
+}
+
+/* ====================================================== */
+/* ================== 768px ============================= */
+/* ====================================================== */
+@media (max-width: 768px) {
+  body {
+    padding-top: 70px; /* espaço para o botão */
+  }
+
+  aside {
+    top: 70px;
+    height: calc(100vh - 70px);
+    transform: translateX(-100%);
+    width: 260px;
+    z-index: 1200;
+  }
+
+  aside.menu-open {
+    transform: translateX(0);
+  }
+
+  #toggleMenu {
+    display: block !important;
+    top: 20px;
+    left: 20px;
+    z-index: 1300;
+  }
+
+  main {
+    margin-left: 0;
+    padding: 20px;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .cardcal {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .calendario-box {
+    width: 100% !important;
+  }
+
+  .eventos-box {
+    width: 100% !important;
+    margin-top: 20px;
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .listas-box {
+    width: 100%;
+    padding-left: 0;
+    border-left: none;
+    margin-top: 20px;
+  }
+
+  .mini-calendar {
+    gap: 8px;
+  }
+
+  .day {
+    padding: 8px 5px;
+    font-size: 14px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 700px ============================= */
+/* ====================================================== */
+@media (max-width: 700px) {
+  main {
+    padding: 25px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 650px ============================= */
+/* ====================================================== */
+@media (max-width: 650px) {
+  main {
+    padding: 22px;
+  }
+
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    padding: 20px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 600px ============================= */
+/* ====================================================== */
+@media (max-width: 600px) {
+  .mini-calendar {
+    gap: 6px;
+  }
+  .day {
+    padding: 7px 5px;
+    font-size: 13px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 550px ============================= */
+/* ====================================================== */
+@media (max-width: 550px) {
+  main {
+    padding: 20px;
+  }
+  .cardcal h2,
+  .eventos-box h2,
+  .listas-box h2 {
+    font-size: 18px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 500px ============================= */
+/* ====================================================== */
+@media (max-width: 500px) {
+  .day {
+    padding: 6px;
+    font-size: 12px;
+  }
+  .diario-card {
+    min-width: 180px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 480px ============================= */
+/* ====================================================== */
+@media (max-width: 480px) {
+  aside {
+    width: 88vw;
+    max-width: 300px;
+  }
+
+  #toggleMenu {
+    top: 14px;
+    left: 12px;
+    padding: 8px 10px;
+  }
+
+  main {
+    padding: 15px;
+  }
+
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    padding: 15px;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .cardcal {
+    flex-direction: column;
+  }
+
+  .calendario-box {
+    width: 100% !important;
+  }
+
+  .eventos-box {
+    width: 100% !important;
+    margin-top: 16px;
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .listas-box li {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .diario-card h3 {
+    font-size: 14px;
+  }
+  .diario-card p {
+    font-size: 12px;
+  }
+
+  .mini-calendar {
+    gap: 6px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 420px ============================= */
+/* ====================================================== */
+@media (max-width: 420px) {
+  .day {
+    padding: 5px;
+    font-size: 12px;
+  }
+  .mini-calendar {
+    gap: 4px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 380px ============================= */
+/* ====================================================== */
+@media (max-width: 380px) {
+  main {
+    padding: 12px;
+  }
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    padding: 12px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 350px ============================= */
+/* ====================================================== */
+@media (max-width: 350px) {
+  .day {
+    padding: 4px;
+    font-size: 11px;
+  }
+}
+
+/* ====================================================== */
+/* ================== 320px ============================= */
+/* ====================================================== */
+@media (max-width: 320px) {
+  main {
+    padding: 10px;
+  }
+
+  #toggleMenu {
+    top: 10px;
+    left: 10px;
+    padding: 6px 8px;
+    font-size: 18px;
+  }
+
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    padding: 10px;
+  }
+
+  .day {
+    padding: 3px;
+    font-size: 10px;
+  }
+
+  .mini-calendar {
+    gap: 3px;
+  }
+}

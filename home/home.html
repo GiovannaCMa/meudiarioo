@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diário App - Calendário e Listas</title>
+    <link rel="stylesheet" href="../assets/css/home.css" />
+  </head>
+  <body>
+    <button id="toggleMenu">☰</button>
+    <aside>
+      <h1>Meu Diário</h1>
+      <ul>
+        <li>Início</li>
+        <li>Eventos</li>
+        <li>Listas</li>
+        <li>Lembretes</li>
+        <li>Diário</li>
+        <li>Configurações</li>
+      </ul>
+    </aside>
+    <main>
+      <!-- Card Calendário + Eventos -->
+      <div class="cardcal">
+        <!-- Calendário -->
+        <div class="calendario-box">
+          <h2>📅 Calendário</h2>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 10px;
+            "
+          >
+            <button class="btn" id="prevMonthBtn" style="padding: 4px 8px">
+              ◀
+            </button>
+            <span
+              id="calendarMonth"
+              style="font-weight: bold; font-size: 16px"
+            ></span>
+            <button class="btn" id="nextMonthBtn" style="padding: 4px 8px">
+              ▶
+            </button>
+          </div>
+          <div class="mini-calendar" id="calendar"></div>
+          <button class="btn" id="addEventBtn">+ Adicionar evento</button>
+        </div>
+
+        <!-- Eventos -->
+        <div class="eventos-box">
+          <h2>✨ Próximos eventos</h2>
+          <ul id="eventosLista"></ul>
+        </div>
+      </div>
+
+      <!-- LISTAS -->
+      <div class="cardlist">
+        <div class="listas-box">
+          <h2>📝 Minhas Listas</h2>
+          <button class="btn" id="addListBtn">+ Nova lista</button>
+          <ul id="listasContainer"></ul>
+        </div>
+      </div>
+
+      <!-- LEMBRETES -->
+      <div class="cardlemb">
+        <div class="listas-box">
+          <h2>🔔 Lembretes</h2>
+          <button class="btn" id="addReminderBtn">+ Novo lembrete</button>
+          <ul id="lembretesContainer"></ul>
+        </div>
+      </div>
+
+      <!-- DIÁRIO -->
+      <div class="carddiario">
+        <div class="diario-header">
+          <h2>📔 Diário</h2>
+          <button class="btn" id="addDiarioBtn">+ Adicionar Diário</button>
+        </div>
+
+        <!-- Carrossel -->
+        <div class="diario-carrossel" id="carrosselDiario">
+          <p class="diario-vazio">Nenhuma entrada de diário ainda...</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Eventos -->
+    <div class="modal" id="eventModal">
+      <div class="modal-content">
+        <h3>Adicionar Evento</h3>
+        <label>Data:</label>
+        <input type="date" id="eventDate" />
+        <label>Hora:</label>
+        <input type="time" id="eventTime" />
+        <label>Descrição:</label>
+        <input type="text" id="eventText" />
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveEventBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeModalBtn">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Nova Lista -->
+    <div class="modal" id="listModal">
+      <div class="modal-content">
+        <h3>Nova Lista</h3>
+        <label>Título da Lista:</label>
+        <input type="text" id="listTitle" />
+        <label>Itens (separe por vírgula):</label>
+        <input
+          type="text"
+          id="listItems"
+          placeholder="Ex: Comprar leite, Pagar conta"
+        />
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveListBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeListModalBtn">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Ver Lista -->
+    <div class="modal" id="viewListModal">
+      <div class="modal-content">
+        <h3 id="viewListTitle">Título</h3>
+        <ul id="viewListItems"></ul>
+        <div class="btn-group">
+          <button class="btn btn-cancel" id="closeViewListModalBtn">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL PARA LEMBRETES -->
+    <div id="reminderModal" class="modal">
+      <div class="modal-content">
+        <h3>Novo Lembrete</h3>
+        <label>Lembrete:</label>
+        <input type="text" id="reminderText" />
+        <div class="btn-group">
+          <button class="btn" id="saveReminderBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeReminderModal">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="../assets/js/home.js"></script>
+  </body>
+</html>
