@@ -1,0 +1,316 @@
+/* =============================== */
+/*           VARIÁVEIS             */
+/* =============================== */
+
+:root {
+  /* Tema principal */
+  --cor-primaria: #6d41d8;
+  --cor-primaria-hover: #5a35b6;
+  --cor-borda: #d5bfff;
+  --cor-input-bg: #f8f3ff;
+  --cor-label: #8b7bb9;
+
+  /* Paleta do menu de cores */
+  --cor-lilas: #b69bff;
+  --cor-rosa: #ff91d9;
+  --cor-azul: #7ad7ff;
+  --cor-menta: #a8ffb0;
+  --cor-amarelo: #ffcf87;
+
+  /* Fundo */
+  --grad1: #f3e8ff;
+  --grad2: #d9c4ff;
+  --grad3: #b69bff;
+
+  /* Neutros */
+  --texto: #4b3375;
+  --branco: #ffffff;
+
+  /* Erros */
+  --erro: #d1466f;
+  --erro-bg: #fff1f4;
+}
+
+
+/* =============================== */
+/*             RESET               */
+/* =============================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Fundo lilás degradê */
+body {
+  background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centralização */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Caixa estilo IG */
+.login-box {
+  width: 480px;
+  padding: 40px 45px 35px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Logo */
+.logo {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 35px;
+  font-weight: 600;
+  color: var(--cor-primaria);
+}
+
+
+/* =============================== */
+/*        INPUTS FLOAT LABEL       */
+/* =============================== */
+
+.input-group {
+  position: relative;
+  margin-bottom: 22px;
+  width: 100%;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 16px 14px 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  font-size: 16px;
+  background: var(--cor-input-bg);
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+}
+
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  color: var(--cor-label);
+  font-size: 14px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: 0.2s ease;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: 4px;
+  font-size: 11px;
+  color: var(--cor-primaria);
+}
+
+
+/* =============================== */
+/*        MOSTRAR SENHA           */
+/* =============================== */
+
+.password-group {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  opacity: .65;
+  transition: .2s;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+.toggle-password svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--cor-primaria);
+}
+
+
+/* =============================== */
+/*           ERROS                */
+/* =============================== */
+
+.erro-msg {
+  color: var(--erro);
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  height: 16px;
+  opacity: 0;
+  transition: .3s ease;
+}
+
+.erro-msg.ativo {
+  opacity: 1;
+}
+
+.input-error {
+  border-color: var(--erro) !important;
+  background: var(--erro-bg) !important;
+}
+
+
+/* =============================== */
+/*             BOTÃO              */
+/* =============================== */
+
+.btn-login {
+  width: 100%;
+  padding: 12px 0;
+  background: var(--cor-primaria);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+.btn-login:hover {
+  background: var(--cor-primaria-hover);
+}
+
+
+/* =============================== */
+/*      TEXTO DE REGISTRO         */
+/* =============================== */
+
+.register-text {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--texto);
+}
+
+.register-text a {
+  color: var(--cor-primaria);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-text a:hover {
+  text-decoration: underline;
+}
+
+
+/* =============================== */
+/*        MENU DE CORES           */
+/* =============================== */
+
+.color-menu {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.color-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  color: var(--texto);
+}
+
+.color-circle {
+  width: 30px;
+  height: 30px;
+  background: var(--c);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0,0,0,0.15);
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.color-circle:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+}
+
+
+/* =============================== */
+/*        RESPONSIVIDADE          */
+/* =============================== */
+
+@media (max-width: 600px) {
+  .login-box {
+    width: 90%;
+    padding: 30px 25px;
+    border-radius: 16px;
+  }
+
+  .logo {
+    font-size: 26px;
+    margin-bottom: 25px;
+  }
+
+  .input-group input {
+    padding: 14px 12px 10px;
+    font-size: 15px;
+  }
+
+  .btn-login {
+    padding: 12px 0;
+    font-size: 15px;
+  }
+
+  .register-text {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-box {
+    width: 92%;
+    padding: 25px 18px;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+
+  .input-group input {
+    font-size: 14px;
+  }
+
+  .btn-login {
+    font-size: 14px;
+  }
+}
