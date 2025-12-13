@@ -1,7 +1,3 @@
-/* =============================== */
-/*           VARIÁVEIS             */
-/* =============================== */
-
 :root {
   /* Tema principal */
   --cor-primaria: #6d41d8;
@@ -31,11 +27,7 @@
   --erro-bg: #fff1f4;
 }
 
-
-/* =============================== */
 /*             RESET               */
-/* =============================== */
-
 * {
   margin: 0;
   padding: 0;
@@ -83,11 +75,7 @@ body {
   color: var(--cor-primaria);
 }
 
-
-/* =============================== */
 /*        INPUTS FLOAT LABEL       */
-/* =============================== */
-
 .input-group {
   position: relative;
   margin-bottom: 22px;
@@ -127,11 +115,7 @@ body {
   color: var(--cor-primaria);
 }
 
-
-/* =============================== */
 /*        MOSTRAR SENHA           */
-/* =============================== */
-
 .password-group {
   position: relative;
 }
@@ -159,11 +143,7 @@ body {
   stroke: var(--cor-primaria);
 }
 
-
-/* =============================== */
 /*           ERROS                */
-/* =============================== */
-
 .erro-msg {
   color: var(--erro);
   font-size: 13px;
@@ -183,11 +163,7 @@ body {
   background: var(--erro-bg) !important;
 }
 
-
-/* =============================== */
 /*             BOTÃO              */
-/* =============================== */
-
 .btn-login {
   width: 100%;
   padding: 12px 0;
@@ -206,11 +182,7 @@ body {
   background: var(--cor-primaria-hover);
 }
 
-
-/* =============================== */
 /*      TEXTO DE REGISTRO         */
-/* =============================== */
-
 .register-text {
   margin-top: 18px;
   text-align: center;
@@ -229,9 +201,7 @@ body {
 }
 
 
-/* =============================== */
 /*        MENU DE CORES           */
-/* =============================== */
 
 .color-menu {
   display: flex;
@@ -264,11 +234,7 @@ body {
   box-shadow: 0 0 10px rgba(0,0,0,0.25);
 }
 
-
-/* =============================== */
 /*        RESPONSIVIDADE          */
-/* =============================== */
-
 @media (max-width: 600px) {
   .login-box {
     width: 90%;
