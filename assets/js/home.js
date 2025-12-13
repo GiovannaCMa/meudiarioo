@@ -308,4 +308,49 @@ document.addEventListener("DOMContentLoaded", () => {
       aside.classList.remove("menu-open");
     }
   });
+
+
+  
+})();
+
+(function () {
+  const toggleBtn = document.getElementById("toggleMenu");
+  if (!toggleBtn) return;
+
+  let lastScrollY = window.scrollY; // Rastreia a posição de rolagem anterior
+
+  window.addEventListener("scroll", () => {
+    // Apenas aplica o efeito se a largura da tela for pequena (mobile/tablet),
+    // onde o menu lateral está escondido por padrão e o botão é necessário.
+    if (window.innerWidth <= 900) {
+      if (window.scrollY > 200) { // Começa a reagir após rolar 200px para baixo
+        
+        // 1. ROLANDO PARA BAIXO (Esconder o botão)
+        if (window.scrollY > lastScrollY) {
+          toggleBtn.style.opacity = '0';
+          toggleBtn.style.pointerEvents = 'none'; // Desabilita cliques
+          toggleBtn.style.transform = 'translateY(-10px)'; // Movimenta um pouco para cima (opcional)
+        } 
+        // 2. ROLANDO PARA CIMA (Mostrar o botão)
+        else { 
+          toggleBtn.style.opacity = '1';
+          toggleBtn.style.pointerEvents = 'auto'; // Habilita cliques
+          toggleBtn.style.transform = 'translateY(0)';
+        }
+      } else {
+        // Se estiver no topo da página, garantir que ele esteja visível
+        toggleBtn.style.opacity = '1';
+        toggleBtn.style.pointerEvents = 'auto';
+        toggleBtn.style.transform = 'translateY(0)';
+      }
+
+      lastScrollY = window.scrollY; // Atualiza a posição de rolagem
+    } 
+    // Garante que o botão esteja visível em telas maiores
+    else {
+      toggleBtn.style.opacity = '1';
+      toggleBtn.style.pointerEvents = 'auto';
+      toggleBtn.style.transform = 'translateY(0)';
+    }
+  });
 })();

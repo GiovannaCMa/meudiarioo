@@ -3,15 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <title>Diário App - Calendário e Listas</title>
     <link rel="stylesheet" href="../assets/css/home.css" />
   </head>
   <body>
+
     <button id="toggleMenu">☰</button>
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li>Início</li>
+        <li style="background: #a489ef;">Início</li>
         <li>Eventos</li>
         <li>Listas</li>
         <li>Lembretes</li>
@@ -19,12 +26,13 @@
         <li>Configurações</li>
       </ul>
     </aside>
+
     <main>
       <!-- Card Calendário + Eventos -->
       <div class="cardcal">
         <!-- Calendário -->
         <div class="calendario-box">
-          <h2>📅 Calendário</h2>
+          <h2><i class="fa-solid fa-calendar-days"></i> Calendário</h2>
           <div
             style="
               display: flex;
@@ -58,7 +66,7 @@
       <!-- LISTAS -->
       <div class="cardlist">
         <div class="listas-box">
-          <h2>📝 Minhas Listas</h2>
+          <h2><i class="fa-solid fa-list-check"></i> Listas</h2>
           <button class="btn" id="addListBtn">+ Nova lista</button>
           <ul id="listasContainer"></ul>
         </div>
@@ -67,7 +75,7 @@
       <!-- LEMBRETES -->
       <div class="cardlemb">
         <div class="listas-box">
-          <h2>🔔 Lembretes</h2>
+          <h2><i class="fa-solid fa-bell"></i> Lembretes</h2>
           <button class="btn" id="addReminderBtn">+ Novo lembrete</button>
           <ul id="lembretesContainer"></ul>
         </div>
@@ -76,7 +84,7 @@
       <!-- DIÁRIO -->
       <div class="carddiario">
         <div class="diario-header">
-          <h2>📔 Diário</h2>
+          <h2><i class="fa-solid fa-book-open"></i> Meu Diário</h2>
           <button class="btn" id="addDiarioBtn">+ Adicionar Diário</button>
         </div>
 
@@ -152,6 +160,7 @@
         </div>
       </div>
     </div>
+
     <script src="../assets/js/home.js"></script>
   </body>
 </html>
