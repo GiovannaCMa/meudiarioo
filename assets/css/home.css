@@ -142,8 +142,7 @@ main {
   min-width: 360px;
   max-width: 300px;
   width: 100%;
-  /* REMOVIDO: max-height/overflow-y para que a lista UL interna controle a rolagem */
-   max-height: 440px; /* altura máxima */
+  max-height: 440px; /* altura máxima */
 }
 .carddiario {
   display: flex;
@@ -394,7 +393,7 @@ main {
   font-size: 14px;
   max-height: 300px; /* CHAVE DA ROLAGEM: Altura máxima */
   overflow-y: auto; /* CHAVE DA ROLAGEM: Habilita scroll */
-  padding-right: 8px; /* Para garantir espaço para a barra de rolagem */
+  padding-right: px; /* Para garantir espaço para a barra de rolagem */
 }
 .listas-box li {
   padding: 10px 12px;
@@ -423,7 +422,7 @@ main {
   /* AJUSTE DE ROLAGEM NO MODAL DE VISUALIZAÇÃO */
   max-height: 40vh; /* Altura máxima baseada na tela */
   overflow-y: auto; /* Habilita a rolagem */
-  padding-right: 12px; /* Adiciona espaço para a barra de rolagem */
+  padding-right: 4px; /* Adiciona espaço para a barra de rolagem */
   margin-bottom: 10px; 
 }
 #viewListItems li {
