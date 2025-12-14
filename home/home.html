@@ -13,24 +13,23 @@
     <link rel="stylesheet" href="../assets/css/home.css" />
   </head>
   <body>
-
     <button id="toggleMenu">☰</button>
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li style="background: #a489ef;">Início</li>
-        <li>Eventos</li>
-        <li>Listas</li>
-        <li>Lembretes</li>
-        <li>Diário</li>
-        <li>Configurações</li>
+        <li class="active"><a>Início</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
+        <li><a href="listas.html">Listas</a></li>
+        <li><a href="lembretes.html">Lembretes</a></li>
+        <li><a href="diario.html">Diário</a></li>
+        <li><a href="configuracao.html">Configurações</a></li>
       </ul>
     </aside>
 
     <main>
-      <!-- Card Calendário + Eventos -->
+      <!--CALENDARIO / EVENTOS-->
       <div class="cardcal">
-        <!-- Calendário -->
+        <!--CALENDARIO-->
         <div class="calendario-box">
           <h2><i class="fa-solid fa-calendar-days"></i> Calendário</h2>
           <div
@@ -42,28 +41,32 @@
             "
           >
             <button class="btn" id="prevMonthBtn" style="padding: 4px 8px">
-              ◀
+              <i class="fa-solid fa-chevron-left"></i>
             </button>
             <span
               id="calendarMonth"
               style="font-weight: bold; font-size: 16px"
             ></span>
             <button class="btn" id="nextMonthBtn" style="padding: 4px 8px">
-              ▶
+              <i class="fa-solid fa-chevron-right"></i>
             </button>
           </div>
+          <div class="week-days-header">
+            <span>Dom</span><span>Seg</span><span>Ter</span> <span>Qua</span
+            ><span>Qui</span><span>Sex</span><span>Sáb</span>
+          </div>
+
           <div class="mini-calendar" id="calendar"></div>
           <button class="btn" id="addEventBtn">+ Adicionar evento</button>
         </div>
-
-        <!-- Eventos -->
+        <!--EVENTOS-->
         <div class="eventos-box">
-          <h2>✨ Próximos eventos</h2>
+          <h2><i class="fa-solid fa-clock"></i> Próximos eventos</h2>
           <ul id="eventosLista"></ul>
         </div>
       </div>
 
-      <!-- LISTAS -->
+      <!--LISTAS-->
       <div class="cardlist">
         <div class="listas-box">
           <h2><i class="fa-solid fa-list-check"></i> Listas</h2>
@@ -72,7 +75,7 @@
         </div>
       </div>
 
-      <!-- LEMBRETES -->
+      <!--LEMBRETES-->
       <div class="cardlemb">
         <div class="listas-box">
           <h2><i class="fa-solid fa-bell"></i> Lembretes</h2>
@@ -81,21 +84,22 @@
         </div>
       </div>
 
-      <!-- DIÁRIO -->
+      <!--DIARIO-->
       <div class="carddiario">
         <div class="diario-header">
           <h2><i class="fa-solid fa-book-open"></i> Meu Diário</h2>
           <button class="btn" id="addDiarioBtn">+ Adicionar Diário</button>
         </div>
 
-        <!-- Carrossel -->
         <div class="diario-carrossel" id="carrosselDiario">
           <p class="diario-vazio">Nenhuma entrada de diário ainda...</p>
         </div>
       </div>
     </main>
 
-    <!-- Modal Eventos -->
+    <!--MODAL-->
+    
+    <!--EVENTOS-->
     <div class="modal" id="eventModal">
       <div class="modal-content">
         <h3>Adicionar Evento</h3>
@@ -112,7 +116,7 @@
       </div>
     </div>
 
-    <!-- Modal Nova Lista -->
+    <!-- NOVA LISTA-->
     <div class="modal" id="listModal">
       <div class="modal-content">
         <h3>Nova Lista</h3>
@@ -133,7 +137,7 @@
       </div>
     </div>
 
-    <!-- Modal Ver Lista -->
+    <!-- VER LISTA-->
     <div class="modal" id="viewListModal">
       <div class="modal-content">
         <h3 id="viewListTitle">Título</h3>
@@ -146,7 +150,7 @@
       </div>
     </div>
 
-    <!-- MODAL PARA LEMBRETES -->
+    <!-- NOVO LEMBRETE-->
     <div id="reminderModal" class="modal">
       <div class="modal-content">
         <h3>Novo Lembrete</h3>
