@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <title>Diário App - Eventos</title>
+    <link rel="stylesheet" href="../assets/css/eventos.css" />
+  </head>
+
+  <body>
+    <button id="toggleMenu">☰</button>
+    <aside>
+      <h1>Meu Diário</h1>
+      <ul>
+        <li><a href="home.html">Início</a></li>
+        <li class="active"><a>Eventos</a></li>
+        <li><a href="listas.html">Listas</a></li>
+        <li><a href="lembretes.html">Lembretes</a></li>
+        <li><a href="diario.html">Diário</a></li>
+        <li><a href="configuracao.html">Configurações</a></li>
+      </ul>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <main>
+      <!-- RESUMO -->
+      <div class="card-resumo">
+        <div class="resumo-item">
+          <i class="fa-solid fa-calendar-check"></i>
+          <div>
+            <strong>0</strong>
+            <span>Eventos no mês</span>
+          </div>
+        </div>
+
+        <div class="resumo-item">
+          <i class="fa-solid fa-clock"></i>
+          <div>
+            <strong>—</strong>
+            <span>Próximo evento</span>
+          </div>
+        </div>
+
+        <div class="resumo-item">
+          <i class="fa-solid fa-star"></i>
+          <div>
+            <strong>0</strong>
+            <span>Dias ocupados</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD PRINCIPAL -->
+      <div class="cardcal">
+        <!-- ================= CALENDÁRIO ================= -->
+        <div class="calendario-box">
+          <h2>
+            <i class="fa-solid fa-calendar-days"></i>
+            Calendário
+          </h2>
+
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 10px;
+            "
+          >
+            <button class="btn" id="prevMonthBtn" style="padding: 4px 8px">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <span
+              id="calendarMonth"
+              style="font-weight: bold; font-size: 16px"
+            ></span>
+
+            <button class="btn" id="nextMonthBtn" style="padding: 4px 8px">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <div class="week-days-header">
+            <span>Dom</span>
+            <span>Seg</span>
+            <span>Ter</span>
+            <span>Qua</span>
+            <span>Qui</span>
+            <span>Sex</span>
+            <span>Sáb</span>
+          </div>
+
+          <div class="mini-calendar" id="calendar"></div>
+
+          <button class="btn" id="addEventBtn">+ Adicionar evento</button>
+
+          <!-- 🔹 2. LEGENDA DO CALENDÁRIO -->
+          <div class="calendar-legenda">
+            <span class="leg hoje">Hoje</span>
+            <span class="leg evento">Com evento</span>
+            <span class="leg hjeven">Hoje/evento</span>
+          </div>
+        </div>
+
+        <!-- ================= EVENTOS ================= -->
+        <div class="eventos-box">
+          <h2><i class="fa-solid fa-clock"></i> Próximos eventos</h2>
+
+          <!-- 🔹 3. FILTROS RÁPIDOS -->
+          <div class="eventos-filtros">
+            <button class="btn-filtro active">Todos</button>
+            <button class="btn-filtro">Hoje</button>
+            <button class="btn-filtro">Semana</button>
+          </div>
+
+          <ul id="eventosLista"></ul>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= MODAL ADICIONAR ================= -->
+    <div class="modal" id="eventModal">
+      <div class="modal-content">
+        <h3>Novo Evento</h3>
+
+        <input type="date" id="eventDate" />
+        <input type="time" id="eventTime" />
+        <input type="text" id="eventText" placeholder="Descrição" />
+
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveEventBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeModalBtn">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL EDITAR ================= -->
+    <div class="modal" id="editEventModal">
+      <div class="modal-content">
+        <h3>Editar Evento</h3>
+
+        <input type="hidden" id="editEventIndex" />
+        <input type="date" id="editEventDate" />
+        <input type="time" id="editEventTime" />
+        <input type="text" id="editEventText" />
+
+        <div class="btn-group">
+          <button class="btn btn-delete" id="deleteEventBtn">Excluir</button>
+          <div>
+            <button class="btn btn-save" id="updateEventBtn">Atualizar</button>
+            <button class="btn btn-cancel" id="closeEditModalBtn">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../assets/js/eventos.js"></script>
+  </body>
+</html>
