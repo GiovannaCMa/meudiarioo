@@ -1,6 +1,4 @@
-// ======================================================
 // 1. LÓGICA DO MENU LATERAL (TOGGLE E SCROLL)
-// ======================================================
 (function () {
     const btn = document.getElementById("toggleMenu");
     const aside = document.querySelector("aside");
@@ -66,9 +64,7 @@
     });
 })();
 
-/* ======================================================
-   VARIÁVEIS & CONSTANTES (DOM e Dados)
-====================================================== */
+//VARIÁVEIS & CONSTANTES (DOM e Dados)
 
 // Elementos Principais
 const calendar = document.getElementById("calendar");
@@ -124,9 +120,7 @@ const meses = [
 
 let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
 
-/* ======================================================
-   FUNÇÕES AUXILIARES (Usando classes, alinhado com o CSS)
-====================================================== */
+//FUNÇÕES AUXILIARES (Usando classes, alinhado com o CSS)
 
 function formatarDataInput(date) {
   const y = date.getFullYear();
@@ -166,10 +160,7 @@ function updateMonthDisplay() {
   calendarMonthDisplay.textContent = `${meses[mesAtual]} ${anoAtual}`;
 }
 
-/* ======================================================
-   RENDER CALENDÁRIO
-====================================================== */
-
+//RENDER CALENDÁRIO
 function renderCalendar() {
   calendar.innerHTML = "";
   eventosLista.innerHTML = "";
@@ -238,10 +229,7 @@ function renderCalendar() {
   renderEventosDoMes();
 }
 
-/* ======================================================
-   NAVEGAÇÃO DO CALENDÁRIO
-====================================================== */
-
+//NAVEGAÇÃO DO CALENDÁRIO
 prevMonthBtn.onclick = () => {
   mesAtual--;
   if (mesAtual < 0) {
@@ -260,9 +248,7 @@ nextMonthBtn.onclick = () => {
   renderCalendar();
 };
 
-/* ======================================================
-   MODAL DE VISUALIZAÇÃO / EDIÇÃO
-====================================================== */
+//MODAL DE VISUALIZAÇÃO / EDIÇÃO
 
 /** Preenche e abre o modal de edição para um evento específico. */
 function abrirModalEvento(ev) {
@@ -276,10 +262,7 @@ function abrirModalEvento(ev) {
   abrirModal(editEventModal);
 }
 
-/* ======================================================
-   EVENTOS - ADICIONAR
-====================================================== */
-
+//EVENTOS - ADICIONAR
 addEventBtn.onclick = () => {
   eventDateInput.value = formatarDataInput(new Date()); 
   eventTimeInput.value = "";
@@ -322,10 +305,7 @@ saveEventBtn.onclick = () => {
   renderCalendar();
 };
 
-/* ======================================================
-   EVENTOS - EDITAR / EXCLUIR
-====================================================== */
-
+//EVENTOS - EDITAR / EXCLUIR
 closeEditModalBtn.onclick = () => fecharModal(editEventModal);
 
 updateEventBtn.onclick = () => {
@@ -363,10 +343,7 @@ deleteEventBtn.onclick = () => {
   }
 };
 
-/* ======================================================
-   FILTROS
-====================================================== */
-
+//FILTROS
 filtros.forEach(btn => {
   btn.addEventListener("click", () => {
     filtros.forEach(b => b.classList.remove("active"));
@@ -376,10 +353,7 @@ filtros.forEach(btn => {
   });
 });
 
-/* ======================================================
-   RENDER EVENTOS DO MÊS (COM FILTROS)
-====================================================== */
-
+//RENDER EVENTOS DO MÊS (COM FILTROS)
 function renderEventosDoMes() {
   eventosLista.innerHTML = "";
 
@@ -438,10 +412,7 @@ function renderEventosDoMes() {
   atualizarResumo();
 }
 
-/* ======================================================
-   ATUALIZAR RESUMO (3 CARDS)
-====================================================== */
-
+//ATUALIZAR RESUMO (3 CARDS)
 function atualizarResumo() {
   const eventosDoMes = eventos.filter(ev => {
     const [y, m] = ev.data.split("-").map(Number);
@@ -478,10 +449,7 @@ function atualizarResumo() {
   }
 }
 
-/* ======================================================
-   INICIALIZAÇÃO
-====================================================== */
-
+//INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializa a renderização
     renderCalendar();
