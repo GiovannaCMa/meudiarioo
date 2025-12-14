@@ -64,7 +64,7 @@
     });
 })();
 
-//VARIÁVEIS & CONSTANTES (DOM e Dados)
+// VARIÁVEIS & CONSTANTES (DOM e Dados)
 
 // Elementos Principais
 const calendar = document.getElementById("calendar");
@@ -97,7 +97,6 @@ const editEventTimeInput = document.getElementById("editEventTime");
 const editEventTextInput = document.getElementById("editEventText");
 
 // Resumo (Selectores ajustados para refletir a posição)
-// Certifique-se de que os strongs estão dentro do .resumo-item
 const resumoEventosMes = document.querySelector(".resumo-item:nth-child(1) strong");
 const resumoProximoEvento = document.querySelector(".resumo-item:nth-child(2) strong");
 const resumoDiasOcupados = document.querySelector(".resumo-item:nth-child(3) strong");
@@ -118,9 +117,14 @@ const meses = [
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
 ];
 
+const mesesAbreviados = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+  "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+];
+
 let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
 
-//FUNÇÕES AUXILIARES (Usando classes, alinhado com o CSS)
+// FUNÇÕES AUXILIARES 
 
 function formatarDataInput(date) {
   const y = date.getFullYear();
@@ -160,10 +164,9 @@ function updateMonthDisplay() {
   calendarMonthDisplay.textContent = `${meses[mesAtual]} ${anoAtual}`;
 }
 
-//RENDER CALENDÁRIO
+// RENDER CALENDÁRIO
 function renderCalendar() {
   calendar.innerHTML = "";
-  eventosLista.innerHTML = "";
 
   updateMonthDisplay();
 
@@ -229,7 +232,7 @@ function renderCalendar() {
   renderEventosDoMes();
 }
 
-//NAVEGAÇÃO DO CALENDÁRIO
+// NAVEGAÇÃO DO CALENDÁRIO
 prevMonthBtn.onclick = () => {
   mesAtual--;
   if (mesAtual < 0) {
@@ -248,7 +251,7 @@ nextMonthBtn.onclick = () => {
   renderCalendar();
 };
 
-//MODAL DE VISUALIZAÇÃO / EDIÇÃO
+// MODAL DE VISUALIZAÇÃO / EDIÇÃO
 
 /** Preenche e abre o modal de edição para um evento específico. */
 function abrirModalEvento(ev) {
@@ -262,7 +265,7 @@ function abrirModalEvento(ev) {
   abrirModal(editEventModal);
 }
 
-//EVENTOS - ADICIONAR
+// EVENTOS - ADICIONAR
 addEventBtn.onclick = () => {
   eventDateInput.value = formatarDataInput(new Date()); 
   eventTimeInput.value = "";
@@ -305,7 +308,7 @@ saveEventBtn.onclick = () => {
   renderCalendar();
 };
 
-//EVENTOS - EDITAR / EXCLUIR
+// EVENTOS - EDITAR / EXCLUIR
 closeEditModalBtn.onclick = () => fecharModal(editEventModal);
 
 updateEventBtn.onclick = () => {
@@ -343,7 +346,7 @@ deleteEventBtn.onclick = () => {
   }
 };
 
-//FILTROS
+// FILTROS
 filtros.forEach(btn => {
   btn.addEventListener("click", () => {
     filtros.forEach(b => b.classList.remove("active"));
@@ -353,36 +356,41 @@ filtros.forEach(btn => {
   });
 });
 
-//RENDER EVENTOS DO MÊS (COM FILTROS)
+// RENDER EVENTOS DO MÊS (COM FILTROS)
 function renderEventosDoMes() {
   eventosLista.innerHTML = "";
 
   const hojeData = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
   
   // 1. Calcula o período de filtragem
-  const inicioSemana = new Date(hojeData);
-  inicioSemana.setDate(hojeData.getDate() - hojeData.getDay()); 
-  const fimSemana = new Date(inicioSemana);
-  fimSemana.setDate(inicioSemana.getDate() + 6);
-  fimSemana.setHours(23, 59, 59, 999); 
+  let eventosFiltrados = [];
 
-  let eventosFiltrados = eventos.filter(ev => {
-    const [y, m, d] = ev.data.split("-").map(Number);
-    const dataEv = new Date(y, m - 1, d); 
+  if (filtroAtual === "Hoje") {
+    eventosFiltrados = eventos.filter(ev => datasIguais(ev.data, hojeData));
 
-    if (filtroAtual === "Hoje") {
-      return datasIguais(ev.data, hojeData);
-    }
-    
-    if (filtroAtual === "Semana") {
-      return dataEv >= inicioSemana && dataEv <= fimSemana;
-    }
-    
-    // Filtro "Todos"
-    return dataEv.getMonth() === mesAtual && dataEv.getFullYear() === anoAtual;
-  });
+  } else if (filtroAtual === "Semana") {
+    const inicioSemana = new Date(hojeData);
+    inicioSemana.setDate(hojeData.getDate() - hojeData.getDay()); 
+    const fimSemana = new Date(inicioSemana);
+    fimSemana.setDate(inicioSemana.getDate() + 6);
+    fimSemana.setHours(23, 59, 59, 999); 
 
-  // 2. Ordena os eventos filtrados por data e hora
+    eventosFiltrados = eventos.filter(ev => {
+        const [y, m, d] = ev.data.split("-").map(Number);
+        const dataEv = new Date(y, m - 1, d); 
+        return dataEv >= inicioSemana && dataEv <= fimSemana;
+    });
+
+  } else {
+    eventosFiltrados = eventos.filter(ev => {
+      const [y, m, d] = ev.data.split("-").map(Number);
+      const dataEv = new Date(y, m - 1, d); 
+      // Garante que a lista mostra eventos de HOJE em diante
+      return dataEv >= hojeData; 
+    });
+  }
+
+  // 2. Ordena os eventos filtrados por data e hora (aplicado a todos os filtros)
   eventosFiltrados
     .sort((a, b) => {
       const dataA = new Date(a.data + (a.hora ? 'T' + a.hora : ''));
@@ -392,12 +400,13 @@ function renderEventosDoMes() {
     .forEach(ev => {
       const [y, m, d] = ev.data.split("-").map(Number);
       const data = new Date(y, m - 1, d);
-      const hora = ev.hora ? ` às ${ev.hora}` : "";
       
-      const textoData = `${data.getDate()} ${meses[data.getMonth()].substring(0, 3)}`;
+      const horaTexto = ev.hora ? ` às ${ev.hora}` : "";
+      const mesAbrev = mesesAbreviados[data.getMonth()]; 
+      const textoData = `${data.getDate()} ${mesAbrev}`;
 
       const li = document.createElement("li");
-      li.textContent = `${textoData}${hora} — ${ev.texto}`;
+      li.textContent = `${textoData}${horaTexto} — ${ev.texto}`;
 
       li.addEventListener("click", () => abrirModalEvento(ev));
       eventosLista.appendChild(li);
@@ -412,21 +421,21 @@ function renderEventosDoMes() {
   atualizarResumo();
 }
 
-//ATUALIZAR RESUMO (3 CARDS)
+// ATUALIZAR RESUMO (3 CARDS)
 function atualizarResumo() {
   const eventosDoMes = eventos.filter(ev => {
     const [y, m] = ev.data.split("-").map(Number);
     return m - 1 === mesAtual && y === anoAtual;
   });
 
-  // Garante que os elementos existem antes de tentar atualizar
+  // 1. Resumo Eventos Mês
   if (resumoEventosMes) {
     resumoEventosMes.textContent = eventosDoMes.length;
   }
 
   const agora = new Date();
   
-  // Próximos eventos (futuros, ordenados)
+  // 2. Próximo Evento (Futuros e ordenados)
   const proximos = eventos
     .map(ev => {
       const fullDateStr = ev.data + (ev.hora ? 'T' + ev.hora : '');
@@ -437,21 +446,32 @@ function atualizarResumo() {
     .sort((a, b) => a.dateObj - b.dateObj);
 
   if (resumoProximoEvento) {
-    resumoProximoEvento.textContent =
-        proximos.length > 0
-          ? `${proximos[0].dateObj.getDate()}/${proximos[0].dateObj.getMonth() + 1}`
-          : "—";
+    if (proximos.length > 0) {
+        const proximoEv = proximos[0].dateObj;
+        const dia = proximoEv.getDate();
+        const mes = mesesAbreviados[proximoEv.getMonth()]; 
+        resumoProximoEvento.textContent = `${dia} ${mes}`;
+    } else {
+        resumoProximoEvento.textContent = "—";
+    }
   }
 
+  // 3. Dias Ocupados
   const diasUnicos = new Set(eventosDoMes.map(ev => ev.data));
   if (resumoDiasOcupados) {
     resumoDiasOcupados.textContent = diasUnicos.size;
   }
 }
 
-//INICIALIZAÇÃO
+// INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializa a renderização
     renderCalendar();
     atualizarResumo();
+    
+    // Garante que o filtro 'Todos' esteja ativo ao carregar
+    const btnTodos = document.querySelector(".btn-filtro");
+    if (btnTodos) {
+      btnTodos.classList.add('active');
+    }
 });
