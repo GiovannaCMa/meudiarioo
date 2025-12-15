@@ -3,7 +3,6 @@
   const btn = document.getElementById("toggleMenu");
   const aside = document.querySelector("aside");
 
-  // Configura a transição para o botão (necessário para o efeito de scroll)
   if (btn) {
     btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
   }
@@ -18,7 +17,6 @@
 
   // --- 2. Fechar ao Clicar Fora (melhor usabilidade mobile) ---
   document.addEventListener("click", (e) => {
-    // Verifica se o menu está aberto E se o clique não foi no próprio menu E não foi no botão
     if (
       window.innerWidth <= 900 &&
       aside.classList.contains("menu-open") &&
@@ -43,25 +41,21 @@
     if (window.innerWidth <= 900) {
       if (window.scrollY > 200) {
         if (window.scrollY > lastScrollY) {
-          // Rolando para baixo: Esconde o botão
           btn.style.opacity = "0";
           btn.style.pointerEvents = "none";
           btn.style.transform = "translateY(-20px)";
         } else {
-          // Rolando para cima: Mostra o botão
           btn.style.opacity = "1";
           btn.style.pointerEvents = "auto";
           btn.style.transform = "translateY(0)";
         }
       } else {
-        // No topo da página: Visível
         btn.style.opacity = "1";
         btn.style.pointerEvents = "auto";
         btn.style.transform = "translateY(0)";
       }
       lastScrollY = window.scrollY;
     } else {
-      // Em Desktop: Garante estado padrão
       btn.style.opacity = "1";
       btn.style.pointerEvents = "auto";
       btn.style.transform = "translateY(0)";
@@ -69,356 +63,430 @@
   });
 })();
 
-// 2. LÓGICA DO DASHBOARD (CALENDÁRIO, LISTAS, MODAIS)
 document.addEventListener("DOMContentLoaded", () => {
-  // Variáveis Globais de Tempo e Dados
   const hoje = new Date();
   let mesAtual = hoje.getMonth();
   let anoAtual = hoje.getFullYear();
   const diaHoje = hoje.getDate();
+  
+  let dataSelecionada = null; 
+
   const meses = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
   ];
-  // Carrega dados do Local Storage
+  
+  // Meses abreviados em português para a lista de eventos
+  const mesesAbreviados = [
+    "Jan","Fev","Mar","Abr","Mai","Jun",
+    "Jul","Ago","Set","Out","Nov","Dez"
+  ];
+
+  /* ================== STORAGE ================== */
   let eventos = JSON.parse(localStorage.getItem("eventos")) || [];
+  // MUDANÇA: Usando a chave de storage da lista da página 'listas.html'
+  let listas = JSON.parse(localStorage.getItem("diaryAppLists")) || []; 
+  let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
+  let diario = JSON.parse(localStorage.getItem("diario")) || [];
 
-  // Elementos do DOM
-  const calendar = document.getElementById("calendar");
-  const eventosLista = document.getElementById("eventosLista");
-  const carrossel = document.getElementById("carrosselDiario");
+  /* ================== ELEMENTOS ================== */
+  const el = {
+    calendar: document.getElementById("calendar"),
+    calendarMonth: document.getElementById("calendarMonth"),
+    prevMonthBtn: document.getElementById("prevMonthBtn"),
+    nextMonthBtn: document.getElementById("nextMonthBtn"),
+    eventosLista: document.getElementById("eventosLista"),
+    carrossel: document.getElementById("carrosselDiario"),
+    listasContainer: document.getElementById("listasContainer"),
+    lembretesContainer: document.getElementById("lembretesContainer"),
 
-  //FUNÇÕES AUXILIARES GERAIS
-  function openModal(id) {
+    addEventBtn: document.getElementById("addEventBtn"),
+    saveEventBtn: document.getElementById("saveEventBtn"),
+    closeModalBtn: document.getElementById("closeModalBtn"),
+    eventDate: document.getElementById("eventDate"),
+    eventTime: document.getElementById("eventTime"),
+    eventText: document.getElementById("eventText"),
+    eventModal: document.getElementById("eventModal"),
+    
+    // Elementos do Modal de Visualização de Lista (necessário para a Home)
+    viewListTitle: document.getElementById("viewListTitle"),
+    viewListItems: document.getElementById("viewListItems"),
+    viewListDueDate: document.getElementById("viewListDueDate"),
+    viewListStatus: document.getElementById("viewListStatus"),
+    closeViewListModalBtn: document.getElementById("closeViewListModalBtn"),
+    viewListModal: document.getElementById("viewListModal"),
+
+    addReminderBtn: document.getElementById("addReminderBtn"),
+    reminderText: document.getElementById("reminderText"),
+    saveReminderBtn: document.getElementById("saveReminderBtn"),
+    closeReminderModal: document.getElementById("closeReminderModal"),
+    reminderModal: document.getElementById("reminderModal"),
+
+    addDiarioBtn: document.getElementById("addDiarioBtn"),
+  };
+  
+  let currentViewListId = null; // Variável para rastrear a lista sendo visualizada
+
+  /* ================== HELPERS ================== */
+  const openModal = (id) =>
     document.getElementById(id).style.display = "flex";
-  }
-
-  function closeModal(id) {
+    
+  const closeModal = (id) =>
     document.getElementById(id).style.display = "none";
+
+  const formatarData = (date) =>
+    `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+
+  function parseDateLocal(dateStr) {
+    if (!dateStr) return null;
+    const [y, m, d] = dateStr.split("-");
+    return new Date(y, m - 1, d); 
   }
+  
+  // Função atualizada para usar a nova estrutura de dados (list.items)
+  function getStatusLista(lista) {
+    // Se 'items' não existir, usa uma lista vazia para evitar erros
+    const items = lista.items || []; 
+    const total = items.length;
+    // MUDANÇA: Usa 'done' (da listas.js) em vez de 'feito' (da home.js original)
+    const feitos = items.filter(i => i.done).length; 
 
-  //Converte uma data Date em string yyyy-mm-dd
-  function formatarDataInput(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  }
+    if (total && feitos === total) return "Concluída";
 
-  //CALENDÁRIO E EVENTOS
-  function renderCalendar() {      // =================================
-    calendar.innerHTML = "";
-    document.getElementById(
-      "calendarMonth"
-    ).textContent = `${meses[mesAtual]} ${anoAtual}`;
-
-    const primeiroDiaSemana = new Date(anoAtual, mesAtual, 1).getDay();
-    const diasNoMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
-
-    // Espaços vazios antes do dia 1
-    for (let i = 0; i < primeiroDiaSemana; i++) {
-      const empty = document.createElement("div");
-      empty.className = "day empty";
-      calendar.appendChild(empty);
+    // MUDANÇA: Usa 'dueDate' (da listas.js) em vez de 'dataLimite' (da home.js original)
+    if (lista.dueDate) {
+      const hoje = new Date();
+      const limite = parseDateLocal(lista.dueDate);
+      // Garante que o limite é no final do dia
+      limite.setHours(23, 59, 59); 
+      if (hoje > limite && feitos < total) return "Pendente";
     }
 
-    for (let dia = 1; dia <= diasNoMes; dia++) {
-      const dayDiv = document.createElement("div");
-      dayDiv.className = "day";
-      dayDiv.textContent = dia;
+    if (feitos > 0 && feitos < total) return "Em andamento";
+    
+    return "Em andamento"; // Por padrão, se não está concluída ou atrasada, está em andamento (ou não iniciada)
+  }
+  
+  function limparSelecaoDia() {
+    document.querySelectorAll(".day.selected").forEach(d =>
+      d.classList.remove("selected")
+    );
+    dataSelecionada = null;
+  }
+  
+  // Salva a lista no localStorage (Usando a chave 'diaryAppLists')
+  const saveListsToLocalStorage = () => {
+    localStorage.setItem('diaryAppLists', JSON.stringify(listas));
+  };
 
-      const dataCompleta = new Date(anoAtual, mesAtual, dia);
-      const dataStringFormatada = formatarDataInput(dataCompleta);
 
-      // 1. É HOJE?
-      const isToday =
-        dia === diaHoje &&
-        mesAtual === hoje.getMonth() &&
-        anoAtual === hoje.getFullYear();
+  /* ================== CALENDÁRIO ================== */
+  function renderCalendar() {
+    if (!el.calendar || !el.calendarMonth) return;
+    
+    el.calendar.innerHTML = "";
+    el.calendarMonth.textContent = `${meses[mesAtual]} ${anoAtual}`;
 
-      // 2. TEM EVENTO?
-      const eventosDoDia = eventos.filter(
-        (ev) => ev.data === dataStringFormatada
-      );
-      const hasEvent = eventosDoDia.length > 0;
+    const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
+    const diasMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
+
+    for (let i = 0; i < primeiroDia; i++) {
+      el.calendar.appendChild(document.createElement("div"));
+    }
+
+    for (let dia = 1; dia <= diasMes; dia++) {
+      const div = document.createElement("div");
+      div.className = "day";
+      div.textContent = dia;
+
+      const dataAtual = new Date(anoAtual, mesAtual, dia);
+      const dataStringFormatada = formatarData(dataAtual);
+      const eventosDia = eventos.filter(e => e.data === dataStringFormatada);
+      
+      const isToday = dia === diaHoje && mesAtual === hoje.getMonth() && anoAtual === hoje.getFullYear();
+      const hasEvent = eventosDia.length > 0;
 
       if (isToday) {
-        dayDiv.classList.add("today");
+        div.classList.add("today");
       }
-
+      
       if (hasEvent) {
-        dayDiv.classList.add("evento");
-        // String de eventos para o tooltip (já faz a função de "mostrar título")
-        dayDiv.setAttribute(
-          "data-evento",
-          eventosDoDia.map((ev) => ev.texto).join(", ")
-        );
-
-        // 3. É HOJE E TEM EVENTO? (CLASSE HJEVEN)
+        div.classList.add("evento");
         if (isToday) {
-          dayDiv.classList.add("hjeven");
+          div.classList.add("hjeven"); 
         }
+        
+        div.setAttribute(
+          "data-evento", 
+          eventosDia.map(ev => ev.texto).join(", ")
+        );
       }
 
-      // === BLOCO DE LÓGICA CORRIGIDO ===
-      dayDiv.addEventListener("click", () => {
-        // Se TEM evento, não faz nada (o título já aparece no CSS via data-evento: hover/tooltip).
-        if (hasEvent) {
-          return;
-        }
-
-        // Se NÃO TEM evento, abre o modal de adição preenchido com a data.
-        document.getElementById("eventDate").value = dataStringFormatada;
-        document.getElementById("eventTime").value = "";
-        document.getElementById("eventText").value = "";
+      div.onclick = () => {
+        limparSelecaoDia(); 
+        div.classList.add("selected");
+        dataSelecionada = dataAtual;
+        
+        el.eventDate.value = dataStringFormatada;
+        el.eventText.value = "";
+        el.eventTime.value = "";
         openModal("eventModal");
-      });
-
-      calendar.appendChild(dayDiv);
-    }
-
-    renderEventosDoMes();
-  }
-
-  function renderEventosDoMes() {
-    eventosLista.innerHTML = "";
-
-    const eventosDoMes = eventos
-      .filter((ev) => {
-        const [y, m] = ev.data.split("-");
-        return parseInt(m) - 1 === mesAtual && parseInt(y) === anoAtual;
-      })
-      .sort((a, b) => new Date(a.data) - new Date(b.data));
-
-    if (eventosDoMes.length === 0) {
-      eventosLista.innerHTML = "<li>Nenhum evento neste mês.</li>";
-      return;
-    }
-
-    eventosDoMes.forEach((ev) => {
-      const [y, m, d] = ev.data.split("-");
-      const data = new Date(y, m - 1, d);
-      const hora = ev.hora ? ` às ${ev.hora}` : "";
-
-      const li = document.createElement("li");
-      li.textContent = `${data.getDate()} ${meses[data.getMonth()].substring(
-        0,
-        3
-      )}${hora} — ${ev.texto}`;
-      eventosLista.appendChild(li);
-    });
-  }
-
-  // Controles de Navegação do Calendário
-  document.getElementById("prevMonthBtn").onclick = () => {
-    mesAtual--;
-    if (mesAtual < 0) {
-      mesAtual = 11;
-      anoAtual--;
-    }
-    renderCalendar();
-  };
-  document.getElementById("nextMonthBtn").onclick = () => {
-    mesAtual++;
-    if (mesAtual > 11) {
-      mesAtual = 0;
-      anoAtual++;
-    }
-    renderCalendar();
-  };
-
-  // Botões do Modal de Eventos
-  document.getElementById("addEventBtn").onclick = () => {
-    document.getElementById("eventDate").value = formatarDataInput(new Date());
-    document.getElementById("eventTime").value = "";
-    document.getElementById("eventText").value = "";
-    openModal("eventModal");
-  };
-  document.getElementById("closeModalBtn").onclick = () =>
-    closeModal("eventModal");
-
-  document.getElementById("saveEventBtn").onclick = () => {
-    const data = document.getElementById("eventDate").value;
-    const hora = document.getElementById("eventTime").value;
-    const texto = document.getElementById("eventText").value.trim();
-
-    if (!data || !texto) return alert("Preencha a data e descrição.");
-
-    eventos.push({ data, hora, texto });
-    localStorage.setItem("eventos", JSON.stringify(eventos));
-
-    closeModal("eventModal");
-    renderCalendar();
-  };
-
-  //LISTAS (To-Do Lists)
-  document.getElementById("addListBtn").onclick = () => {
-    document.getElementById("listTitle").value = "";
-    document.getElementById("listItems").value = "";
-    openModal("listModal");
-  };
-  document.getElementById("closeListModalBtn").onclick = () =>
-    closeModal("listModal");
-
-  document.getElementById("saveListBtn").onclick = () => {
-    const titulo = document.getElementById("listTitle").value.trim();
-    const itens = document
-      .getElementById("listItems")
-      .value.split(",")
-      .map((i) => i.trim())
-      .filter((i) => i !== "");
-
-    if (!titulo) return alert("Coloque um título!");
-
-    const listas = JSON.parse(localStorage.getItem("listas")) || [];
-    // Adiciona "feito: false" a cada item novo
-    const itensComStatus = itens.map((item) => ({ texto: item, feito: false }));
-
-    listas.push({ titulo, itens: itensComStatus });
-    localStorage.setItem("listas", JSON.stringify(listas));
-
-    renderListas();
-    closeModal("listModal");
-  };
-
-  function renderListas() {
-    const listas = JSON.parse(localStorage.getItem("listas")) || [];
-    const container = document.getElementById("listasContainer");
-    container.innerHTML = "";
-
-    if (listas.length === 0) {
-      container.innerHTML = "<li>Nenhuma lista salva.</li>";
-      return;
-    }
-
-    listas.forEach((lista, index) => {
-      const li = document.createElement("li");
-      li.textContent = lista.titulo;
-      li.onclick = () => abrirLista(index);
-      container.appendChild(li);
-    });
-  }
-
-  function abrirLista(index) {
-    const listas = JSON.parse(localStorage.getItem("listas")) || [];
-    const lista = listas[index];
-
-    document.getElementById("viewListTitle").textContent = lista.titulo;
-    const ul = document.getElementById("viewListItems");
-    ul.innerHTML = "";
-
-    lista.itens.forEach((item, i) => {
-      const li = document.createElement("li");
-      li.textContent = item.texto;
-      if (item.feito) {
-        li.classList.add("done");
-      }
-      // Toggle de "feito"
-      li.onclick = () => {
-        li.classList.toggle("done");
-        // Atualiza o status no Local Storage
-        listas[index].itens[i].feito = !listas[index].itens[i].feito;
-        localStorage.setItem("listas", JSON.stringify(listas));
       };
-      ul.appendChild(li);
+
+      el.calendar.appendChild(div);
+    }
+  }
+
+  function renderEventos() {
+    if (!el.eventosLista) return;
+    
+    el.eventosLista.innerHTML = "";
+
+    const hojeDataSemHora = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+
+    const listaFutura = eventos
+      .filter(ev => {
+        const [y,m,d] = ev.data.split("-").map(Number);
+        const dataEv = new Date(y, m - 1, d); 
+        return dataEv >= hojeDataSemHora; 
+      })
+      .sort((a, b) => {
+        const da = new Date(a.data + (a.hora ? `T${a.hora}` : ""));
+        const db = new Date(b.data + (b.hora ? `T${b.hora}` : ""));
+        return da - db;
+      })
+      .slice(0, 10); 
+
+    if (!listaFutura.length) {
+      el.eventosLista.innerHTML = "<li>Nenhum evento futuro encontrado.</li>";
+      return;
+    }
+
+    listaFutura.forEach(ev => {
+      const d = parseDateLocal(ev.data);
+      const li = document.createElement("li");
+      
+      const dia = String(d.getDate()).padStart(2,"0");
+      const mesAbrev = mesesAbreviados[d.getMonth()]; 
+      
+      const horaTexto = ev.hora ? ` às ${ev.hora}` : "";
+      const dataFormatada = `${dia} ${mesAbrev}${horaTexto}`;
+      
+      li.textContent = `${dataFormatada} — ${ev.texto}`;
+      el.eventosLista.appendChild(li);
+    });
+  }
+
+
+  if (el.prevMonthBtn) el.prevMonthBtn.onclick = () => {
+    mesAtual--;
+    if (mesAtual < 0) { mesAtual = 11; anoAtual--; }
+    renderCalendar();
+  };
+
+  if (el.nextMonthBtn) el.nextMonthBtn.onclick = () => {
+    mesAtual++;
+    if (mesAtual > 11) { mesAtual = 0; anoAtual++; }
+    renderCalendar();
+  };
+
+  /* ================== LISTAS (ATUALIZADA) ================== */
+  function renderListas() {
+    if (!el.listasContainer) return;
+    
+    el.listasContainer.innerHTML = "";
+    
+    // FILTRA: Exibe apenas listas que NÃO estão concluídas
+    const listasParaExibir = listas.filter(lista => getStatusLista(lista) !== "Concluída");
+
+    if (!listasParaExibir.length) {
+      const li = document.createElement("li");
+      li.className = "empty-list-state";
+      li.textContent = "Nenhuma lista pendente ou em andamento.";
+      el.listasContainer.appendChild(li);
+      return;
+    }
+
+    listasParaExibir.forEach((lista) => {
+      const li = document.createElement("li");
+      li.textContent = lista.title;
+      
+      const status = getStatusLista(lista);
+
+      if (status === "Pendente") {
+        li.classList.add("pendente");
+      }
+      
+      // O evento de clique agora abre o modal de visualização
+      li.onclick = () => abrirLista(lista.id);
+      el.listasContainer.appendChild(li);
+    });
+  }
+
+  // MUDANÇA: Função para abrir a lista, similar à de listas.js
+  function abrirLista(listId) {
+    if (!el.viewListModal) return;
+    
+    const list = listas.find(l => l.id === listId);
+    if (!list) return;
+
+    currentViewListId = listId;
+
+    el.viewListTitle.textContent = list.title;
+    el.viewListItems.innerHTML = "";
+
+    // MUDANÇA: Usa 'dueDate' e 'formatDueDate' (similar ao listas.js)
+    const formatDueDate = (dateString) => {
+        if (!dateString) return 'Sem data limite';
+        const [year, month, day] = dateString.split('-');
+        return `${day}/${month}/${year}`;
+    };
+
+    el.viewListDueDate.textContent = formatDueDate(list.dueDate);
+
+    const status = getStatusLista(list);
+    el.viewListStatus.textContent = status;
+    // MUDANÇA: Usando classes de status do listas.js
+    el.viewListStatus.className = status.toLowerCase().replace(" ", "");
+
+    list.items.forEach((item, idx) => {
+      const li = document.createElement("li");
+      li.textContent = item.name; // MUDANÇA: Usa 'name' em vez de 'texto'
+      if (item.done) li.classList.add("done"); // MUDANÇA: Usa 'done' em vez de 'feito'
+
+      li.onclick = () => {
+        // Altera o status do item
+        list.items[idx].done = !list.items[idx].done;
+        
+        // Salva a alteração no localStorage (chave: diaryAppLists)
+        saveListsToLocalStorage();
+        
+        // Reabre o modal para atualizar a visualização do item (checked/unchecked)
+        abrirLista(listId); 
+        
+        // Atualiza a lista na Home (para remover se foi concluída)
+        renderListas();
+      };
+
+      el.viewListItems.appendChild(li);
     });
 
     openModal("viewListModal");
   }
 
-  document.getElementById("closeViewListModalBtn").onclick = () =>
-    closeModal("viewListModal");
+  if (el.closeViewListModalBtn) el.closeViewListModalBtn.onclick = () => closeModal("viewListModal");
+  // Removendo a lógica desnecessária de adição/criação de lista da Home
 
-  //LEMBRETES
-  document.getElementById("addReminderBtn").onclick = () => {
-    document.getElementById("reminderText").value = "";
-    openModal("reminderModal");
-  };
-
-  document.getElementById("closeReminderModal").onclick = () =>
-    closeModal("reminderModal");
-
-  document.getElementById("saveReminderBtn").onclick = () => {
-    const texto = document.getElementById("reminderText").value.trim();
-    if (!texto) return alert("Escreva algo!");
-
-    const lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-    lembretes.push(texto);
-    localStorage.setItem("lembretes", JSON.stringify(lembretes));
-
-    renderLembretes();
-    closeModal("reminderModal");
-  };
-
+  /* ================== LEMBRETES ================== */
   function renderLembretes() {
-    const lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-    const container = document.getElementById("lembretesContainer");
-    container.innerHTML = "";
-
-    if (lembretes.length === 0) {
-      container.innerHTML = "<li>Nenhum lembrete definido.</li>";
+    if (!el.lembretesContainer) return;
+    
+    el.lembretesContainer.innerHTML = "";
+    if (!lembretes.length) {
+      const li = document.createElement("li");
+      li.className = "empty-list-state";
+      li.textContent = "Nenhum lembrete salvo.";
+      el.lembretesContainer.appendChild(li);
       return;
     }
 
-    lembretes.forEach((lemb) => {
+    // O lembrete continua sendo apenas uma string, como na sua implementação original
+    lembretes.forEach(l => {
       const li = document.createElement("li");
-      li.textContent = lemb;
-      container.appendChild(li);
+      li.textContent = l;
+      el.lembretesContainer.appendChild(li);
     });
   }
 
-  //DIÁRIO - CARROSSEL
-  function atualizarCarrossel() {
-    const diarios = JSON.parse(localStorage.getItem("diarios")) || [];
-    carrossel.innerHTML = "";
-
-    if (diarios.length === 0) {
-      carrossel.innerHTML =
-        '<p class="diario-vazio">Nenhuma entrada de diário ainda...</p>';
-    } else {
-      // Exibe os últimos 5, do mais recente para o mais antigo
-      diarios
-        .slice(-5)
-        .reverse()
-        .forEach((diario) => {
-          const card = document.createElement("div");
-          card.classList.add("diario-card");
-
-          // Assumindo que o objeto diario tem 'data', 'titulo' e 'resumo'
-          const dataFormatada = diario.data
-            ? new Date(diario.data).toLocaleDateString("pt-BR")
-            : "Sem data";
-
-          card.innerHTML = `
-          <h3>${diario.titulo || "Nova Entrada"}</h3>
-          <p>${diario.resumo || "Clique para ler mais..."}</p>
-          <small>${dataFormatada}</small>
-        `;
-
-          carrossel.appendChild(card);
-        });
-    }
-  }
-
-  // Botão para adicionar diário (apenas simulação)
-  document.getElementById("addDiarioBtn").onclick = () => {
-    alert("Redirecionando para a página de nova entrada do diário.");
-    // Adicionar aqui a lógica de redirecionamento ou abertura de modal para o diário.
+  if (el.addReminderBtn) el.addReminderBtn.onclick = () => {
+    el.reminderText.value = "";
+    openModal("reminderModal");
   };
 
-  // Renderizações iniciais
+  if (el.saveReminderBtn) el.saveReminderBtn.onclick = () => {
+    if (!el.reminderText.value.trim()) return;
+    lembretes.push(el.reminderText.value.trim());
+    localStorage.setItem("lembretes", JSON.stringify(lembretes));
+    closeModal("reminderModal");
+    renderLembretes();
+  };
+
+  if (el.closeReminderModal) el.closeReminderModal.onclick = () => closeModal("reminderModal");
+
+  /* ================== DIÁRIO ================== */
+  function renderDiario() {
+    if (!el.carrossel) return;
+    
+    el.carrossel.innerHTML = "";
+    if (!diario.length) {
+      el.carrossel.innerHTML = "<p class='diario-vazio'>Nenhuma entrada ainda...</p>";
+      return;
+    }
+
+    [...diario]
+      .sort((a,b) => new Date(b.data) - new Date(a.data)) 
+      .slice(0, 5) // Exibe apenas as 5 últimas entradas
+      .forEach((e) => {
+        const div = document.createElement("div");
+        div.className = "diario-card";
+        
+        const parseDateLocal = (dateStr) => {
+            if (!dateStr) return new Date();
+            const [y, m, d] = dateStr.split("-");
+            return new Date(y, m - 1, d); 
+        };
+
+        div.innerHTML = `
+          <h3>${e.titulo}</h3>
+          <p>${parseDateLocal(e.data).toLocaleDateString("pt-BR")}</p>
+        `;
+        
+        // Encontra o índice original para navegação
+        div.onclick = () => {
+            const originalIndex = diario.findIndex(item => item.data === e.data && item.titulo === e.titulo);
+            location.href = `diario.html?index=${originalIndex}`;
+        }; 
+        el.carrossel.appendChild(div);
+      });
+  }
+
+  if (el.addDiarioBtn) el.addDiarioBtn.onclick = () => location.href = "diario.html";
+
+  /* ================== EVENTOS (Apenas Adição) ================== */
+  if (el.addEventBtn) el.addEventBtn.onclick = () => {
+    el.eventDate.value = formatarData(new Date()); 
+    el.eventText.value = "";
+    el.eventTime.value = "";
+    openModal("eventModal");
+    limparSelecaoDia(); 
+  };
+
+  if (el.saveEventBtn) el.saveEventBtn.onclick = () => {
+    if (!el.eventDate.value || !el.eventText.value.trim()) return;
+
+    eventos.push({
+      data: el.eventDate.value,
+      hora: el.eventTime.value,
+      texto: el.eventText.value.trim()
+    });
+
+    localStorage.setItem("eventos", JSON.stringify(eventos));
+    closeModal("eventModal");
+    limparSelecaoDia();
+    renderCalendar(); 
+    renderEventos(); 
+  };
+
+  if (el.closeModalBtn) el.closeModalBtn.onclick = () => {
+    closeModal("eventModal");
+    limparSelecaoDia(); 
+  }
+
+  /* ================== INIT ================== */
   renderCalendar();
+  renderEventos(); 
   renderListas();
   renderLembretes();
-  atualizarCarrossel();
+  renderDiario();
 });
+

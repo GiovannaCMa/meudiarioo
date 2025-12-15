@@ -9,7 +9,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <title>Diário App - Calendário e Listas</title>
+    <title>Diário App - Início</title>
     <link rel="stylesheet" href="../assets/css/home.css" />
   </head>
   <body>
@@ -17,19 +17,17 @@
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li class="active"><a>Início</a></li>
-        <li><a href="eventos.html">Eventos</a></li>
-        <li><a href="listas.html">Listas</a></li>
-        <li><a href="lembretes.html">Lembretes</a></li>
-        <li><a href="diario.html">Diário</a></li>
-        <li><a href="configuracao.html">Configurações</a></li>
+        <li class="active"><a><i class="fas fa-home"></i> Início</a></li>
+        <li><a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a></li>
+        <li><a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a></li>
+        <li><a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a></li>
+        <li><a href="diario.html"><i class="fas fa-book-open"></i> Diário</a></li>
+        <li><a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a></li>
       </ul>
     </aside>
 
     <main>
-      <!--CALENDARIO / EVENTOS-->
       <div class="cardcal">
-        <!--CALENDARIO-->
         <div class="calendario-box">
           <h2><i class="fa-solid fa-calendar-days"></i> Calendário</h2>
           <div
@@ -59,23 +57,19 @@
           <div class="mini-calendar" id="calendar"></div>
           <button class="btn" id="addEventBtn">+ Adicionar evento</button>
         </div>
-        <!--EVENTOS-->
         <div class="eventos-box">
           <h2><i class="fa-solid fa-clock"></i> Próximos eventos</h2>
           <ul id="eventosLista"></ul>
         </div>
       </div>
 
-      <!--LISTAS-->
       <div class="cardlist">
         <div class="listas-box">
-          <h2><i class="fa-solid fa-list-check"></i> Listas</h2>
-          <button class="btn" id="addListBtn">+ Nova lista</button>
+          <h2><i class="fa-solid fa-list-check"></i> Listas (Em Progresso)</h2>
           <ul id="listasContainer"></ul>
         </div>
       </div>
 
-      <!--LEMBRETES-->
       <div class="cardlemb">
         <div class="listas-box">
           <h2><i class="fa-solid fa-bell"></i> Lembretes</h2>
@@ -84,7 +78,6 @@
         </div>
       </div>
 
-      <!--DIARIO-->
       <div class="carddiario">
         <div class="diario-header">
           <h2><i class="fa-solid fa-book-open"></i> Meu Diário</h2>
@@ -97,9 +90,6 @@
       </div>
     </main>
 
-    <!--MODAL-->
-    
-    <!--EVENTOS-->
     <div class="modal" id="eventModal">
       <div class="modal-content">
         <h3>Adicionar Evento</h3>
@@ -116,31 +106,20 @@
       </div>
     </div>
 
-    <!-- NOVA LISTA-->
-    <div class="modal" id="listModal">
-      <div class="modal-content">
-        <h3>Nova Lista</h3>
-        <label>Título da Lista:</label>
-        <input type="text" id="listTitle" />
-        <label>Itens (separe por vírgula):</label>
-        <input
-          type="text"
-          id="listItems"
-          placeholder="Ex: Comprar leite, Pagar conta"
-        />
-        <div class="btn-group">
-          <button class="btn btn-save" id="saveListBtn">Salvar</button>
-          <button class="btn btn-cancel" id="closeListModalBtn">
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- VER LISTA-->
     <div class="modal" id="viewListModal">
       <div class="modal-content">
         <h3 id="viewListTitle">Título</h3>
+
+        <p class="view-info">
+          <strong>Data limite:</strong>
+          <span id="viewListDueDate">—</span>
+        </p>
+
+        <p class="view-info">
+          <strong>Status:</strong>
+          <span id="viewListStatus"></span>
+        </p>
+
         <ul id="viewListItems"></ul>
         <div class="btn-group">
           <button class="btn btn-cancel" id="closeViewListModalBtn">
@@ -150,14 +129,13 @@
       </div>
     </div>
 
-    <!-- NOVO LEMBRETE-->
     <div id="reminderModal" class="modal">
       <div class="modal-content">
         <h3>Novo Lembrete</h3>
         <label>Lembrete:</label>
         <input type="text" id="reminderText" />
         <div class="btn-group">
-          <button class="btn" id="saveReminderBtn">Salvar</button>
+          <button class="btn btn-save" id="saveReminderBtn">Salvar</button>
           <button class="btn btn-cancel" id="closeReminderModal">
             Cancelar
           </button>

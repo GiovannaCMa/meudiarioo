@@ -14,6 +14,11 @@
   --grad3: #b69bff;
   --texto: #4b3375;
   --branco: #ffffff;
+  
+  /* Cores de Status para Listas e Lembretes (Consistência) */
+  --cor-concluida: #4caf50; 
+  --cor-pendente: #f44336; 
+  --cor-andamento: #2196f3;
 }
 
 /* Reset */
@@ -31,7 +36,7 @@ body {
   display: flex;
 }
 
-/* ===== MENU LATERAL (ESTILO BASE - DESKTOP) ===== */
+/* ================= MENU (DEFAULT: DESKTOP) ================= */
 aside {
   width: 230px;
   background: linear-gradient(
@@ -88,8 +93,7 @@ aside li.active {
   color: #fff;
 }
 
-
-/* Botão de Toggle (Inicialmente escondido no desktop) */
+/* ================= BOTÃO MENU ================= */
 #toggleMenu {
   display: none; /* só aparece no mobile */
   position: fixed;
@@ -103,6 +107,7 @@ aside li.active {
   padding: 10px 14px;
   border-radius: 8px;
   cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* Main (Conteúdo Principal) */
@@ -113,49 +118,55 @@ main {
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
+  align-items: flex-start; /* Alinhado ao topo */
 }
 
-/* ------------------------Cards-------------------------------- */
+/* ------------------------Cards Base (AJUSTADO PARA ALTURA FIXA) -------------------------------- */
 .cardcal,
 .cardlist,
-.cardlemb {
+.cardlemb,
+.carddiario {
   display: flex;
-  gap: 30px;
   padding: 25px;
   border-radius: 20px;
   background: var(--branco);
   border: 2px dashed var(--cor-borda);
   box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
-  align-items: flex-start;
   margin-bottom: 8px;
 }
+
 .cardcal {
+  gap: 30px;
+  align-items: flex-start;
   min-width: 360px;
   max-width: 700px;
   width: 100%;
-  max-height: 440px; 
+  height: 440px; /* ALTURA FIXA */
 }
 .cardlist,
 .cardlemb {
-  min-width: 360px;
+  flex-direction: column; 
+  min-width: 300px;
   max-width: 300px;
   width: 100%;
-  max-height: 440px; 
+  height: 440px; /* ALTURA FIXA (Para alinhar com calendário) */
 }
 .carddiario {
-  display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 25px;
-  border-radius: 20px;
-  background: var(--branco);
-  border: 2px dashed var(--cor-borda);
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
-  margin-bottom: 8px;
   width: 100%;
   max-width: 700px;
   min-width: 360px;
 } 
+
+/* Estilo para todos os ícones nos títulos dos cards */
+.cardcal h2 i,
+.cardlist h2 i,
+.cardlemb h2 i,
+.carddiario h2 i {
+  color: var(--cor-primaria);
+  font-size: 1.1em;
+}
 
 /*---------------- Calendário ------------*/
 .calendario-box {
@@ -235,7 +246,7 @@ main {
 /* -----------------Lista de eventos------------ */
 .eventos-box {
   flex: 2;
-  max-height: 320px;
+  height: 100%; /* Ocupa a altura total do cardcal */
   overflow-y: auto;
   padding-left: 15px;
   border-left: 2px dashed var(--cor-borda);
@@ -255,9 +266,10 @@ main {
   padding-left: 10px;
   padding-right: 8px; 
 } 
-/* -----------------Botões -----------------*/
+
+/* -----------------Botões (Padronizado) -----------------*/
 .btn {
-  padding: 10px;
+  padding: 10px 15px; 
   border-radius: 14px;
   border: none;
   font-weight: 700;
@@ -270,8 +282,15 @@ main {
   background: var(--cor-rosa);
   transform: translateY(-2px);
 } 
+.btn-primary { 
+    background: var(--cor-primaria);
+}
+.btn-primary:hover {
+    background: var(--cor-primaria-hover);
+}
 
-/* Modal */
+
+/* ----------------- Modal Base -----------------*/
 .modal {
   display: none;
   position: fixed;
@@ -288,7 +307,7 @@ main {
   background: var(--branco);
   padding: 25px 30px;
   border-radius: 20px;
-  width: 360px;
+  width: 380px; 
   max-width: 90%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   max-height: 90vh;
@@ -328,7 +347,7 @@ main {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 .btn-save {
   background: var(--cor-lilas);
@@ -344,6 +363,78 @@ main {
 .btn-cancel:hover {
   background: #ddd;
 } 
+
+/* ----------------- Modal Visualizar Lista (Simplificado para Home) -----------------*/
+#viewListTitle {
+    font-size: 24px;
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+}
+.view-info {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 8px;
+}
+.view-info strong {
+    color: var(--texto);
+    font-weight: 700;
+    margin-right: 5px;
+}
+#viewListStatus {
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 8px;
+    display: inline-block;
+}
+#viewListStatus.pendente {
+  background: #fce4e4; 
+  color: var(--cor-pendente); 
+}
+#viewListStatus.andamento {
+  background: #e3f2fd;
+  color: var(--cor-andamento);
+}
+#viewListStatus.concluida {
+  background: #e8f5e9;
+  color: var(--cor-concluida);
+}
+#viewListItems {
+  list-style: none;
+  padding: 0;
+  max-height: 40vh; 
+  overflow-y: auto; 
+  padding-right: 4px; 
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+#viewListItems li {
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: var(--cor-input-bg);
+  cursor: default;
+  font-weight: 500;
+  transition: 0.2s;
+  border-left: 3px solid var(--cor-lilas);
+}
+#viewListItems li.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+  background: #f1f1f1;
+  border-left: 3px solid var(--cor-concluida);
+}
+#viewListModal .btn-group {
+    justify-content: flex-end; 
+    margin-top: 15px;
+}
+#closeViewListModalBtn {
+    background: #eee;
+    color: #555;
+}
+#closeViewListModalBtn:hover {
+    background: #ddd;
+    transform: none;
+}
 
 /* ----------- diario ---------------*/
 .diario-header {
@@ -398,13 +489,18 @@ main {
   padding: 15px;
   font-size: 15px;
 } 
-/* Listas */
-.listas-box {
+
+/* Listas (e Lembretes) - Estilização dentro dos Cards */
+.listas-box, .lembretes-box { 
   flex: 1;
-  padding-left: 20px;
-  border-left: 2px dashed var(--cor-borda);
+  padding-left: 0; 
 }
-.listas-box h2 {
+.cardlist .listas-box, .cardlemb .listas-box { 
+    width: 100%;
+    padding-left: 0;
+    border-left: none;
+}
+.listas-box h2, .lembretes-box h2 {
   color: var(--cor-primaria);
   font-size: 20px;
   margin-bottom: 12px;
@@ -413,64 +509,62 @@ main {
   gap: 8px;
 }
 /* AJUSTE DE ROLAGEM NAS LISTAS INTERNAS (Listas e Lembretes) */
-.listas-box ul {
+.listas-box ul, .lembretes-box ul {
   list-style: none;
   padding-left: 0;
   font-size: 14px;
-  max-height: 300px; 
+  max-height: 320px; /* Ajuste para caber no card de 440px */
   overflow-y: auto; 
   padding-right: 8px; 
 }
-.listas-box li {
+/* Item de lista dentro dos cards (estilo compacto e consistente) */
+.listas-box li, .lembretes-box li {
   padding: 10px 12px;
   margin-bottom: 8px;
-  background: #f8f3ff;
+  background: var(--grad1); 
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: 0.2s;
+  border-left: 5px solid var(--cor-primaria); 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
-.listas-box li:hover {
+.listas-box li:hover, .lembretes-box li:hover {
   background: var(--grad2);
+  transform: translateY(-1px); 
 }
+
+/* Estado Vazio (Para listas e lembretes que não têm itens) */
+.empty-list-state {
+  text-align: center;
+  padding: 20px 10px;
+  font-style: italic;
+  color: #999;
+  background: #f1f1f1;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
 #addListBtn,
 #addReminderBtn,
 #addDiaryBtn {
-  margin-bottom: 12px;
+  margin-bottom: 15px; 
 }
-#listasContainer {
+#listasContainer, #lembretesContainer {
   margin-top: 5px;
 }
-/* Visualizar lista (Modal) */
-#viewListItems {
-  list-style: none;
-  padding-left: 0;
-  max-height: 40vh; 
-  overflow-y: auto; 
-  padding-right: 4px; 
-  margin-bottom: 10px;
+.listas-box li.pendente {
+    border-left: 5px solid var(--cor-pendente);
+    background: #ffe3e3;
+    color: var(--cor-pendente);
 }
-#viewListItems li {
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-bottom: 6px;
-  background: #f3e8ff;
-  cursor: pointer;
-  transition: 0.2s;
-}
-#viewListItems li.done {
-  text-decoration: line-through;
-  opacity: 0.6;
+.listas-box li.concluida {
+    border-left: 5px solid var(--cor-concluida);
+    opacity: 0.7;
+    text-decoration: line-through;
 }
 
-/* Estilo para todos os ícones nos títulos dos cards */
-.cardcal h2 i,
-.cardlist h2 i,
-.cardlemb h2 i,
-.carddiario h2 i {
-  color: var(--cor-primaria);
-  font-size: 1.1em;
-}
 
 /* ================== MEDIA QUERIES ===================== */
 
@@ -487,7 +581,16 @@ main {
     gap: 25px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 80px !important; /* empurra para baixo do botão */
+    margin-top: 80px !important; 
+  }
+  
+  /* Resetando altura fixa para layout responsivo em tablet */
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    height: auto; 
+    max-height: 1000px;
   }
 
   .cardcal,
@@ -507,6 +610,11 @@ main {
   }
   .eventos-box {
     width: 45%;
+    max-height: 320px; /* Restaura altura máxima para eventos em tablet */
+  }
+  
+  .listas-box ul, .lembretes-box ul {
+    max-height: 300px; /* Restaura altura máxima para listas em tablet */
   }
 }
 
@@ -520,7 +628,7 @@ main {
     width: 88vw;
     max-width: 300px;
     height: 100vh;
-    padding-top: 90px; /* texto abaixo do botão */
+    padding-top: 90px;
     overflow-y: auto;
     transform: translateX(-100%);
     z-index: 1200;
@@ -536,6 +644,7 @@ main {
     left: 20px;
     padding: 8px 10px;
     z-index: 1300;
+    display: block !important;
   }
 
   main {
@@ -543,7 +652,7 @@ main {
     padding: 40px 30px;
     justify-content: center;
     gap: 25px;
-    margin-top: 80px !important; /* empurra para baixo do botão */
+    margin-top: 80px !important; 
   }
 
   .cardcal,
@@ -553,12 +662,12 @@ main {
     width: 100%;
     max-width: 100%;
     min-width: 100%;
-     max-height: 1000px; /* altura máxima */
   }
 
   .cardcal {
     flex-direction: column;
-    max-height: none;
+    height: auto;
+    max-height: 100%;
   }
 
   .calendario-box {
@@ -570,10 +679,11 @@ main {
     margin-top: 20px;
     padding-left: 0;
     border-left: none;
+    max-height: 300px; /* Ajuste para mobile */
   }
   
   /* AJUSTE DE ROLAGEM MOBILE: Dá mais altura para as listas internas no celular/tablet */
-  .listas-box ul {
+  .listas-box ul, .lembretes-box ul {
     max-height: 45vh; 
   }
 }
@@ -586,7 +696,7 @@ main {
     left: 0;
     width: 260px;
     height: 100vh;
-    padding-top: 90px; /* conteúdo abaixo do botão */
+    padding-top: 90px; 
     transform: translateX(-100%);
     overflow-y: auto;
     z-index: 1200;
@@ -609,7 +719,7 @@ main {
     padding: 20px;
     justify-content: center;
     gap: 20px;
-     margin-top: 80px !important;  /* empurra para baixo do botão */
+     margin-top: 80px !important;  
   }
 
   .cardcal,
@@ -622,7 +732,8 @@ main {
 
   .cardcal {
     flex-direction: column;
-    max-height: none;
+    height: auto;
+    max-height: 100%;
   }
 
   .calendario-box {
@@ -636,7 +747,7 @@ main {
     border-left: none;
   }
 
-  .listas-box {
+  .listas-box, .lembretes-box {
     width: 100%;
     padding-left: 0;
     border-left: none;
@@ -668,7 +779,7 @@ main {
 
   main {
     padding: 25px;
-     margin-top: 80px !important;  /* empurra para baixo do botão */
+     margin-top: 80px !important;  
   }
 }
 
@@ -687,7 +798,7 @@ main {
 
   main {
     padding: 22px;
-     margin-top: 60px !important;  /* empurra para baixo do botão */
+     margin-top: 60px !important;  
   }
 
   .cardcal,
@@ -715,8 +826,7 @@ main {
     padding: 20px;
   }
   .cardcal h2,
-  .eventos-box h2,
-  .listas-box h2 {
+  .listas-box h2, .lembretes-box h2 {
     font-size: 18px;
   }
 }
@@ -766,7 +876,7 @@ main {
     border-left: none;
   }
 
-  .listas-box li {
+  .listas-box li, .lembretes-box li {
     padding: 8px 10px;
     font-size: 13px;
   }
@@ -794,7 +904,7 @@ main {
   }
 }
 
-/* ================== 380px ============================= *//* ====================================================== */
+/* ================== 380px ============================= */
 @media (max-width: 380px) {
   main {
     padding: 12px;
