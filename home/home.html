@@ -93,15 +93,23 @@
     <div class="modal" id="eventModal">
       <div class="modal-content">
         <h3>Adicionar Evento</h3>
+
         <label>Data:</label>
         <input type="date" id="eventDate" />
+
         <label>Hora:</label>
         <input type="time" id="eventTime" />
+
         <label>Descrição:</label>
         <input type="text" id="eventText" />
+
         <div class="btn-group">
-          <button class="btn btn-save" id="saveEventBtn">Salvar</button>
-          <button class="btn btn-cancel" id="closeModalBtn">Cancelar</button>
+          <button class="btn btn-save" id="saveEventBtn">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+          <button class="btn btn-cancel" id="closeModalBtn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
         </div>
       </div>
     </div>
@@ -123,7 +131,7 @@
         <ul id="viewListItems"></ul>
         <div class="btn-group">
           <button class="btn btn-cancel" id="closeViewListModalBtn">
-            Fechar
+            <i class="fas fa-times"></i> Fechar
           </button>
         </div>
       </div>
@@ -132,8 +140,10 @@
     <div id="reminderModal" class="modal">
       <div class="modal-content">
         <h3>Novo Lembrete</h3>
+
         <label>Lembrete:</label>
         <input type="text" id="reminderText" />
+
         <div class="btn-group">
           <button class="btn btn-save" id="saveReminderBtn">Salvar</button>
           <button class="btn btn-cancel" id="closeReminderModal">

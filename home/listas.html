@@ -20,12 +20,26 @@
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li><a href="home.html"><i class="fas fa-home"></i> Início</a></li>
-        <li><a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a></li>
-        <li class="active"><a><i class="fas fa-list-ul"></i> Listas</a></li>
-        <li><a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a></li>
-        <li><a href="diario.html"><i class="fas fa-book-open"></i> Diário</a></li>
-        <li><a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a></li>
+        <li>
+          <a href="home.html"><i class="fas fa-home"></i> Início</a>
+        </li>
+        <li>
+          <a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a>
+        </li>
+        <li class="active">
+          <a><i class="fas fa-list-ul"></i> Listas</a>
+        </li>
+        <li>
+          <a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a>
+        </li>
+        <li>
+          <a href="diario.html"><i class="fas fa-book-open"></i> Diário</a>
+        </li>
+        <li>
+          <a href="configuracao.html"
+            ><i class="fas fa-cog"></i> Configurações</a
+          >
+        </li>
       </ul>
     </aside>
 
@@ -92,9 +106,11 @@
         <input type="text" id="createCatTitle" />
 
         <div class="btn-group">
-          <button class="btn btn-save" id="saveCreateCatBtn">Salvar</button>
+          <button class="btn btn-save" id="saveCreateCatBtn">
+            <i class="fas fa-save"></i> Salvar
+          </button>
           <button class="btn btn-cancel" id="closeCreateCatModalBtn">
-            Cancelar
+            <i class="fas fa-times"></i> Cancelar
           </button>
         </div>
       </div>
@@ -108,9 +124,11 @@
         <input type="text" id="editCatTitle" />
 
         <div class="btn-group">
-          <button class="btn btn-save" id="saveEditCatBtn">Salvar</button>
+          <button class="btn btn-save" id="saveEditCatBtn">
+            <i class="fas fa-sync-alt"></i> Salvar
+          </button>
           <button class="btn btn-cancel" id="closeEditCatModalBtn">
-            Cancelar
+            <i class="fas fa-times"></i> Cancelar
           </button>
         </div>
       </div>
@@ -131,9 +149,11 @@
         <button class="btn" id="addItemBtn">Adicionar Item</button>
 
         <div class="btn-group">
-          <button class="btn btn-save" id="saveCreateListBtn">Salvar</button>
+          <button class="btn btn-save" id="saveCreateListBtn">
+            <i class="fas fa-save"></i> Salvar
+          </button>
           <button class="btn btn-cancel" id="closeCreateListModalBtn">
-            Cancelar
+            <i class="fas fa-times"></i> Cancelar
           </button>
         </div>
       </div>
@@ -186,11 +206,20 @@
         </div>
 
         <div class="btn-group">
-          <button class="btn" id="uncheckAllBtn">Desmarcar tudo</button>
-          <button class="btn" id="editListBtn">Editar</button>
-          <button class="btn btn-delete" id="deleteListBtn">Excluir</button>
+          <button class="btn" id="uncheckAllBtn">
+            <i class="fas fa-undo-alt"></i>
+          </button>
+
+          <button class="btn" id="editListBtn">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+
+          <button class="btn btn-delete" id="deleteListBtn">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+
           <button class="btn btn-cancel" id="closeViewListModalBtn">
-            Fechar
+            <i class="fas fa-times"></i> Fechar
           </button>
         </div>
       </div>
