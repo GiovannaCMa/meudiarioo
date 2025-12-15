@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <title>Diário App - Listas</title>
+    <link rel="stylesheet" href="../assets/css/listas.css" />
+  </head>
+
+  <body>
+    <button id="toggleMenu">☰</button>
+    <aside>
+      <h1>Meu Diário</h1>
+      <ul>
+        <li><a href="home.html"><i class="fas fa-home"></i> Início</a></li>
+        <li><a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a></li>
+        <li class="active"><a><i class="fas fa-list-ul"></i> Listas</a></li>
+        <li><a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a></li>
+        <li><a href="diario.html"><i class="fas fa-book-open"></i> Diário</a></li>
+        <li><a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a></li>
+      </ul>
+    </aside>
+
+    <main>
+      <div class="top-widgets">
+        <div class="card-widget resumo-total">
+          <h2><i class="fa-solid fa-chart-simple"></i> Total de Listas</h2>
+          <span id="totalListas">0</span>
+        </div>
+
+        <div class="card-resumo">
+          <div class="resumo-and">
+            <h2>
+              <i class="fa-solid fa-spinner fa-spin-pulse"></i> Listas em
+              andamento
+            </h2>
+            <ul id="listasAndamento"></ul>
+          </div>
+        </div>
+
+        <div class="card-resumo">
+          <div class="resumo-pend">
+            <h2>
+              <i class="fa-solid fa-circle-exclamation"></i> Listas pendentes
+            </h2>
+            <ul id="listasPendentes"></ul>
+          </div>
+        </div>
+
+        <div class="card-resumo">
+          <div class="resumo-conc">
+            <h2><i class="fa-solid fa-circle-check"></i> Listas concluídas</h2>
+            <ul id="listasConcluidas"></ul>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="addCatBtn">+ Nova Categoria</button>
+
+      <div class="listas-container-principal">
+        <div class="cardlist">
+          <h2><i class="fa-solid fa-list-check"></i> Minhas Listas</h2>
+          <button class="btn btn-primary" id="addListBtn">
+            + Adicionar Lista
+          </button>
+          <ul class="listas-container" id="listasContainer-default-listas"></ul>
+          <div class="category-actions">
+            <button class="btn btn-secondary edit-cat-btn" disabled>
+              <i class="fas fa-edit"></i> Editar Categoria
+            </button>
+            <button class="btn btn-delete delete-cat-btn" disabled>
+              <i class="fas fa-trash-alt"></i> Excluir Categoria
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal" id="createCatModal">
+      <div class="modal-content">
+        <h3>Criar Categoria</h3>
+
+        <label>Título</label>
+        <input type="text" id="createCatTitle" />
+
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveCreateCatBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeCreateCatModalBtn">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="editCatModal">
+      <div class="modal-content">
+        <h3>Editar Categoria</h3>
+
+        <label>Título</label>
+        <input type="text" id="editCatTitle" />
+
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveEditCatBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeEditCatModalBtn">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="createListModal">
+      <div class="modal-content">
+        <h3>Criar Lista</h3>
+
+        <label>Título</label>
+        <input type="text" id="createListTitle" />
+
+        <label>Data limite</label>
+        <input type="date" id="createListDueDate" />
+
+        <label>Itens</label>
+        <div id="itensWrapper"></div>
+        <button class="btn" id="addItemBtn">Adicionar Item</button>
+
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveCreateListBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeCreateListModalBtn">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="editListModal">
+      <div class="modal-content">
+        <h3>Editar Lista</h3>
+
+        <label>Título</label>
+        <input type="text" id="editListTitle" />
+
+        <label>Data Limite (Opcional)</label>
+        <input type="date" id="editListDueDate" />
+
+        <label>Itens</label>
+        <div id="editItensWrapper"></div>
+        <button class="btn btn-primary" id="addEditItemBtn">
+          Adicionar Item
+        </button>
+
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveEditListBtn">Salvar</button>
+          <button class="btn btn-cancel" id="closeEditListModalBtn">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="viewListModal">
+      <div class="modal-content">
+        <h3 id="viewListTitle"></h3>
+
+        <p class="view-info">
+          <strong>Data limite:</strong>
+          <span id="viewListDueDate">—</span>
+        </p>
+
+        <p class="view-info">
+          <strong>Status:</strong>
+          <span id="viewListStatus"></span>
+        </p>
+
+        <ul id="viewListItems"></ul>
+
+        <div class="contador">
+          <span id="contadorFeitos">0</span> /
+          <span id="contadorTotal">0</span> itens concluídos
+        </div>
+
+        <div class="btn-group">
+          <button class="btn" id="uncheckAllBtn">Desmarcar tudo</button>
+          <button class="btn" id="editListBtn">Editar</button>
+          <button class="btn btn-delete" id="deleteListBtn">Excluir</button>
+          <button class="btn btn-cancel" id="closeViewListModalBtn">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../assets/js/listas.js"></script>
+  </body>
+</html>

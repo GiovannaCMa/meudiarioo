@@ -1,0 +1,957 @@
+:root {
+  /* Cores base */
+  --cor-primaria: #6d41d8;
+  --cor-primaria-hover: #5a35b6;
+  --cor-borda: #d5bfff;
+  --cor-input-bg: #f8f3ff;
+  --cor-label: #8b7bb9;
+  --cor-lilas: #b69bff;
+  --cor-rosa: #ff91d9;
+  --cor-azul: #7ad7ff;
+  --cor-menta: #a8ffb0;
+  --cor-amarelo: #ffcf87;
+
+  /* Cores de Gradiente */
+  --grad1: #f3e8ff;
+  --grad2: #d9c4ff;
+  --grad3: #b69bff;
+
+  /* Texto e Sombra */
+  --texto: #4b3375;
+  --branco: #ffffff;
+  --sombra-padrao: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* Status das listas */
+  --cor-concluida: #56ce5a;
+  --cor-pendente: #ed6056;
+  --cor-andamento: #2196f3;
+}
+
+/* =========================================================================
+   1. RESET E BASE
+   ========================================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
+  min-height: 100vh; 
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* BARRA DE ROLAGEM CUSTOMIZADA */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cor-lilas);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cor-primaria);
+}
+
+/* =========================================================================
+   2. SIDEBAR (MENU LATERAL)
+   ========================================================================= */
+aside {
+  width: 230px;
+  background: linear-gradient(
+    180deg,
+    var(--cor-lilas),
+    var(--grad3),
+    var(--grad2)
+  );
+  height: 100vh;
+  padding: 30px 20px;
+  border-right: 4px dashed var(--cor-borda);
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+aside h1 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  color: var(--cor-primaria);
+}
+aside ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+aside li {
+  padding: 12px 14px;
+  background: #ffffffaa;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  backdrop-filter: blur(6px);
+}
+aside li:hover {
+  background: #ffffffdd;
+  transform: translateX(4px);
+}
+aside ul li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+aside li.active {
+  background: #a489ef;
+  color: #fff;
+}
+
+/* BOTÃO DE ABRIR MENU (MOBILE) */
+#toggleMenu {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 200;
+  font-size: 24px;
+  background: var(--cor-primaria);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* =========================================================================
+   3. ÁREA PRINCIPAL (MAIN)
+   ========================================================================= */
+main {
+  flex: 1;
+  padding: 60px;
+  margin-left: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+/* =========================================================================
+   4. WIDGETS E CARDS (SEÇÃO DE RESUMO)
+   ========================================================================= */
+
+/* Base para a área de widgets principais */
+.top-widgets {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* Base para todos os cards */
+.card-widget {
+  background-color: var(--branco);
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 0.375rem 1.125rem rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.card-widget:hover {
+  transform: translateY(-0.3125rem);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+
+/* Títulos H2 e Ícones nos cards */
+.card-widget h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-block-end: 0.75rem;
+}
+.card-widget h2 i {
+  margin-right: 8px;
+  color: inherit;
+}
+.card-widget span {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--cor-primaria);
+}
+
+/* WIDGET DE RESUMO TOTAL (DESTAQUE) */
+.resumo-total {
+  background: linear-gradient(135deg, var(--cor-lilas), var(--grad3));
+  color: var(--branco);
+  padding: 1rem 1rem;
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 10rem;
+  flex-shrink: 0; 
+  flex-grow: 0; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.resumo-total:hover {
+  transform: translateY(-0.3125rem);
+  box-shadow: 0 0.625rem 1.375rem rgba(0, 0, 0, 0.15);
+}
+.resumo-total h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-block-end: 0.3125rem;
+  color: var(--branco);
+}
+.resumo-total h2 i {
+  margin-right: 6px;
+  color: inherit; 
+}
+.resumo-total span {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--branco);
+}
+
+/* CARD DE RESUMO (LISTA DE DETALHES) */
+.card-resumo {
+  flex: 1; 
+  min-width: 0; 
+  display: flex; 
+  justify-content: space-between;
+  gap: 1rem;
+  border: 2px dashed var(--cor-borda);
+  background-color: var(--branco);
+  padding: 1.25rem 1rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 0.375rem 1.125rem rgba(0, 0, 0, 0.08); 
+  transition: transform 0.3s ease;
+  align-items: stretch; 
+}
+.card-resumo:hover {
+  transform: translateY(-0.125rem);
+}
+.resumo-and, .resumo-pend, .resumo-conc {
+    flex: 1 1 33%; 
+    display: flex;
+    flex-direction: column;
+    padding-inline-end: 0.8rem;
+    border-inline-end: 1px solid #f0f0f0;
+    min-width: 90px;
+}
+.card-resumo > div:last-child {
+    border-inline-end: none; 
+    padding-inline-end: 0;
+}
+.card-resumo h2 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-block-end: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+.card-resumo h2 i {
+  margin-right: -4px;
+  color: inherit;
+  font-size: 1.1em;
+}
+.card-resumo ul {
+  list-style: none;
+  font-size: 0.8rem;
+  color: #555;
+  max-height: 150px;
+  overflow-y: auto; 
+  padding-inline-end: 0.375rem;
+  flex: 1;
+}
+.card-resumo li {
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.625rem; 
+  margin-block-end: 0.3rem;
+  background-color: #f8f8f8; 
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  border-left: 4px solid #ccc;
+  color: #555;
+}
+
+/* STATUS CORES PARA ITENS DE RESUMO */
+.resumo-and li {
+  color: var(--cor-andamento); 
+  border-left-color: var(--cor-andamento);
+  background-color: #e3f2fd; 
+}
+.resumo-and li:hover {
+  background: #c3e2f8; 
+}
+.resumo-pend li {
+  color: var(--cor-pendente);
+  border-left-color: var(--cor-pendente);
+  background-color: #ffe3e3; 
+}
+.resumo-pend li:hover {
+  background: #fdd0d0;
+}
+.resumo-conc li {
+  color: var(--cor-concluida);
+  border-left-color: var(--cor-concluida);
+  background-color: #e8f5e9; 
+}
+.resumo-conc li:hover {
+  background: #d4eac2;
+}
+.card-resumo ul::-webkit-scrollbar {
+    width: 0.375rem;
+}
+.card-resumo ul::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 0.625rem;
+}
+
+/* =========================================================================
+   5. LISTAS E CATEGORIAS
+   ========================================================================= */
+
+/* BOTÃO DE NOVA CATEGORIA */
+#addCatBtn {
+    align-self: flex-start;
+    margin-bottom: 15px;
+    font-size: 15px;
+    padding: 10px 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(109, 65, 216, 0.4);
+}
+#addCatBtn:hover {
+    box-shadow: 0 6px 15px rgba(109, 65, 216, 0.6);
+}
+
+/* CONTAINER DAS LISTAS (GRID) */
+.listas-container-principal {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 25px;
+    width: 100%;
+}
+#customListsContainer {
+    display: contents;
+}
+
+/* CARD LISTA (Padrão e Categoria) */
+.cardlist {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--branco);
+  border: 2px dashed var(--cor-borda);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  min-height: auto; 
+  max-height: none;
+}
+.cardlist.active {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 8px 18px rgba(109, 65, 216, 0.3);
+}
+.cardlist h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cardlist h2 i {
+  margin-right: -4px;
+  color: inherit;
+  font-size: 1.1em; 
+}
+
+/* BOTÕES GERAIS */
+.btn {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--cor-lilas);
+  color: #fff;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.btn:hover {
+  background: var(--cor-rosa);
+  transform: translateY(-2px);
+}
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+.btn:disabled:hover {
+    background: inherit;
+}
+
+/* Botão principal da Lista */
+.cardlist .btn-primary {
+  align-self: flex-start;
+  margin-bottom: 12px;
+  background: var(--cor-primaria);
+  color: var(--branco);
+  padding: 7px 10px;
+  font-size: 12px;
+}
+.cardlist .btn-primary:hover {
+  background: var(--cor-primaria-hover);
+  transform: translateY(-2px);
+}
+
+/* LISTAS DE ITENS (COM ROLAGEM) */
+#listasContainer,
+.listas-container { 
+  list-style: none;
+  padding: 0;
+  flex-grow: 1; 
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.list-item,
+.list-item-summary { 
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  background: var(--grad1);
+  border-radius: 14px;
+  font-weight: 600;
+  color: var(--texto);
+  cursor: pointer;
+  transition: 0.2s;
+  border-left: 5px solid var(--cor-primaria);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+.list-item-summary .due-date {
+    font-size: 0.75em;
+    color: var(--cor-label);
+    margin-left: 8px;
+}
+.list-item:hover,
+.list-item-summary:hover {
+  background: var(--grad2);
+  transform: translateY(-2px);
+}
+
+/* CORREÇÃO: ESTILO PARA LISTAS NO CONTAINER DE RESUMO */
+.list-item-summary.concluida {
+  border-left-color: var(--cor-concluida);
+  background: #e8f5e9;
+  color: var(--texto);
+  text-decoration: none;
+  opacity: 1;
+}
+.list-item-summary.concluida:hover {
+    background: #d4eac2;
+}
+.list-item-summary.andamento {
+  border-left-color: var(--cor-andamento); 
+  background: #e3f2fd;
+  color: var(--texto);
+  text-decoration: none;
+  opacity: 1;
+}
+.list-item-summary.andamento:hover {
+    background: #c3e2f8; 
+}
+
+/* STATUS DO ITEM PRINCIPAL */
+.list-item.pendente {
+  border-left: 5px solid var(--cor-pendente);
+  background: #ffe3e3;
+  color: var(--cor-pendente);
+}
+.list-item.andamento {
+  border-left: 5px solid var(--cor-andamento);
+  background: #e3f2fd;
+  color: var(--cor-andamento);
+}
+.list-item.concluida {
+  border-left: 5px solid var(--cor-concluida);
+  opacity: 0.8;
+  text-decoration: line-through;
+  background: #e9fbe9;
+  color: var(--cor-concluida);
+}
+
+/* ESTADO VAZIO */
+.empty-state {
+  text-align: center;
+  padding: 20px 15px;
+  font-style: italic;
+  color: #999;
+  background: #f1f1f1;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+/* =========================================================================
+   6. MODAIS (Geral, Criação/Edição, Visualização)
+   ========================================================================= */
+
+/* Base Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 15px;
+  opacity: 0; 
+  transition: opacity 0.3s ease-in-out; 
+}
+.modal.open {
+    opacity: 1;
+    display: flex; 
+}
+
+/* Conteúdo Modal */
+.modal-content {
+  background: var(--branco);
+  padding: 20px 25px;
+  border-radius: 18px;
+  width: 350px;
+  max-width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--cor-primaria);
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+.modal-content label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--cor-label);
+  margin-top: 8px;
+  font-size: 13px;
+}
+.modal-content input[type="text"],
+.modal-content input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-input-bg);
+  color: var(--texto);
+  font-size: 14px;
+  transition: 0.2s;
+}
+.modal-content input:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 6px var(--cor-primaria);
+}
+
+/* Wrapper de Itens (inputs de lista com rolagem) */
+#itensWrapper,
+#editItensWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.item-wrapper {
+  display: flex;          
+  align-items: center;    
+  gap: 6px;               
+}
+.item-wrapper input[type="text"] {
+  flex: 1;                
+  min-width: 0;           
+  padding: 7px 10px;
+  margin-bottom: 0;
+  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-input-bg);
+  font-size: 13px;
+}
+
+/* Botão "X" para deletar item na lista de inputs */
+.btn-delete-item {
+  flex-shrink: 0;         
+  background: transparent;
+  border: none;
+  color: #ff4d4f;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.btn-delete-item:hover {
+  color: #d9363e;
+  transform: scale(1.2);
+}
+.btn-delete-item i {
+  pointer-events: none;
+}
+
+/* Botões Adicionar Item */
+#addItemBtn,
+#addEditItemBtn {
+  margin-top: 5px;
+  background: var(--cor-primaria);
+  color: var(--branco);
+  box-shadow: none;
+  align-self: flex-start;
+  font-weight: 600;
+  padding: 7px 10px;
+}
+#addItemBtn:hover,
+#addEditItemBtn:hover {
+  transform: translateY(-1px);
+}
+
+/* Grupo de Botões (Rodapé do Modal) */
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+.btn-save {
+  background: var(--cor-lilas);
+  color: #fff;
+}
+.btn-save:hover {
+  background: var(--cor-rosa);
+}
+.btn-cancel {
+  background: #eee;
+  color: #555;
+}
+.btn-cancel:hover {
+  background: #ddd;
+}
+.btn-delete {
+  background: var(--cor-pendente);
+  color: var(--branco);
+}
+.btn-delete:hover {
+  background: #c62828;
+}
+
+/* MODAL DE VISUALIZAÇÃO */
+#viewListTitle {
+  font-size: 22px;
+  color: var(--cor-primaria);
+  margin-bottom: 12px;
+  text-align: center;
+}
+.view-info {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 6px;
+}
+.view-info strong {
+    color: var(--texto);
+    font-weight: 700;
+    margin-right: 4px;
+}
+#viewListStatus {
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 6px;
+    display: inline-block;
+    font-size: 13px;
+}
+#viewListStatus.pendente {
+  background: #fce4e4; 
+  color: var(--cor-pendente); 
+}
+#viewListStatus.andamento {
+  background: #e3f2fd;
+  color: var(--cor-andamento);
+}
+#viewListStatus.concluida {
+  background: #e8f5e9;
+  color: var(--cor-concluida);
+}
+#viewListItems {
+  list-style: none;
+  padding: 0;
+  max-height: 35vh;
+  overflow-y: auto;
+  padding-right: 4px; 
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+#viewListItems li {
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  background: var(--cor-input-bg);
+  cursor: default;
+  font-weight: 500;
+  transition: 0.2s;
+  border-left: 3px solid var(--cor-lilas);
+  font-size: 14px;
+}
+#viewListItems li.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+  background: #f1f1f1;
+  border-left: 3px solid var(--cor-concluida);
+}
+
+/* Contador de Itens */
+.contador {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+  color: var(--cor-label);
+}
+
+/* Botões no modal de Visualização */
+#viewListModal .btn-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#viewListModal .btn-group .btn {
+  flex: 1 1 auto;
+  min-width: 90px;
+}
+
+#uncheckAllBtn {
+  background: var(--cor-amarelo);
+  color: var(--texto);
+}
+#uncheckAllBtn:hover {
+  background: #ffc266;
+}
+#editListBtn {
+  background: var(--cor-primaria);
+  color: var(--branco);
+}
+#editListBtn:hover {
+  background: var(--cor-primaria-hover);
+}
+#deleteListBtn {
+  background: var(--cor-pendente);
+  color: var(--branco);
+}
+#deleteListBtn:hover {
+  background: #c62828;
+}
+#closeViewListModalBtn {
+  background: #eee;
+  color: #555;
+  order: 4; 
+}
+#closeViewListModalBtn:hover {
+  background: #ddd;
+}
+
+/* =========================================================================
+   7. MEDIA QUERIES (RESPONSIVIDADE)
+   ========================================================================= */
+
+/* TABLET GRANDE (1024px) */
+@media (max-width: 1024px) {
+  aside {
+    width: 260px;
+    padding-top: 30px;
+  }
+  main {
+    margin-left: 260px; 
+    padding: 30px;
+    gap: 20px;
+  }
+  .top-widgets {
+      gap: 12px;
+  }
+  .resumo-total {
+      min-width: 130px;
+      width: 130px;
+  }
+  .card-resumo {
+      flex-direction: row;
+      gap: 0.8rem;
+  }
+  .resumo-and, .resumo-pend, .resumo-conc {
+      padding-inline-end: 0.8rem; 
+  }
+  .cardlist {
+      padding: 18px;
+  }
+}
+
+/* MOBILE/TABLET (900px) */
+@media (max-width: 900px) {
+  /* SIDEBAR E TOGGLE */
+  aside {
+    width: 88vw;
+    max-width: 300px;
+    padding-top: 90px;
+    transform: translateX(-100%); 
+    z-index: 1200;
+  }
+  aside.menu-open {
+    transform: translateX(0); 
+  }
+  #toggleMenu {
+    display: block; 
+  }
+  main {
+    margin-left: 0; 
+    padding: 30px 20px;
+    padding-top: 80px; 
+    align-items: center;
+  }
+
+  /* WIDGETS DE RESUMO */
+  .top-widgets {
+    flex-direction: column; 
+    width: 100%;
+    gap: 15px;
+  }
+  .resumo-total,
+  .card-resumo {
+      width: 100%;
+      flex: none; 
+  }
+  .card-resumo {
+    display: grid; 
+    grid-template-columns: 1fr; 
+    padding: 15px;
+    gap: 10px;
+  }
+  /* Remove bordas verticais e adiciona horizontais */
+  .resumo-and, .resumo-pend, .resumo-conc {
+    border-inline-end: none; 
+    padding-inline-end: 0;
+    padding-block-end: 10px;
+    border-block-end: 1px solid #f0f0f0; 
+  }
+  .card-resumo > div:last-child {
+    border-block-end: none; 
+    padding-block-end: 0;
+  }
+  
+  /* LISTAS */
+  .listas-container-principal {
+      grid-template-columns: 1fr;
+      gap: 15px;
+  }
+  .listas-container-principal .cardlist {
+      min-width: 100%;
+  }
+  .cardlist {
+    max-width: 100%;
+  }
+}
+
+/* OUTRAS TELAS MENORES (768px e 500px) */
+@media (max-width: 768px) {
+  main {
+    padding: 15px;
+    padding-top: 60px;
+    gap: 15px;
+  }
+  #toggleMenu {
+    top: 10px;
+    left: 10px;
+    padding: 7px 9px;
+  }
+}
+
+@media (max-width: 500px) {
+  main {
+    padding: 10px;
+    padding-top: 50px;
+  }
+  .card-widget, .cardlist {
+      padding: 12px;
+      border-radius: 12px;
+  }
+  .modal-content {
+      padding: 12px;
+  }
+  .btn-group .btn {
+      flex: 1 1 100%; 
+  }
+}
+
+@media (max-width: 380px) {
+  main {
+    padding: 8px;
+  }
+  #toggleMenu {
+    top: 8px;
+    left: 8px;
+    padding: 5px 7px;
+    font-size: 16px;
+  }
+  .resumo-total h2 {
+    font-size: 0.9rem;
+  }
+  .resumo-total span {
+    font-size: 2rem;
+  }
+  .card-resumo h2 {
+    font-size: 12px;
+  }
+  .card-resumo li {
+    font-size: 12px;
+  }
+}
