@@ -20,17 +20,30 @@
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li><a href="home.html"><i class="fas fa-home"></i> Início</a></li>
-        <li class="active"><a><i class="fas fa-calendar-alt"></i> Eventos</a></li>
-        <li><a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a></li>
-        <li><a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a></li>
-        <li><a href="diario.html"><i class="fas fa-book-open"></i> Diário</a></li>
-        <li><a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a></li>
+        <li>
+          <a href="home.html"><i class="fas fa-home"></i> Início</a>
+        </li>
+        <li class="active">
+          <a><i class="fas fa-calendar-alt"></i> Eventos</a>
+        </li>
+        <li>
+          <a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a>
+        </li>
+        <li>
+          <a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a>
+        </li>
+        <li>
+          <a href="diario.html"><i class="fas fa-book-open"></i> Diário</a>
+        </li>
+        <li>
+          <a href="configuracao.html"
+            ><i class="fas fa-cog"></i> Configurações</a
+          >
+        </li>
       </ul>
     </aside>
 
     <main>
-      <!-- RESUMO -->
       <div class="card-resumo">
         <div class="resumo-item">
           <i class="fa-solid fa-calendar-check"></i>
@@ -57,9 +70,7 @@
         </div>
       </div>
 
-      <!-- CARD PRINCIPAL -->
       <div class="cardcal">
-        <!--CALENDÁRIO-->
         <div class="calendario-box">
           <h2>
             <i class="fa-solid fa-calendar-days"></i>
@@ -126,7 +137,6 @@
       </div>
     </main>
 
-    <!-- MODAL ADICIONAR-->
     <div class="modal" id="eventModal">
       <div class="modal-content">
         <h3>Novo Evento</h3>
@@ -136,13 +146,16 @@
         <input type="text" id="eventText" placeholder="Descrição" />
 
         <div class="btn-group">
-          <button class="btn btn-save" id="saveEventBtn">Salvar</button>
-          <button class="btn btn-cancel" id="closeModalBtn">Cancelar</button>
+          <button class="btn btn-save" id="saveEventBtn">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+          <button class="btn btn-cancel" id="closeModalBtn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
         </div>
       </div>
     </div>
 
-    <!--MODAL EDITAR-->
     <div class="modal" id="editEventModal">
       <div class="modal-content">
         <h3>Editar Evento</h3>
@@ -153,13 +166,16 @@
         <input type="text" id="editEventText" />
 
         <div class="btn-group">
-          <button class="btn btn-delete" id="deleteEventBtn">Excluir</button>
-          <div>
-            <button class="btn btn-save" id="updateEventBtn">Atualizar</button>
-            <button class="btn btn-cancel" id="closeEditModalBtn">
-              Cancelar
-            </button>
-          </div>
+          <button class="btn btn-delete" id="deleteEventBtn">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+
+          <button class="btn btn-save" id="updateEventBtn">
+            <i class="fas fa-sync-alt"></i> Atualizar
+          </button>
+          <button class="btn btn-cancel" id="closeEditModalBtn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
         </div>
       </div>
     </div>
