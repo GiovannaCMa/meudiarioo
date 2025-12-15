@@ -44,13 +44,13 @@
     </aside>
 
     <main>
-      <div class="top-widgets">
-        <div class="card-widget resumo-total">
+      <section class="top-widgets">
+        <article class="card-widget resumo-total">
           <h2><i class="fa-solid fa-chart-simple"></i> Total de Listas</h2>
           <span id="totalListas">0</span>
-        </div>
+        </article>
 
-        <div class="card-resumo">
+        <article class="card-resumo">
           <div class="resumo-and">
             <h2>
               <i class="fa-solid fa-spinner fa-spin-pulse"></i> Listas em
@@ -58,9 +58,9 @@
             </h2>
             <ul id="listasAndamento"></ul>
           </div>
-        </div>
+        </article>
 
-        <div class="card-resumo">
+        <article class="card-resumo">
           <div class="resumo-pend">
             <h2>
               <i class="fa-solid fa-circle-exclamation"></i> Listas pendentes
@@ -69,33 +69,44 @@
           </div>
         </div>
 
-        <div class="card-resumo">
+        <article class="card-resumo">
           <div class="resumo-conc">
             <h2><i class="fa-solid fa-circle-check"></i> Listas concluídas</h2>
             <ul id="listasConcluidas"></ul>
           </div>
-        </div>
-      </div>
+        </article>
+
+        <article class="card-widget" id="proximosWidget">
+          <h2><i class="fas fa-exclamation-circle"></i> Próximos (7 dias)</h2>
+          <ul class="mini-list" id="upcomingRemindersList">
+            <li class="empty-state">Nenhum lembrete próximo.</li>
+          </ul>
+        </article>
+      </section>
 
       <button class="btn btn-primary" id="addCatBtn">+ Nova Categoria</button>
 
-      <div class="listas-container-principal">
-        <div class="cardlist">
+      <section class="listas-container-principal">
+        <article class="cardlist">
           <h2><i class="fa-solid fa-list-check"></i> Minhas Listas</h2>
+
           <button class="btn btn-primary" id="addListBtn">
             + Adicionar Lista
           </button>
+
           <ul class="listas-container" id="listasContainer-default-listas"></ul>
+
           <div class="category-actions">
             <button class="btn btn-secondary edit-cat-btn" disabled>
               <i class="fas fa-edit"></i> Editar Categoria
             </button>
+
             <button class="btn btn-delete delete-cat-btn" disabled>
               <i class="fas fa-trash-alt"></i> Excluir Categoria
             </button>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
     </main>
 
     <div class="modal" id="createCatModal">

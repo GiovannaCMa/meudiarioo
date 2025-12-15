@@ -20,71 +20,50 @@
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li>
-          <a href="home.html"><i class="fas fa-home"></i> Início</a>
-        </li>
-        <li class="active">
-          <a><i class="fas fa-calendar-alt"></i> Eventos</a>
-        </li>
-        <li>
-          <a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a>
-        </li>
-        <li>
-          <a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a>
-        </li>
-        <li>
-          <a href="diario.html"><i class="fas fa-book-open"></i> Diário</a>
-        </li>
-        <li>
-          <a href="configuracao.html"
-            ><i class="fas fa-cog"></i> Configurações</a
-          >
-        </li>
+        <li><a href="home.html"><i class="fas fa-home"></i> Início</a></li>
+        <li class="active"><a><i class="fas fa-calendar-alt"></i> Eventos</a></li>
+        <li><a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a></li>
+        <li><a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a></li>
+        <li><a href="diario.html"><i class="fas fa-book-open"></i> Diário</a></li>
+        <li><a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a></li>
       </ul>
     </aside>
 
     <main>
-      <div class="card-resumo">
-        <div class="resumo-item">
+      <section class="card-resumo">
+        <article class="resumo-item">
           <i class="fa-solid fa-calendar-check"></i>
           <div>
             <strong>0</strong>
             <span>Eventos no mês</span>
           </div>
-        </div>
+        </article>
 
-        <div class="resumo-item">
+        <article class="resumo-item">
           <i class="fa-solid fa-clock"></i>
           <div>
             <strong>—</strong>
             <span>Próximo evento</span>
           </div>
-        </div>
+        </article>
 
-        <div class="resumo-item">
+        <article class="resumo-item">
           <i class="fa-solid fa-star"></i>
           <div>
             <strong>0</strong>
             <span>Dias ocupados</span>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div class="cardcal">
-        <div class="calendario-box">
+      <section class="cardcal">
+        <article class="calendario-box">
           <h2>
             <i class="fa-solid fa-calendar-days"></i>
             Calendário
           </h2>
 
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 10px;
-            "
-          >
+          <div class="calendar">
             <button class="btn" id="prevMonthBtn" style="padding: 4px 8px">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
@@ -113,19 +92,16 @@
 
           <button class="btn" id="addEventBtn">+ Adicionar evento</button>
 
-          <!--LEGENDA DO CALENDÁRIO -->
           <div class="calendar-legenda">
             <span class="leg hoje">Hoje</span>
             <span class="leg evento">Com evento</span>
             <span class="leg hjeven">Hoje/evento</span>
           </div>
-        </div>
+        </article>
 
-        <!-- EVENTOS -->
-        <div class="eventos-box">
+        <article class="eventos-box">
           <h2><i class="fa-solid fa-clock"></i> Próximos eventos</h2>
 
-          <!--FILTROS RÁPIDOS -->
           <div class="eventos-filtros">
             <button class="btn-filtro active">Todos</button>
             <button class="btn-filtro">Hoje</button>
@@ -133,8 +109,8 @@
           </div>
 
           <ul id="eventosLista"></ul>
-        </div>
-      </div>
+        </article>
+      </section>
     </main>
 
     <div class="modal" id="eventModal">

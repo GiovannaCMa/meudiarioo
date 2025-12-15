@@ -14,10 +14,10 @@
   --grad3: #b69bff;
   --texto: #4b3375;
   --branco: #ffffff;
-  
+
   /* Cores de Status para Listas e Lembretes (Consistência) */
-  --cor-concluida: #4caf50; 
-  --cor-pendente: #f44336; 
+  --cor-concluida: #4caf50;
+  --cor-pendente: #f44336;
   --cor-andamento: #2196f3;
 }
 
@@ -145,7 +145,7 @@ main {
 }
 .cardlist,
 .cardlemb {
-  flex-direction: column; 
+  flex-direction: column;
   min-width: 300px;
   max-width: 300px;
   width: 100%;
@@ -157,7 +157,7 @@ main {
   width: 100%;
   max-width: 700px;
   min-width: 360px;
-} 
+}
 
 /* Estilo para todos os ícones nos títulos dos cards */
 .cardcal h2 i,
@@ -180,6 +180,13 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.calendar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .week-days-header {
@@ -224,7 +231,7 @@ main {
   background: var(--cor-menta);
   color: var(--texto);
 }
-.day.hjeven { 
+.day.hjeven {
   background: linear-gradient(135deg, var(--cor-rosa), var(--cor-menta));
   color: var(--branco);
 }
@@ -241,7 +248,7 @@ main {
   border-radius: 6px;
   font-size: 12px;
   white-space: nowrap;
-} 
+}
 
 /* -----------------Lista de eventos------------ */
 .eventos-box {
@@ -264,12 +271,12 @@ main {
   line-height: 1.6;
   font-size: 14px;
   padding-left: 10px;
-  padding-right: 8px; 
-} 
+  padding-right: 8px;
+}
 
 /* -----------------Botões (Padronizado) -----------------*/
 .btn {
-  padding: 10px 15px; 
+  padding: 10px 15px;
   border-radius: 14px;
   border: none;
   font-weight: 700;
@@ -281,14 +288,13 @@ main {
 .btn:hover {
   background: var(--cor-rosa);
   transform: translateY(-2px);
-} 
-.btn-primary { 
-    background: var(--cor-primaria);
+}
+.btn-primary {
+  background: var(--cor-primaria);
 }
 .btn-primary:hover {
-    background: var(--cor-primaria-hover);
+  background: var(--cor-primaria-hover);
 }
-
 
 /* ----------------- Modal Base -----------------*/
 .modal {
@@ -307,7 +313,7 @@ main {
   background: var(--branco);
   padding: 25px 30px;
   border-radius: 20px;
-  width: 380px; 
+  width: 380px;
   max-width: 90%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   max-height: 90vh;
@@ -362,13 +368,13 @@ main {
 }
 .btn-cancel:hover {
   background: #ddd;
-} 
+}
 
 /* ----------------- Modal Visualizar Lista (Simplificado para Home) -----------------*/
 #viewListTitle {
-    font-size: 24px;
-    color: var(--cor-primaria);
-    margin-bottom: 15px;
+  font-size: 24px;
+  color: var(--cor-primaria);
+  margin-bottom: 15px;
 }
 .view-info {
   font-size: 15px;
@@ -376,19 +382,19 @@ main {
   margin-bottom: 8px;
 }
 .view-info strong {
-    color: var(--texto);
-    font-weight: 700;
-    margin-right: 5px;
+  color: var(--texto);
+  font-weight: 700;
+  margin-right: 5px;
 }
 #viewListStatus {
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 8px;
-    display: inline-block;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
 }
 #viewListStatus.pendente {
-  background: #fce4e4; 
-  color: var(--cor-pendente); 
+  background: #fce4e4;
+  color: var(--cor-pendente);
 }
 #viewListStatus.andamento {
   background: #e3f2fd;
@@ -401,9 +407,9 @@ main {
 #viewListItems {
   list-style: none;
   padding: 0;
-  max-height: 40vh; 
-  overflow-y: auto; 
-  padding-right: 4px; 
+  max-height: 40vh;
+  overflow-y: auto;
+  padding-right: 4px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -424,16 +430,16 @@ main {
   border-left: 3px solid var(--cor-concluida);
 }
 #viewListModal .btn-group {
-    justify-content: flex-end; 
-    margin-top: 15px;
+  justify-content: flex-end;
+  margin-top: 15px;
 }
 #closeViewListModalBtn {
-    background: #eee;
-    color: #555;
+  background: #eee;
+  color: #555;
 }
 #closeViewListModalBtn:hover {
-    background: #ddd;
-    transform: none;
+  background: #ddd;
+  transform: none;
 }
 
 /* ----------- diario ---------------*/
@@ -445,7 +451,7 @@ main {
 .diario-header h2 {
   font-size: 22px;
   font-weight: 600;
-} 
+}
 /* ===== CARROSSEL ===== */
 .diario-carrossel {
   display: flex;
@@ -459,7 +465,7 @@ main {
 .diario-carrossel::-webkit-scrollbar-thumb {
   background: #c4b5fd;
   border-radius: 10px;
-} 
+}
 /* ===== CARDS DO CARROSSEL ===== */
 .diario-card {
   min-width: 200px;
@@ -481,26 +487,29 @@ main {
 .diario-card p {
   font-size: 13px;
   opacity: 0.8;
-} 
+}
 /* ===== TEXTO QUANDO VAZIO ===== */
 .diario-vazio {
   opacity: 0.6;
   font-style: italic;
   padding: 15px;
   font-size: 15px;
-} 
+}
 
 /* Listas (e Lembretes) - Estilização dentro dos Cards */
-.listas-box, .lembretes-box { 
+.listas-box,
+.lembretes-box {
   flex: 1;
-  padding-left: 0; 
+  padding-left: 0;
 }
-.cardlist .listas-box, .cardlemb .listas-box { 
-    width: 100%;
-    padding-left: 0;
-    border-left: none;
+.cardlist .listas-box,
+.cardlemb .listas-box {
+  width: 100%;
+  padding-left: 0;
+  border-left: none;
 }
-.listas-box h2, .lembretes-box h2 {
+.listas-box h2,
+.lembretes-box h2 {
   color: var(--cor-primaria);
   font-size: 20px;
   margin-bottom: 12px;
@@ -509,29 +518,32 @@ main {
   gap: 8px;
 }
 /* AJUSTE DE ROLAGEM NAS LISTAS INTERNAS (Listas e Lembretes) */
-.listas-box ul, .lembretes-box ul {
+.listas-box ul,
+.lembretes-box ul {
   list-style: none;
   padding-left: 0;
   font-size: 14px;
   max-height: 320px; /* Ajuste para caber no card de 440px */
-  overflow-y: auto; 
-  padding-right: 8px; 
+  overflow-y: auto;
+  padding-right: 8px;
 }
 /* Item de lista dentro dos cards (estilo compacto e consistente) */
-.listas-box li, .lembretes-box li {
+.listas-box li,
+.lembretes-box li {
   padding: 10px 12px;
   margin-bottom: 8px;
-  background: var(--grad1); 
+  background: var(--grad1);
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: 0.2s;
-  border-left: 5px solid var(--cor-primaria); 
+  border-left: 5px solid var(--cor-primaria);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
-.listas-box li:hover, .lembretes-box li:hover {
+.listas-box li:hover,
+.lembretes-box li:hover {
   background: var(--grad2);
-  transform: translateY(-1px); 
+  transform: translateY(-1px);
 }
 
 /* Estado Vazio (Para listas e lembretes que não têm itens) */
@@ -549,22 +561,22 @@ main {
 #addListBtn,
 #addReminderBtn,
 #addDiaryBtn {
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
 }
-#listasContainer, #lembretesContainer {
+#listasContainer,
+#lembretesContainer {
   margin-top: 5px;
 }
 .listas-box li.pendente {
-    border-left: 5px solid var(--cor-pendente);
-    background: #ffe3e3;
-    color: var(--cor-pendente);
+  border-left: 5px solid var(--cor-pendente);
+  background: #ffe3e3;
+  color: var(--cor-pendente);
 }
 .listas-box li.concluida {
-    border-left: 5px solid var(--cor-concluida);
-    opacity: 0.7;
-    text-decoration: line-through;
+  border-left: 5px solid var(--cor-concluida);
+  opacity: 0.7;
+  text-decoration: line-through;
 }
-
 
 /* ================== MEDIA QUERIES ===================== */
 
@@ -581,15 +593,15 @@ main {
     gap: 25px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 80px !important; 
+    margin-top: 80px !important;
   }
-  
+
   /* Resetando altura fixa para layout responsivo em tablet */
   .cardcal,
   .cardlist,
   .cardlemb,
   .carddiario {
-    height: auto; 
+    height: auto;
     max-height: 1000px;
   }
 
@@ -612,8 +624,9 @@ main {
     width: 45%;
     max-height: 320px; /* Restaura altura máxima para eventos em tablet */
   }
-  
-  .listas-box ul, .lembretes-box ul {
+
+  .listas-box ul,
+  .lembretes-box ul {
     max-height: 300px; /* Restaura altura máxima para listas em tablet */
   }
 }
@@ -652,7 +665,7 @@ main {
     padding: 40px 30px;
     justify-content: center;
     gap: 25px;
-    margin-top: 80px !important; 
+    margin-top: 80px !important;
   }
 
   .cardcal,
@@ -681,10 +694,11 @@ main {
     border-left: none;
     max-height: 300px; /* Ajuste para mobile */
   }
-  
+
   /* AJUSTE DE ROLAGEM MOBILE: Dá mais altura para as listas internas no celular/tablet */
-  .listas-box ul, .lembretes-box ul {
-    max-height: 45vh; 
+  .listas-box ul,
+  .lembretes-box ul {
+    max-height: 45vh;
   }
 }
 
@@ -696,7 +710,7 @@ main {
     left: 0;
     width: 260px;
     height: 100vh;
-    padding-top: 90px; 
+    padding-top: 90px;
     transform: translateX(-100%);
     overflow-y: auto;
     z-index: 1200;
@@ -719,7 +733,7 @@ main {
     padding: 20px;
     justify-content: center;
     gap: 20px;
-     margin-top: 80px !important;  
+    margin-top: 80px !important;
   }
 
   .cardcal,
@@ -747,7 +761,8 @@ main {
     border-left: none;
   }
 
-  .listas-box, .lembretes-box {
+  .listas-box,
+  .lembretes-box {
     width: 100%;
     padding-left: 0;
     border-left: none;
@@ -779,7 +794,7 @@ main {
 
   main {
     padding: 25px;
-     margin-top: 80px !important;  
+    margin-top: 80px !important;
   }
 }
 
@@ -798,7 +813,7 @@ main {
 
   main {
     padding: 22px;
-     margin-top: 60px !important;  
+    margin-top: 60px !important;
   }
 
   .cardcal,
@@ -826,7 +841,8 @@ main {
     padding: 20px;
   }
   .cardcal h2,
-  .listas-box h2, .lembretes-box h2 {
+  .listas-box h2,
+  .lembretes-box h2 {
     font-size: 18px;
   }
 }
@@ -876,7 +892,8 @@ main {
     border-left: none;
   }
 
-  .listas-box li, .lembretes-box li {
+  .listas-box li,
+  .lembretes-box li {
     padding: 8px 10px;
     font-size: 13px;
   }
