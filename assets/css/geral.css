@@ -380,32 +380,6 @@ aside li.active {
   gap: 25px;
 }
 
-.cardlemb {
-  background: #fff;
-  border-radius: 18px;
-  padding: 20px;
-  border: 2px dashed #ddd;
-}
-
-.lembs-container {
-  list-style: none;
-  padding: 0;
-}
-
-.lemb-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-radius: 12px;
-  margin-bottom: 8px;
-  background: #f5f5f5;
-}
-
-.lemb-item.concluido {
-  text-decoration: line-through;
-  opacity: .6;
-}
-
 .actions button {
   background: none;
   border: none;
