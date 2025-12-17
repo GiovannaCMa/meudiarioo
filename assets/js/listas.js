@@ -65,758 +65,431 @@
 
 // 2. LÓGICA PRINCIPAL
 document.addEventListener("DOMContentLoaded", () => {
-  /* 1. VARIÁVEIS */
-  const createCatModal = document.getElementById("createCatModal");
-  const editCatModal = document.getElementById("editCatModal");
-  const createListModal = document.getElementById("createListModal");
-  const viewListModal = document.getElementById("viewListModal");
-  const editListModal = document.getElementById("editListModal");
+  /* 1. VARIÁVEIS E SELETORES */
+  const elements = {
+    modals: {
+      createCat: document.getElementById("createCatModal"),
+      editCat: document.getElementById("editCatModal"),
+      createList: document.getElementById("createListModal"),
+      viewList: document.getElementById("viewListModal"),
+      editList: document.getElementById("editListModal"),
+    },
+    inputs: {
+      createCatTitle: document.getElementById("createCatTitle"),
+      editCatTitle: document.getElementById("editCatTitle"),
+      createListTitle: document.getElementById("createListTitle"),
+      createListDate: document.getElementById("createListDueDate"),
+      editListTitle: document.getElementById("editListTitle"),
+      editListDate: document.getElementById("editListDueDate"),
+    },
+    containers: {
+      customLists: document.getElementById("customListsContainer"),
+      createItens: document.getElementById("itensWrapper"),
+      editItens: document.getElementById("editItensWrapper"),
+      viewListItems: document.getElementById("viewListItems"),
+    },
+    btns: {
+      addCat: document.getElementById("addCatBtn"),
+      addListGlobal: document.getElementById("addListBtn"),
+      saveCreateList: document.getElementById("saveCreateListBtn"),
+      saveCreateCat: document.getElementById("saveCreateCatBtn"),
+      saveEditCat: document.getElementById("saveEditCatBtn"),
+      saveEditList: document.getElementById("saveEditListBtn"),
+      addItem: document.getElementById("addItemBtn"),
+      addEditItem: document.getElementById("addEditItemBtn"),
+      uncheckAll: document.getElementById("uncheckAllBtn"),
+      deleteList: document.getElementById("deleteListBtn"),
+      editList: document.getElementById("editListBtn")
+    }
+  };
 
-  const addCatBtn = document.getElementById("addCatBtn");
-  const closeCreateCatModalBtn = document.getElementById(
-    "closeCreateCatModalBtn"
-  );
-  const saveCreateCatBtn = document.getElementById("saveCreateCatBtn");
-  const createCatTitleInput = document.getElementById("createCatTitle");
-
-  const closeEditCatModalBtn = document.getElementById("closeEditCatModalBtn");
-  const saveEditCatBtn = document.getElementById("saveEditCatBtn");
-  const editCatTitleInput = document.getElementById("editCatTitle");
-
-  const closeCreateListModalBtn = document.getElementById(
-    "closeCreateListModalBtn"
-  );
-  const saveCreateListBtn = document.getElementById("saveCreateListBtn");
-  const addItemBtn = document.getElementById("addItemBtn");
-  const createItensWrapper = document.getElementById("itensWrapper");
-
-  const editListTitleInput = document.getElementById("editListTitle");
-  const editListDueDateInput = document.getElementById("editListDueDate");
-  const editItensWrapper = document.getElementById("editItensWrapper");
-  const addEditItemBtn = document.getElementById("addEditItemBtn");
-  const saveEditListBtn = document.getElementById("saveEditListBtn");
-  const closeEditListModalBtn = document.getElementById(
-    "closeEditListModalBtn"
-  );
-
-  const defaultCard = document.querySelector(
-    '.cardlist[data-category-id="default-listas"]'
-  );
-  const customListsContainer = document.getElementById("customListsContainer");
-
-  // Botões globais
-  // 🛑 EDITCATBTNGlobal e DELETECATBTNGlobal REMOVIDOS para usar botões do próprio card
-  const addListBtnGlobal = document.getElementById("addListBtn");
-
-  // Elementos do modal de visualização
-  const viewListItemsUl = document.getElementById("viewListItems");
-  const viewListStatusSpan = document.getElementById("viewListStatus");
-  const editListBtn = document.getElementById("editListBtn");
-  const uncheckAllBtn = document.getElementById("uncheckAllBtn");
-  const deleteListBtn = document.getElementById("deleteListBtn");
-  const contadorFeitosSpan = document.getElementById("contadorFeitos");
-  const contadorTotalSpan = document.getElementById("contadorTotal");
-  const viewListTitle = document.getElementById("viewListTitle");
-
-  let activeCategoryCard = null;
   let allLists = [];
-  let currentViewListId = null;
-  let currentEditListId = null;
   let currentFilter = "all";
 
   /* 2. UTILITÁRIOS */
   
-  // Status: "pendente" SÓ se atrasada, senão "nao-iniciada" ou "andamento"
   const getListStatus = (list) => {
     const { items, dueDate } = list;
-    
-    // Status padrão para listas vazias ou novas
     if (!items || items.length === 0) return "nao-iniciada"; 
-
     const total = items.length;
     const feitos = items.filter((i) => i.done).length;
-
-    if (feitos === total) return "concluida";
-
-    // Verifica a data limite APENAS se não estiver concluída
+    if (total > 0 && feitos === total) return "concluida";
     if (dueDate) {
       const dueDateTime = Date.parse(dueDate + "T00:00:00");
       const today = new Date();
       today.setHours(0, 0, 0, 0); 
-      const todayTime = today.getTime();
-
-      // REGRA: "pendente" SÓ SE ultrapassou a data limite
-      if (dueDateTime < todayTime) {
-        return "pendente"; // Incompleta E atrasada
-      }
+      if (dueDateTime < today.getTime()) return "pendente";
     }
-
-    // Não concluída e não vencida
-    if (feitos === 0) return "nao-iniciada"; // Não iniciada, não atrasada
-    return "andamento"; // Em andamento, não atrasada
+    return feitos === 0 ? "nao-iniciada" : "andamento";
   };
 
-
   const formatDueDate = (date) => {
-    if (!date) return "Sem data limite";
+    if (!date) return "Sem data";
     const [y, m, d] = date.split("-");
     return `${d}/${m}/${y}`;
   };
-  
-  // Helper para calcular dias restantes
-  const getDaysRemaining = (dateString) => {
-    if (!dateString) return null;
-    const dueDate = new Date(dateString + "T00:00:00");
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return "Hoje";
-    if (diffDays === 1) return "Amanhã";
-    if (diffDays > 0) return `${diffDays} dias`;
-    return null; 
+
+  const closeModal = () => {
+    Object.values(elements.modals).forEach(m => m && m.classList.remove("open"));
   };
 
-  // FUNÇÃO PARA ADICIONAR ITEM (com ícone de lixeira)
   const addItemInput = (wrapper, initialValue = "") => {
     const div = document.createElement("div");
-    div.className = "item-input-group"; // ESSA CLASSE PRECISA DE CSS display:flex
+    div.className = "item-input-group";
     div.innerHTML = `
-            <input type="text" placeholder="Nome do Item" value="${initialValue}">
-            <button type="button" class="remove-item-btn icon-action">
-                <i class="fas fa-trash-alt"></i> 
-            </button>
-        `;
+      <input type="text" placeholder="Nome do Item" value="${initialValue}">
+      <button type="button" class="remove-item-btn icon-action"><i class="fas fa-trash-alt"></i></button>
+    `;
     div.querySelector(".remove-item-btn").onclick = () => div.remove();
     wrapper.appendChild(div);
   };
 
-  // Array de todos os modais para fechar facilmente
-  const allModals = [
-    createCatModal,
-    editCatModal,
-    createListModal,
-    viewListModal,
-    editListModal,
-  ];
-
-  // Fecha todos os modais
-  const closeModal = () =>
-    allModals.forEach((modal) => modal.classList.remove("open"));
-
   /* 3. LOCAL STORAGE */
-  const saveListsToLocalStorage = () => {
+  const saveAll = () => {
     localStorage.setItem("diaryAppLists", JSON.stringify(allLists));
-    localStorage.setItem(
-      "diaryAppCategories",
-      JSON.stringify(getExistingCategories())
-    );
+    const cats = [...elements.containers.customLists.querySelectorAll(".cardlist:not(.default-card)")].map(card => ({
+      id: card.dataset.categoryId,
+      title: card.querySelector("h2").textContent.replace(/^\S+\s/, "").trim()
+    }));
+    localStorage.setItem("diaryAppCategories", JSON.stringify(cats));
   };
 
-  const loadListsFromLocalStorage = () => {
-    const data = localStorage.getItem("diaryAppLists");
-    if (data) allLists = JSON.parse(data);
-  };
-
-  const getExistingCategories = () => {
-    if (!customListsContainer) return [];
-    return [
-      ...customListsContainer.querySelectorAll(".cardlist:not(.default-card)"),
-    ].map((card) => {
-      const h2 = card.querySelector("h2");
-      const text = h2.textContent.replace(/^\S+\s/, "").trim();
-      return {
-        id: card.dataset.categoryId,
-        title: text,
-      };
-    });
-  };
-
-  const restoreCategories = () => {
-    const data = localStorage.getItem("diaryAppCategories");
-    if (!data || !customListsContainer) return;
-
-    customListsContainer.innerHTML = "";
-
-    JSON.parse(data).forEach((cat) => {
-      const card = createCategoryCard(cat.title, cat.id);
-      customListsContainer.appendChild(card);
-    });
-  };
-
-  /* 4. RENDERIZAÇÃO GERAL */
+  /* 4. RENDERIZAÇÃO */
 
   const renderLists = () => {
-    // 1. Limpa todos os containers de listas DENTRO dos cards de categoria
-    document
-      .querySelectorAll(".listas-container")
-      .forEach((ul) => (ul.innerHTML = ""));
+    document.querySelectorAll(".listas-container").forEach(ul => ul.innerHTML = "");
+    const weights = { "pendente": 0, "nao-iniciada": 1, "andamento": 1, "concluida": 2 };
 
-    // 2. Prepara e ordena todas as listas (ORDENADA PRIMEIRO POR DATA, DEPOIS POR TÍTULO)
-    let listsToRender = allLists
-        .slice() 
-        .sort((a, b) => {
-            // Prioridade 1: Data ascendente (Datas válidas primeiro, 'Sem data' por último)
-            const dateA = a.dueDate ? Date.parse(a.dueDate + "T00:00:00") : Infinity;
-            const dateB = b.dueDate ? Date.parse(b.dueDate + "T00:00:00") : Infinity;
+    const sortedLists = [...allLists].sort((a, b) => {
+      const statusA = getListStatus(a);
+      const statusB = getListStatus(b);
+      if (weights[statusA] !== weights[statusB]) return weights[statusA] - weights[statusB];
+      return (a.dueDate || "9999") > (b.dueDate || "9999") ? 1 : -1;
+    });
 
-            if (dateA !== dateB) {
-                return dateA - dateB;
-            }
-            
-            // Prioridade 2: Título alfabético
-            return a.title.localeCompare(b.title, 'pt', { sensitivity: 'base' });
-        });
-
-
-    listsToRender.forEach((list) => {
+    sortedLists.forEach(list => {
       const status = getListStatus(list);
-      
-      // Renderiza a lista se o filtro for "all" OU se o status for o filtro
-      const shouldRender = currentFilter === "all" || currentFilter === status;
-
-      if (!shouldRender) return; // Filtro por status
-      
+      if (currentFilter !== "all" && currentFilter !== status) return;
       const ul = document.getElementById(`listasContainer-${list.categoryId}`);
-      if (!ul) return; 
+      if (!ul) return;
 
       const li = document.createElement("li");
       li.className = `list-item-summary ${status}`;
-      // Exibe o título e a data
-      li.innerHTML = `
-                <span>${list.title}</span>
-                <span class="due-date">${formatDueDate(list.dueDate)}</span>
-            `;
-      li.addEventListener("click", () => openViewListModal(list.id));
+      li.innerHTML = `<span>${list.title}</span><span class="due-date">${formatDueDate(list.dueDate)}</span>`;
+      li.onclick = () => openViewListModal(list.id);
       ul.appendChild(li);
+    });
+
+    document.querySelectorAll(".listas-container").forEach(ul => {
+      if (ul.children.length === 0) {
+        const li = document.createElement("li");
+        li.className = "list-item-summary";
+        li.style.opacity = "0.5";
+        li.style.cursor = "default";
+        li.innerHTML = `<span style="width:100%; text-align:center;">Ainda não há listas aqui</span>`;
+        ul.appendChild(li);
+      }
     });
     renderTopWidgets();
   };
 
-  /* 4.1. RENDERIZAÇÃO DOS WIDGETS */
-
-  const createSummaryLi = (list) => {
-    const li = document.createElement("li");
-    li.textContent = list.title;
-    li.className = "summary-item";
-    li.onclick = () => openViewListModal(list.id);
-    return li;
-  };
-
-  const renderTopWidgets = () => {
-    // 1. Contagem Total
-    document.getElementById("totalListas").textContent = allLists.length;
-
-    // 2. Elementos de Listas por Status
-    const listasAndamentoUl = document.getElementById("listasAndamento");
-    const listasNaoIniciadasUl = document.getElementById("listasNaoIniciadas") || document.createElement('ul'); 
-    listasNaoIniciadasUl.id = "listasNaoIniciadas";
-    const listasConcluidasUl = document.getElementById("listasConcluidas");
-    const proximaslistasUl = document.getElementById("proximaslistas");
-    const listasPendentesUl = document.getElementById("listasPendentes"); 
-
-    // Limpa as listas
-    [
-      listasAndamentoUl,
-      listasNaoIniciadasUl, 
-      listasConcluidasUl,
-      proximaslistasUl,
-      listasPendentesUl,
-    ].forEach((ul) => {
-      if (ul) ul.innerHTML = "";
+const renderTopWidgets = () => {
+    const totalEl = document.getElementById("totalListas");
+    if (totalEl) totalEl.textContent = allLists.length;
+    const ids = ["listasAndamento", "listasNaoIniciadas", "listasConcluidas", "proximaslistas", "listasPendentes"];
+    const uls = {};
+    ids.forEach(id => {
+      uls[id] = document.getElementById(id);
+      if (uls[id]) uls[id].innerHTML = "";
     });
 
     const today = new Date();
-    const sevenDaysFromNow = new Date();
-    sevenDaysFromNow.setDate(today.getDate() + 7);
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0,0,0,0);
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
 
-    // Prepare lists for 'Próximos 7 Dias' widget (Ordenação por data)
-    const proximasListas = allLists
-        .filter(list => list.dueDate)
-        .map(list => ({ ...list, dueDateObj: new Date(list.dueDate + "T00:00:00") }))
-        .filter(list => {
-            const status = getListStatus(list);
-            // Só mostra se não estiver concluída ou pendente (atrasada)
-            const notDoneOrOverdue = status !== "concluida" && status !== "pendente"; 
-            
-            return list.dueDateObj >= today && list.dueDateObj <= sevenDaysFromNow && notDoneOrOverdue;
-        })
-        .sort((a, b) => a.dueDateObj.getTime() - b.dueDateObj.getTime()); // Ordem crescente de data
+    // CRIAMOS UMA CÓPIA ORDENADA ALFABETICAMENTE PELO TÍTULO
+    const sortedAlphabetically = [...allLists].sort((a, b) => 
+      a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+    );
 
+    // USAMOS O ARRAY ORDENADO PARA DISTRIBUIR NOS WIDGETS
+    sortedAlphabetically.forEach(list => {
+      const status = getListStatus(list); 
+      const feitos = list.items.filter(i => i.done).length;
+      const total = list.items.length;
 
-    proximasListas.forEach(list => {
-        const daysLeft = getDaysRemaining(list.dueDate);
-        const li = createSummaryLi(list);
-        // Implementação do contador de dias
-        li.textContent = `${list.title} (${daysLeft})`; 
-        proximaslistasUl.appendChild(li);
+      const li = document.createElement("li");
+      li.className = "summary-item";
+      li.textContent = list.title;
+      li.onclick = () => openViewListModal(list.id);
+
+      if (status === "concluida") {
+        if (uls.listasConcluidas) uls.listasConcluidas.appendChild(li);
+      } else {
+        // Aparece em ANDAMENTO se tiver pelo menos 1 item feito
+        if (feitos > 0 && uls.listasAndamento) {
+          const andamentoLi = li.cloneNode(true);
+          andamentoLi.onclick = () => openViewListModal(list.id);
+          uls.listasAndamento.appendChild(andamentoLi);
+        }
+        // Aparece em PENDENTE se a data venceu
+        if (status === "pendente" && uls.listasPendentes) {
+          const pendenteLi = li.cloneNode(true);
+          pendenteLi.onclick = () => openViewListModal(list.id);
+          uls.listasPendentes.appendChild(pendenteLi);
+        }
+        // Aparece em NÃO INICIADA
+        if (feitos === 0 && status !== "pendente" && uls.listasNaoIniciadas) {
+          uls.listasNaoIniciadas.appendChild(li);
+        }
+      }
+
+      // Widget Próximos 7 dias
+      if (list.dueDate && status !== "concluida" && status !== "pendente") {
+        const due = new Date(list.dueDate + "T00:00:00");
+        if (due >= today && due <= nextWeek) {
+          const proxyLi = li.cloneNode(true);
+          proxyLi.onclick = () => openViewListModal(list.id);
+          const diff = Math.ceil((due - today) / 86400000);
+          proxyLi.textContent = `${list.title} (${diff === 0 ? 'Hoje' : diff === 1 ? 'Amanhã' : diff + ' dias'})`;
+          if (uls.proximaslistas) uls.proximaslistas.appendChild(proxyLi);
+        }
+      }
     });
-    
-    // Filter by Status (Other widgets)
-    allLists.forEach((list) => {
-        const status = getListStatus(list);
-        let targetUl = null;
 
-        if (status === "andamento") {
-            targetUl = listasAndamentoUl;
-        } else if (status === "nao-iniciada") { 
-            targetUl = listasNaoIniciadasUl;
-        } else if (status === "concluida") {
-            targetUl = listasConcluidasUl;
-        } else if (status === "pendente") { 
-            targetUl = listasPendentesUl;
-        }
-
-        if (targetUl && targetUl.id !== "proximaslistas") {
-            const li = createSummaryLi(list);
-            targetUl.appendChild(li);
-        }
+    // Mensagens de "Vazio"
+    ids.forEach(id => {
+      if (uls[id] && uls[id].children.length === 0) {
+        const emptyLi = document.createElement("li");
+        emptyLi.style.opacity = "0.5";
+        emptyLi.style.fontSize = "0.85rem";
+        emptyLi.style.textAlign = "center";
+        emptyLi.style.listStyle = "none";
+        emptyLi.textContent = "Vazio";
+        uls[id].appendChild(emptyLi);
+      }
     });
   };
 
   /* 5. CATEGORIAS */
 
-  const setActiveCategory = (card) => {
-    if (activeCategoryCard) activeCategoryCard.classList.remove("active");
-    activeCategoryCard = card;
-    card.classList.add("active");
-
-    const isDefault = card.dataset.categoryId === "default-listas";
-    // 🛑 Os botões globais de Categoria (edit/delete) foram removidos.
-    // O addListBtnGlobal continua para criar listas na categoria ativa.
-    addListBtnGlobal.disabled = false;
-  };
-
   const createCategoryCard = (title, id = `cat-${Date.now()}`) => {
     const card = document.createElement("article");
     card.className = "cardlist";
     card.dataset.categoryId = id;
+    const isDefault = id === "default-listas";
+    if (isDefault) card.classList.add("default-card");
 
-    if (id === "default-listas") {
-      card.classList.add("default-card");
-    }
-
-    const isDisabled = id === "default-listas" ? "disabled" : "";
-
-    // Estrutura replicada do seu exemplo
     card.innerHTML = `
-            <h2><i class="fa-solid fa-list-check"></i> ${title}</h2>
-
-            <button class="btn btn-primary add-list-btn">
-                + Adicionar Lista
-            </button>
-
-            <ul class="listas-container" id="listasContainer-${id}"></ul>
-
-            <div class="category-actions">
-                <button class="btn btn-secondary edit-cat-btn" ${isDisabled}>
-                    <i class="fas fa-edit"></i> Editar Categoria
-                </button>
-
-                <button class="btn btn-delete delete-cat-btn" ${isDisabled}>
-                    <i class="fas fa-trash-alt"></i> Excluir Categoria
-                </button>
-            </div>
-        `;
-
-    card.addEventListener("click", (e) => {
-      // Ativa a categoria se o clique não for em um botão de ação
-      if (!e.target.closest("button")) setActiveCategory(card);
-    });
+      <h2><i class="fa-solid fa-list-check"></i> ${title}</h2>
+      <button class="btn btn-primary add-list-btn">+ Adicionar Lista</button>
+      <ul class="listas-container" id="listasContainer-${id}"></ul>
+      <div class="category-actions">
+          <button class="btn btn-secondary edit-cat-btn" ${isDefault ? 'disabled' : ''}><i class="fas fa-edit"></i> Editar Categoria</button>
+          <button class="btn btn-delete delete-cat-btn" ${isDefault ? 'disabled' : ''}><i class="fas fa-trash-alt"></i> Excluir Categoria</button>
+      </div>`;
 
     card.querySelector(".add-list-btn").onclick = (e) => {
-      e.stopPropagation();
-      setActiveCategory(card);
-      openCreateListModal();
-    };
-
-    const deleteBtn = card.querySelector(".delete-cat-btn");
-    if (deleteBtn && id !== "default-listas") {
-      // 🛑 Ação de exclusão LOCAL
-      deleteBtn.onclick = (e) => {
         e.stopPropagation();
-        const categoryTitle = card.querySelector("h2").textContent.replace(/^\S+\s/, "").trim();
-        if (
-          confirm(
-            `Tem certeza que deseja excluir a categoria "${categoryTitle}"? TODAS as listas contidas nela serão PERMANENTEMENTE excluídas.`
-          )
-        ) {
-          deleteCategory(id);
+        openCreateListModal(id);
+    };
+    
+    if (!isDefault) {
+      card.querySelector(".delete-cat-btn").onclick = (e) => {
+        e.stopPropagation();
+        if (confirm(`Excluir categoria "${title}"?`)) {
+          allLists = allLists.filter(l => l.categoryId !== id);
+          card.remove();
+          saveAll();
+          renderLists();
         }
       };
-    }
-
-    const editBtn = card.querySelector(".edit-cat-btn");
-    if (editBtn && id !== "default-listas") {
-      // 🛑 Ação de edição LOCAL
-      editBtn.onclick = (e) => {
+      card.querySelector(".edit-cat-btn").onclick = (e) => {
         e.stopPropagation();
-        const categoryTitle = card.querySelector("h2").textContent.replace(/^\S+\s/, "").trim();
-        openEditCatModal(id, categoryTitle);
+        elements.inputs.editCatTitle.value = title;
+        elements.modals.editCat.dataset.editingId = id;
+        elements.modals.editCat.classList.add("open");
       };
     }
-
     return card;
   };
 
-  // IMPLEMENTAÇÃO: EXCLUSÃO EM CASCATA
-  const deleteCategory = (id) => {
-    // Filtra e mantém apenas as listas que NÃO PERTENCEM ao ID excluído (exclusão em cascata)
-    allLists = allLists.filter((l) => l.categoryId !== id);
-    
-    const cardToRemove = document.querySelector(`.cardlist[data-category-id="${id}"]`);
-    if (cardToRemove) {
-        cardToRemove.remove();
-    }
-    
-    // Se a categoria excluída era a ativa, volta para a padrão
-    if (activeCategoryCard && activeCategoryCard.dataset.categoryId === id) {
-        setActiveCategory(defaultCard);
-    }
-    
-    saveListsToLocalStorage();
-    renderLists();
+  /* 6. MODAIS E EVENTOS */
+
+  const openCreateListModal = (catId) => {
+    closeModal();
+    elements.modals.createList.dataset.targetCat = catId;
+    elements.inputs.createListTitle.value = "";
+    elements.inputs.createListDate.value = "";
+    elements.containers.createItens.innerHTML = "";
+    addItemInput(elements.containers.createItens);
+    elements.modals.createList.classList.add("open");
   };
-
-  // Novo: Abre o modal de criação de categoria
-  addCatBtn.addEventListener("click", () => {
-    createCatTitleInput.value = "";
-    createCatModal.classList.add("open");
-  });
-
-  // Novo: Salva a nova categoria
-  saveCreateCatBtn.addEventListener("click", () => {
-    const title = createCatTitleInput.value.trim();
-    if (!title) {
-      alert("O título da categoria é obrigatório.");
-      return;
-    }
-    const newCard = createCategoryCard(title);
-    customListsContainer.appendChild(newCard);
-    setActiveCategory(newCard);
-    closeModal();
-    saveListsToLocalStorage();
-  });
-
-  // Novo: Abre o modal de edição de categoria
-  const openEditCatModal = (id, title) => {
-    editCatTitleInput.value = title;
-    editCatModal.dataset.editingId = id; // Guarda o ID do card
-    editCatModal.classList.add("open");
-  };
-
-  // Novo: Salva a edição da categoria
-  saveEditCatBtn.addEventListener("click", () => {
-    const editingId = editCatModal.dataset.editingId; // Busca o ID guardado
-    const newTitle = editCatTitleInput.value.trim();
-
-    if (!newTitle) {
-      alert("O título da categoria é obrigatório.");
-      return;
-    }
-
-    // Busca o card pelo ID, garantindo que a edição é isolada
-    const cardToEdit = document.querySelector(`.cardlist[data-category-id="${editingId}"]`);
-    
-    if (cardToEdit) {
-        const titleElement = cardToEdit.querySelector("h2");
-        titleElement.innerHTML = `<i class="fa-solid fa-list-check"></i> ${newTitle}`;
-    }
-
-    closeModal();
-    saveListsToLocalStorage();
-  });
-
-  // Eventos de Modais Gerais
-  [
-    closeCreateCatModalBtn,
-    closeEditCatModalBtn,
-    closeCreateListModalBtn,
-    closeEditListModalBtn,
-    document.getElementById("closeViewListModalBtn"),
-  ].forEach((btn) => {
-    if (btn) btn.addEventListener("click", closeModal);
-  });
-
-  // 🛑 REMOVIDOS os listeners para editCatBtnGlobal e deleteCatBtnGlobal
-
-  addListBtnGlobal.addEventListener("click", () => {
-    if (!activeCategoryCard) setActiveCategory(defaultCard);
-    openCreateListModal();
-  });
-
-  /* 6. CRIAÇÃO DE LISTAS */
-
-  const openCreateListModal = () => {
-    closeModal();
-    document.getElementById("createListTitle").value = "";
-    document.getElementById("createListDueDate").value = "";
-    createItensWrapper.innerHTML = "";
-    addItemInput(createItensWrapper);
-    createListModal.classList.add("open");
-  };
-
-  addItemBtn.addEventListener("click", () => addItemInput(createItensWrapper));
-
-  saveCreateListBtn.addEventListener("click", () => {
-    const title = document.getElementById("createListTitle").value.trim();
-    const dueDate = document.getElementById("createListDueDate").value;
-    const items = [...document.querySelectorAll("#itensWrapper input")]
-      .map((i) => ({ name: i.value.trim(), done: false }))
-      .filter((i) => i.name);
-
-    if (!title || !items.length) {
-      alert("Título e pelo menos um item são obrigatórios");
-      return;
-    }
-
-    if (!activeCategoryCard) setActiveCategory(defaultCard);
-
-    allLists.push({
-      id: `list-${Date.now()}`,
-      title,
-      dueDate,
-      categoryId: activeCategoryCard.dataset.categoryId,
-      items,
-    });
-
-    closeModal();
-    saveListsToLocalStorage();
-    renderLists();
-  });
-
-  /* 7. VISUALIZAÇÃO DE LISTAS */
 
   const openViewListModal = (id) => {
-    closeModal();
-    const list = allLists.find((l) => l.id === id);
+    const listIndex = allLists.findIndex(l => l.id === id);
+    const list = allLists[listIndex];
     if (!list) return;
 
-    currentViewListId = id;
-    viewListTitle.textContent = list.title;
-    document.getElementById("viewListDueDateDisplay").textContent =
-      formatDueDate(list.dueDate);
+    document.getElementById("viewListTitle").textContent = list.title;
+    
+    // Exibe a Data no Modal
+    const dateEl = document.getElementById("viewListDueDate");
+    if (dateEl) dateEl.textContent = formatDueDate(list.dueDate);
 
-    // 1. Atualiza o status geral do modal
-    const status = getListStatus(list); 
-    viewListStatusSpan.className = status;
-    viewListStatusSpan.textContent = status.toUpperCase().replace('-', ' ');
-
-    viewListItemsUl.innerHTML = "";
-
+    elements.containers.viewListItems.innerHTML = "";
     list.items.forEach((item, i) => {
       const li = document.createElement("li");
+      if (item.done) li.classList.add("done");
+      const checkboxId = `chk-${id}-${i}`;
+      li.innerHTML = `<input type="checkbox" id="${checkboxId}" ${item.done ? 'checked' : ''}><label for="${checkboxId}">${item.name}</label>`;
 
-      // Adiciona a classe 'done' ao <li> se o item estiver concluído
-      if (item.done) {
-        li.classList.add("done");
-      }
-
-      li.innerHTML = `
-                <input type="checkbox" id="viewItem-${id}-${i}" ${
-        item.done ? "checked" : ""
-      }>
-                <label for="viewItem-${id}-${i}">${item.name}</label>
-            `;
-      
-      li.querySelector("input").onchange = () => {
-        const listToUpdate = allLists.find((l) => l.id === id);
-        if (listToUpdate) {
-          listToUpdate.items[i].done = !listToUpdate.items[i].done;
-          saveListsToLocalStorage();
-
-          // Atualiza a classe no <li> e o status/contador imediatamente
-          if (listToUpdate.items[i].done) {
-            li.classList.add("done");
-          } else {
-            li.classList.remove("done");
-          }
-
-          // Atualiza os contadores
-          const feitos = listToUpdate.items.filter((i) => i.done).length;
-          contadorFeitosSpan.textContent = feitos;
-          
-          // Atualiza o status geral do modal 
-          const newStatus = getListStatus(listToUpdate); 
-          viewListStatusSpan.className = newStatus;
-          viewListStatusSpan.textContent = newStatus.toUpperCase().replace('-', ' ');
-          
-          renderLists(); 
-        }
+      li.querySelector("input").onchange = (e) => {
+        allLists[listIndex].items[i].done = e.target.checked;
+        saveAll();
+        renderLists();
+        if (e.target.checked) li.classList.add("done");
+        else li.classList.remove("done");
+        updateModalStatus(allLists[listIndex]);
       };
-      viewListItemsUl.appendChild(li);
+      elements.containers.viewListItems.appendChild(li);
     });
 
-    contadorFeitosSpan.textContent = list.items.filter((i) => i.done).length;
-    contadorTotalSpan.textContent = list.items.length;
-
-    viewListModal.classList.add("open");
-  };
-
-  // Eventos do Modal de Visualização
-  editListBtn.addEventListener("click", () => {
-    if (currentViewListId) openEditListModal(currentViewListId);
-  });
-
-  uncheckAllBtn.addEventListener("click", () => {
-    const list = allLists.find((l) => l.id === currentViewListId);
-    if (list) {
-      list.items.forEach((item) => (item.done = false));
-      saveListsToLocalStorage();
-      
-      // Atualiza o DOM e os contadores sem recarregar o modal
-      const listElements = viewListItemsUl.querySelectorAll('li');
-      listElements.forEach(li => {
-          li.classList.remove('done');
-          li.querySelector('input[type="checkbox"]').checked = false;
-      });
-
-      // Atualiza contadores e status do modal
-      contadorFeitosSpan.textContent = 0;
-      const newStatus = getListStatus(list); 
-      viewListStatusSpan.className = newStatus;
-      viewListStatusSpan.textContent = newStatus.toUpperCase().replace('-', ' ');
-
-      renderLists();
-    }
-  });
-
-  deleteListBtn.addEventListener("click", () => {
-    if (confirm("Tem certeza que deseja excluir esta lista?")) {
-      allLists = allLists.filter((l) => l.id !== currentViewListId);
-      closeModal();
-      saveListsToLocalStorage();
-      renderLists();
-    }
-  });
-
-  /* 8. EDIÇÃO DE LISTAS */
-
-  const openEditListModal = (id) => {
-    closeModal();
-    const list = allLists.find((l) => l.id === id);
-    if (!list) return;
-
-    currentEditListId = id;
-    editListTitleInput.value = list.title;
-    editListDueDateInput.value = list.dueDate;
-    editItensWrapper.innerHTML = "";
-
-    // Os itens no modal de edição são apenas para o nome, não para o status `done`.
-    list.items.forEach((item) => addItemInput(editItensWrapper, item.name));
-
-    if (list.items.length === 0) addItemInput(editItensWrapper);
-
-    editListModal.classList.add("open");
-  };
-
-  addEditItemBtn.addEventListener("click", () =>
-    addItemInput(editItensWrapper)
-  );
-
-  saveEditListBtn.addEventListener("click", () => {
-    const listIndex = allLists.findIndex((l) => l.id === currentEditListId);
-    if (listIndex === -1) return;
-
-    const title = editListTitleInput.value.trim();
-    const dueDate = editListDueDateInput.value;
-
-    // Pega o array de itens existente para preservar o status 'done'
-    const existingItems = allLists[listIndex].items;
-
-    const newItems = [...document.querySelectorAll("#editItensWrapper .item-input-group input")]
-      .map((i) => {
-        const name = i.value.trim();
-        // Preserva o status 'done' se um item com o mesmo nome existir
-        const existingItem = existingItems.find(
-          (item) => item.name === name
-        );
-        return {
-          name: name,
-          // Se o nome for igual a um existente, usa o status 'done' dele. Senão, é 'false'.
-          done: existingItem ? existingItem.done : false, 
-        };
-      })
-      .filter((i) => i.name);
-
-    if (!title || !newItems.length) {
-      alert("Título e pelo menos um item são obrigatórios");
-      return;
-    }
-
-    allLists[listIndex] = {
-      ...allLists[listIndex],
-      title,
-      dueDate,
-      items: newItems,
+    const updateModalStatus = (currentList) => {
+      const status = getListStatus(currentList);
+      const statusSpan = document.getElementById("viewListStatus");
+      statusSpan.textContent = status.toUpperCase();
+      statusSpan.className = status;
+      document.getElementById("contadorFeitos").textContent = currentList.items.filter(it => it.done).length;
+      document.getElementById("contadorTotal").textContent = currentList.items.length;
     };
 
-    closeModal();
-    saveListsToLocalStorage();
-    renderLists();
-  });
+    updateModalStatus(list);
 
-  /* 9. INICIALIZAÇÃO */ 
+    elements.btns.uncheckAll.onclick = () => {
+      allLists[listIndex].items.forEach(item => item.done = false);
+      saveAll();
+      renderLists();
+      openViewListModal(id);
+    };
 
-  loadListsFromLocalStorage();
-  restoreCategories();
+    elements.btns.deleteList.onclick = () => {
+      if (confirm("Excluir esta lista?")) {
+        allLists.splice(listIndex, 1);
+        saveAll();
+        renderLists();
+        closeModal();
+      }
+    };
 
-  if (defaultCard) {
-    if (!defaultCard.classList.contains("default-card")) {
-      defaultCard.classList.add("default-card");
+    elements.btns.editList.onclick = () => {
+      closeModal();
+      openEditListModal(id);
+    };
+
+    elements.modals.viewList.classList.add("open");
+  };
+
+  const openEditListModal = (id) => {
+    const listIndex = allLists.findIndex(l => l.id === id);
+    const list = allLists[listIndex];
+    if (!list) return;
+
+    elements.modals.editList.dataset.editingId = id;
+    elements.inputs.editListTitle.value = list.title;
+    elements.inputs.editListDate.value = list.dueDate;
+    elements.containers.editItens.innerHTML = "";
+    list.items.forEach(item => addItemInput(elements.containers.editItens, item.name));
+    elements.modals.editList.classList.add("open");
+  };
+
+  elements.btns.addEditItem.onclick = () => addItemInput(elements.containers.editItens);
+
+  elements.btns.saveEditList.onclick = () => {
+    const id = elements.modals.editList.dataset.editingId;
+    const listIndex = allLists.findIndex(l => l.id === id);
+    const title = elements.inputs.editListTitle.value.trim();
+    const items = [...elements.containers.editItens.querySelectorAll("input")].map((i, idx) => {
+        const wasDone = allLists[listIndex].items[idx] ? allLists[listIndex].items[idx].done : false;
+        return { name: i.value.trim(), done: wasDone };
+    }).filter(i => i.name);
+
+    if (title && items.length) {
+      allLists[listIndex].title = title;
+      allLists[listIndex].dueDate = elements.inputs.editListDate.value;
+      allLists[listIndex].items = items;
+      saveAll();
+      renderLists();
+      closeModal();
     }
-    defaultCard.dataset.categoryId = "default-listas";
-    const editBtn = defaultCard.querySelector(".edit-cat-btn");
-    const deleteBtn = defaultCard.querySelector(".delete-cat-btn");
-    if (editBtn) editBtn.disabled = true;
-    if (deleteBtn) deleteBtn.disabled = true;
+  };
+
+  if (elements.btns.addListGlobal) {
+    elements.btns.addListGlobal.onclick = () => openCreateListModal("default-listas");
   }
 
-  // Inicializa a lista de exemplo se estiver vazia
-  if (!localStorage.getItem("diaryAppLists") || allLists.length === 0) {
-    
-    const today = new Date();
-    const nextWeek = new Date();
-    nextWeek.setDate(today.getDate() + 7); // Exemplo 'Próximos 7 Dias'
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1); // Exemplo 'Pendente' (atrasada)
-    
-    const nextWeekDate = `${nextWeek.getFullYear()}-${String(nextWeek.getMonth() + 1).padStart(2, '0')}-${String(nextWeek.getDate()).padStart(2, '0')}`;
-    const yesterdayDate = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
-    
-    // Esta lista será 'nao-iniciada'
-    allLists.push({
-      id: "demo-sem-data",
-      title: "C - Lista Sem Data Limite",
-      dueDate: "",
-      categoryId: "default-listas",
-      items: [
-        { name: "Item Pendente Sem Data", done: false },
-      ],
-    });
-    
-    allLists.push({
-      id: "demo-prox-semana",
-      title: "B - Lista para Próxima Semana",
-      dueDate: nextWeekDate,
-      categoryId: "default-listas",
-      items: [{ name: "Precisa ser feita", done: false }], // Status será 'nao-iniciada'
-    });
+  elements.btns.saveCreateList.onclick = () => {
+    const title = elements.inputs.createListTitle.value.trim();
+    const items = [...elements.containers.createItens.querySelectorAll("input")].map(i => ({ name: i.value.trim(), done: false })).filter(i => i.name);
+    if (title && items.length) {
+      allLists.push({
+        id: `list-${Date.now()}`,
+        title,
+        dueDate: elements.inputs.createListDate.value,
+        categoryId: elements.modals.createList.dataset.targetCat || "default-listas",
+        items
+      });
+      saveAll();
+      renderLists();
+      closeModal();
+    }
+  };
 
-    allLists.push({
-      id: "demo-atrasada",
-      title: "A - Lista Atrasada",
-      dueDate: yesterdayDate,
-      categoryId: "default-listas",
-      items: [{ name: "Precisa ser feita", done: false }], // Status será 'pendente'
-    });
-    
-    saveListsToLocalStorage();
-  }
+  elements.btns.saveCreateCat.onclick = () => {
+    const title = elements.inputs.createCatTitle.value.trim();
+    if (title) {
+      saveAll();
+      const savedCats = JSON.parse(localStorage.getItem("diaryAppCategories") || "[]");
+      savedCats.push({ id: `cat-${Date.now()}`, title });
+      localStorage.setItem("diaryAppCategories", JSON.stringify(savedCats));
+      init(); 
+      closeModal();
+    }
+  };
 
-  if (defaultCard) setActiveCategory(defaultCard);
-  renderLists();
+  elements.btns.saveEditCat.onclick = () => {
+    const editingId = elements.modals.editCat.dataset.editingId;
+    const newTitle = elements.inputs.editCatTitle.value.trim();
+    if (newTitle) {
+      const savedCats = JSON.parse(localStorage.getItem("diaryAppCategories") || "[]");
+      const catIdx = savedCats.findIndex(c => c.id === editingId);
+      if (catIdx !== -1) savedCats[catIdx].title = newTitle;
+      localStorage.setItem("diaryAppCategories", JSON.stringify(savedCats));
+      init();
+      closeModal();
+    }
+  };
+
+  elements.btns.addCat.onclick = () => {
+    elements.inputs.createCatTitle.value = "";
+    elements.modals.createCat.classList.add("open");
+  };
+
+  elements.btns.addItem.onclick = () => addItemInput(elements.containers.createItens);
+  document.querySelectorAll("[id^='close']").forEach(btn => btn.onclick = closeModal);
+
+  const init = () => {
+    const savedLists = localStorage.getItem("diaryAppLists");
+    if (savedLists) allLists = JSON.parse(savedLists);
+    const savedCats = localStorage.getItem("diaryAppCategories");
+    elements.containers.customLists.innerHTML = "";
+    if (savedCats) {
+      const cats = JSON.parse(savedCats).sort((a,b) => a.title.localeCompare(b.title));
+      cats.forEach(c => elements.containers.customLists.appendChild(createCategoryCard(c.title, c.id)));
+    }
+    renderLists();
+  };
+
+  init();
 });
