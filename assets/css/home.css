@@ -1,116 +1,4 @@
-:root {
-  --cor-primaria: #6d41d8;
-  --cor-primaria-hover: #5a35b6;
-  --cor-borda: #d5bfff;
-  --cor-input-bg: #f8f3ff;
-  --cor-label: #8b7bb9;
-  --cor-lilas: #b69bff;
-  --cor-rosa: #ff91d9;
-  --cor-azul: #7ad7ff;
-  --cor-menta: #a8ffb0;
-  --cor-amarelo: #ffcf87;
-  --grad1: #f3e8ff;
-  --grad2: #d9c4ff;
-  --grad3: #b69bff;
-  --texto: #4b3375;
-  --branco: #ffffff;
-
-  /* Cores de Status para Listas e Lembretes (Consistência) */
-  --cor-concluida: #4caf50;
-  --cor-pendente: #f44336;
-  --cor-andamento: #2196f3;
-}
-
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
-/* Body e layout */
-body {
-  background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
-  min-height: 100vh;
-  display: flex;
-}
-
-/* ================= MENU (DEFAULT: DESKTOP) ================= */
-aside {
-  width: 230px;
-  background: linear-gradient(
-    180deg,
-    var(--cor-lilas),
-    var(--grad3),
-    var(--grad2)
-  );
-  height: 100vh;
-  padding: 30px 20px;
-  border-right: 4px dashed var(--cor-borda);
-  position: fixed;
-  left: 0;
-  top: 0;
-  transition: transform 0.3s ease;
-  z-index: 1000;
-}
-aside h1 {
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 30px;
-  color: var(--cor-primaria);
-}
-aside ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-aside li {
-  padding: 12px 14px;
-  background: #ffffffaa;
-  border-radius: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-  backdrop-filter: blur(6px);
-}
-aside li:hover {
-  background: #ffffffdd;
-  transform: translateX(4px);
-}
-
-aside ul li a {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-  color: inherit;
-}
-
-aside li.active {
-  background: #a489ef;
-  color: #fff;
-}
-
-/* ================= BOTÃO MENU ================= */
-#toggleMenu {
-  display: none; /* só aparece no mobile */
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 200;
-  font-size: 24px;
-  background: var(--cor-primaria);
-  color: #fff;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Main (Conteúdo Principal) */
+/* ================= MAIN ================= */
 main {
   flex: 1;
   padding: 60px;
@@ -121,7 +9,7 @@ main {
   align-items: flex-start; /* Alinhado ao topo */
 }
 
-/* ------------------------Cards Base (AJUSTADO PARA ALTURA FIXA) -------------------------------- */
+/* ------------------------Cards Base -------------------------------- */
 .cardcal,
 .cardlist,
 .cardlemb,
@@ -149,7 +37,7 @@ main {
   min-width: 300px;
   max-width: 300px;
   width: 100%;
-  height: 440px; /* ALTURA FIXA (Para alinhar com calendário) */
+  height: 440px;
 }
 .carddiario {
   flex-direction: column;
@@ -274,28 +162,6 @@ main {
   padding-right: 8px;
 }
 
-/* -----------------Botões (Padronizado) -----------------*/
-.btn {
-  padding: 10px 15px;
-  border-radius: 14px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  background: var(--cor-lilas);
-  color: #fff;
-  transition: 0.2s;
-}
-.btn:hover {
-  background: var(--cor-rosa);
-  transform: translateY(-2px);
-}
-.btn-primary {
-  background: var(--cor-primaria);
-}
-.btn-primary:hover {
-  background: var(--cor-primaria-hover);
-}
-
 /* ----------------- Modal Base -----------------*/
 .modal {
   display: none;
@@ -347,27 +213,6 @@ main {
   outline: none;
   border-color: var(--cor-primaria);
   box-shadow: 0 0 6px var(--cor-primaria);
-}
-
-.btn-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 20px;
-}
-.btn-save {
-  background: var(--cor-lilas);
-  color: #fff;
-}
-.btn-save:hover {
-  background: var(--cor-rosa);
-}
-.btn-cancel {
-  background: #eee;
-  color: #555;
-}
-.btn-cancel:hover {
-  background: #ddd;
 }
 
 /* ----------------- Modal Visualizar Lista (Simplificado para Home) -----------------*/
@@ -582,11 +427,6 @@ main {
 
 /* ================== 1024px (TABLET GRANDE) ============ */
 @media (max-width: 1024px) {
-  aside {
-    width: 260px;
-    padding-top: 30px;
-  }
-
   main {
     margin-left: 260px;
     padding: 40px;
@@ -633,33 +473,6 @@ main {
 
 /* ================== 900px ============================= */
 @media (max-width: 900px) {
-  /* Aside tela cheia e conteúdo abaixo do botão */
-  aside {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 88vw;
-    max-width: 300px;
-    height: 100vh;
-    padding-top: 90px;
-    overflow-y: auto;
-    transform: translateX(-100%);
-    z-index: 1200;
-  }
-
-  aside.menu-open {
-    transform: translateX(0);
-  }
-
-  #toggleMenu {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    padding: 8px 10px;
-    z-index: 1300;
-    display: block !important;
-  }
-
   main {
     margin-left: 0;
     padding: 40px 30px;
@@ -704,30 +517,6 @@ main {
 
 /* ================== 768px ============================= */
 @media (max-width: 768px) {
-  aside {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 260px;
-    height: 100vh;
-    padding-top: 90px;
-    transform: translateX(-100%);
-    overflow-y: auto;
-    z-index: 1200;
-  }
-
-  aside.menu-open {
-    transform: translateX(0);
-  }
-
-  #toggleMenu {
-    display: block !important;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1300;
-  }
-
   main {
     margin-left: 0;
     padding: 20px;
@@ -781,17 +570,6 @@ main {
 
 /* ================== 700px ============================= */
 @media (max-width: 700px) {
-  aside {
-    padding-top: 90px;
-    width: 88vw;
-    max-width: 300px;
-  }
-
-  #toggleMenu {
-    top: 14px;
-    left: 12px;
-  }
-
   main {
     padding: 25px;
     margin-top: 80px !important;
@@ -800,17 +578,6 @@ main {
 
 /* ================== 650px ============================= */
 @media (max-width: 650px) {
-  aside {
-    padding-top: 90px;
-    width: 88vw;
-    max-width: 300px;
-  }
-
-  #toggleMenu {
-    top: 14px;
-    left: 12px;
-  }
-
   main {
     padding: 22px;
     margin-top: 60px !important;
@@ -860,16 +627,6 @@ main {
 
 /* ================== 480px ============================= */
 @media (max-width: 480px) {
-  aside {
-    padding-top: 90px;
-    width: 88vw;
-  }
-
-  #toggleMenu {
-    top: 14px;
-    left: 12px;
-  }
-
   main {
     padding: 15px;
   }
@@ -944,17 +701,6 @@ main {
 
 /* ================== 320px ============================= */
 @media (max-width: 320px) {
-  aside {
-    padding-top: 90px;
-  }
-
-  #toggleMenu {
-    top: 10px;
-    left: 10px;
-    padding: 6px 8px;
-    font-size: 18px;
-  }
-
   main {
     padding: 10px;
   }
