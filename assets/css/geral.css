@@ -1,0 +1,542 @@
+:root {
+  --cor-primaria: #6d41d8;
+  --cor-primaria-hover: #5a35b6;
+  --cor-borda: #d5bfff;
+  --cor-input-bg: #f8f3ff;
+  --cor-label: #8b7bb9;
+  --cor-lilas: #b69bff;
+  --cor-rosa: #ff91d9;
+  --cor-azul: #7ad7ff;
+  --cor-menta: #a8ffb0;
+  --cor-amarelo: #ffcf87;
+  --grad1: #f3e8ff;
+  --grad2: #d9c4ff;
+  --grad3: #b69bff;
+  --texto: #4b3375;
+  --branco: #ffffff;
+
+  /* Cores de Status para Listas e Lembretes (Consistência) */
+  --cor-concluida: #4caf50;
+  --cor-pendente: #f44336;
+  --cor-andamento: #2196f3;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Body e layout */
+body {
+  background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ================= MENU (DEFAULT: DESKTOP) ================= */
+aside {
+  width: 230px;
+  background: linear-gradient(
+    180deg,
+    var(--cor-lilas),
+    var(--grad3),
+    var(--grad2)
+  );
+  height: 100vh;
+  padding: 30px 20px;
+  border-right: 4px dashed var(--cor-borda);
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+aside h1 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  color: var(--cor-primaria);
+}
+aside ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+aside li {
+  padding: 12px 14px;
+  background: #ffffffaa;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  backdrop-filter: blur(6px);
+}
+aside li:hover {
+  background: #ffffffdd;
+  transform: translateX(4px);
+}
+aside ul li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+aside li.active {
+  background: #a489ef;
+  color: #fff;
+}
+
+/* ================= BOTÃO MENU ================= */
+#toggleMenu {
+  display: none; /* só aparece no mobile */
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 200;
+  font-size: 24px;
+  background: var(--cor-primaria);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ================= BOTÕES (GERAIS) ================= */
+/* GERAL */
+.btn {
+  padding: 10px 15px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--cor-lilas);
+  color: #fff;
+  transition: 0.2s;
+}
+.btn:hover {
+  background: var(--cor-rosa);
+  transform: translateY(-2px);
+}
+.btn-primary {
+  background: var(--cor-primaria);
+}
+.btn-primary:hover {
+  background: var(--cor-primaria-hover);
+}
+
+/* CRIAR/EDITAR/VER */
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-save {
+  background: var(--cor-lilas);
+  color: #fff;
+}
+.btn-save:hover {
+  background: var(--cor-rosa);
+}
+
+.btn-cancel {
+  background: #eee;
+  color: #555;
+}
+.btn-cancel:hover {
+  background: #ddd;
+}
+
+.btn-delete {
+  background: #ff5e5e;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #e04b4b;
+}
+
+/* ======LISTAS E LEMBRETES=======*/
+
+/* CONTAINER GERAL DE WIDGETS (Resumo e Extra) */
+.top-widgets {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+/* Base para todos os cards */
+.card-widget {
+  background-color: var(--branco);
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  box-shadow: var(--sombra-padrao);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  border: 2px dashed var(--cor-borda);
+}
+.card-widget:hover {
+  transform: translateY(-0.3125rem);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+
+.card-widget h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-bottom: 15px;
+}
+
+/* WIDGET DE RESUMO TOTAL (DESTAQUE) */
+.resumo-total {
+  background: linear-gradient(135deg, var(--cor-lilas), var(--grad3));
+  color: var(--branco);
+  padding: 1rem 1rem;
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 10rem;
+  flex-shrink: 0;
+  flex-grow: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+}
+.resumo-total:hover {
+  transform: translateY(-0.3125rem);
+  box-shadow: 0 0.625rem 1.375rem rgba(0, 0, 0, 0.15);
+}
+.resumo-total h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-block-end: 0.3125rem;
+  color: var(--branco);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.resumo-total span {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--branco);
+}
+
+/* CARD DE RESUMO (LISTA DE DETALHES) */
+.card-resumo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 2px dashed var(--cor-borda);
+  background-color: var(--branco);
+  padding: 1.25rem 1rem;
+  border-radius: 1.25rem;
+  box-shadow: var(--sombra-padrao);
+  transition: transform 0.3s ease;
+  align-items: stretch;
+}
+.card-resumo:hover {
+  transform: translateY(-0.125rem);
+}
+
+/* Estilo Padronizado para os Blocos de Resumo Internos (incluindo .resumo-sete) */
+.resumo-and,
+.resumo-pend,
+.resumo-conc,
+.resumo-sete {
+  flex: 1 1 33%;
+  display: flex;
+  flex-direction: column;
+  padding-inline-end: 0.8rem;
+  border-inline-end: 1px solid #f0f0f0;
+  min-width: 90px;
+}
+.card-resumo > div:last-child {
+  border-inline-end: none;
+  padding-inline-end: 0;
+}
+.card-resumo h2 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-block-end: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* Itens de Lista no Resumo */
+.card-resumo ul {
+  font-size: 0.8rem;
+  color: #555;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-inline-end: 0.375rem;
+  flex: 1;
+}
+.card-resumo li {
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.625rem;
+  margin-block-end: 0.3rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 4px solid #ccc;
+  color: var(--texto);
+}
+.card-resumo li:hover {
+  background: #f0eafb;
+}
+
+/* STATUS CORES PARA ITENS DE RESUMO */
+.resumo-and li {
+  color: var(--cor-andamento);
+  border-left-color: var(--cor-andamento);
+  background-color: #e3f2fd;
+}
+.resumo-and li:hover {
+  background: #c3e2f8;
+}
+.resumo-pend li {
+  color: var(--cor-pendente);
+  border-left-color: var(--cor-pendente);
+  background-color: #ffe3e3;
+}
+.resumo-pend li:hover {
+  background: #fdd0d0;
+}
+.resumo-conc li {
+  color: var(--cor-concluida);
+  border-left-color: var(--cor-concluida);
+  background-color: #e8f5e9;
+}
+.resumo-conc li:hover {
+  background: #d4eac2;
+}
+/* Estilo: Próximas 7 Dias (Amarelo/Atenção) */
+.resumo-sete li {
+  color: #c07a00;
+  border-left-color: var(--cor-amarelo);
+  background-color: #fff8e1;
+}
+.resumo-sete li:hover {
+  background: #ffecb3;
+}
+
+.card-resumo ul::-webkit-scrollbar {
+  width: 0.375rem;
+}
+.card-resumo ul::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 0.625rem;
+}
+
+
+
+
+
+
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 18px;
+  width: 360px;
+  max-width: 95%;
+}
+
+.lemb-container-principal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.cardlemb {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  border: 2px dashed #ddd;
+}
+
+.lembs-container {
+  list-style: none;
+  padding: 0;
+}
+
+.lemb-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: #f5f5f5;
+}
+
+.lemb-item.concluido {
+  text-decoration: line-through;
+  opacity: .6;
+}
+
+.actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 6px;
+}
+
+
+
+
+
+
+
+/* ================== MEDIA QUERIES ===================== */
+
+/* ================== 1024px (TABLET GRANDE) ============ */
+@media (max-width: 1024px) {
+  aside {
+    width: 260px;
+    padding-top: 30px;
+  }
+}
+
+/* ================== 900px ============================= */
+@media (max-width: 900px) {
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 88vw;
+    max-width: 300px;
+    height: 100vh;
+    padding-top: 90px;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    z-index: 1200;
+  }
+
+  aside.menu-open {
+    transform: translateX(0);
+  }
+
+  #toggleMenu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 8px 10px;
+    z-index: 1300;
+    display: block !important;
+  }
+}
+
+/* ================== 768px ============================= */
+@media (max-width: 768px) {
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    padding-top: 90px;
+    transform: translateX(-100%);
+    overflow-y: auto;
+    z-index: 1200;
+  }
+
+  aside.menu-open {
+    transform: translateX(0);
+  }
+
+  #toggleMenu {
+    display: block !important;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1300;
+  }
+}
+
+/* ================== 700px ============================= */
+@media (max-width: 700px) {
+  aside {
+    padding-top: 90px;
+    width: 88vw;
+    max-width: 300px;
+  }
+
+  #toggleMenu {
+    top: 14px;
+    left: 12px;
+  }
+}
+
+/* ================== 650px ============================= */
+@media (max-width: 650px) {
+  aside {
+    padding-top: 90px;
+    width: 88vw;
+    max-width: 300px;
+  }
+
+  #toggleMenu {
+    top: 14px;
+    left: 12px;
+  }
+}
+
+/* ================== 480px ============================= */
+@media (max-width: 480px) {
+  aside {
+    padding-top: 90px;
+    width: 88vw;
+  }
+
+  #toggleMenu {
+    top: 14px;
+    left: 12px;
+  }
+}
+
+/* ================== 320px ============================= */
+@media (max-width: 320px) {
+  aside {
+    padding-top: 90px;
+  }
+
+  #toggleMenu {
+    top: 10px;
+    left: 10px;
+    padding: 6px 8px;
+    font-size: 18px;
+  }
+}
