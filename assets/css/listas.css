@@ -547,6 +547,103 @@ main {
   }
 }
 
+/* ================== 900px ============================
+   Tablet / Mobile grande
+====================================================== */
+@media (max-width: 900px) {
+  /* MAIN */
+  main {
+    margin-left: 0;          /* remove espaço do menu lateral */
+    padding: 30px 25px;      /* distância interna confortável */
+    gap: 25px;               /* distância entre os cards */
+    width: 100%;
+    margin-top: 50px;
+  }
+
+/* Resumo total ocupa a linha inteira */
+.resumo-total {
+  flex: 1 1 100%;
+}
+
+/* Demais cards de resumo em 2 colunas */
+.card-resumo {
+  flex: 1 1 45%;
+}
+
+  /* CARD LISTA (container principal) */
+  .cardlist {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  /* GRID DAS LISTAS */
+  .listas-container-principal {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  /* LISTAS COM ROLAGEM */
+  #listasContainer,
+  .listas-container {
+    max-height: 240px;
+  }
+
+  /* ITENS DAS LISTAS */
+  .list-item,
+  .list-item-summary {
+    padding: 9px 12px;
+    font-size: 13.5px;
+  }
+
+  /* BOTÃO NOVA CATEGORIA */
+  #addCatBtn {
+    padding: 9px 16px !important;
+    font-size: 14px !important;
+  }
+
+  /* MODAL */
+  .modal-content {
+    width: 320px;
+    padding: 18px 20px;
+  }
+
+  .modal-content h3 {
+    font-size: 19px;
+  }
+
+  /* INPUTS DO MODAL */
+  .modal-content input[type="text"],
+  .modal-content input[type="date"] {
+    font-size: 13.5px;
+  }
+
+  /* LISTA DE ITENS NO MODAL */
+  #viewListItems {
+    max-height: 45vh;
+  }
+
+  /* BOTÕES NO MODAL */
+  #viewListModal .btn-group {
+    gap: 6px;
+  }
+
+  #viewListModal .btn-group .btn {
+    min-width: 85px;
+    font-size: 13px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width: 768px) {
   main {
     margin-left: 0;

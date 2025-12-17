@@ -423,139 +423,111 @@ main {
   text-decoration: line-through;
 }
 
-/* ================== MEDIA QUERIES ===================== */
+/* ======================================================
+   📐 RESPONSIVIDADE
+====================================================== */
 
-/* ================== 1024px (TABLET GRANDE) ============ */
-@media (max-width: 1024px) {
+/* ================== 1200px ===========================
+   Notebook pequeno / transição
+====================================================== */
+@media (max-width: 1200px) {
   main {
-    margin-left: 260px;
     padding: 40px;
     gap: 25px;
-    flex-wrap: wrap;
+  }
+
+  .cardcal {
+    max-width: 100%;
+  }
+}
+
+/* ================== 1024px (TABLET) ==================
+   👉 Calendário ocupa o card todo
+====================================================== */
+@media (max-width: 1024px) {
+  main {
+     margin-top: 50px; /* tablet costuma precisar um pouco mais */
+    margin-left: 230px;
+    padding: 35px;
+    gap: 25px;
     justify-content: center;
-    margin-top: 80px !important;
   }
 
-  /* Resetando altura fixa para layout responsivo em tablet */
-  .cardcal,
-  .cardlist,
-  .cardlemb,
-  .carddiario {
-    height: auto;
-    max-height: 1000px;
-  }
-
+  /* Cards */
   .cardcal,
   .cardlist,
   .cardlemb,
   .carddiario {
     width: 48%;
     min-width: 320px;
+    height: auto;
   }
 
+  /* 🔥 Calendário em coluna */
   .cardcal {
-    flex-direction: row;
+    flex-direction: column;
+    max-width: 100%;
   }
 
   .calendario-box {
-    width: 55%;
-  }
-  .eventos-box {
-    width: 45%;
-    max-height: 320px; /* Restaura altura máxima para eventos em tablet */
+    width: 100%;
+    max-width: 100%;
   }
 
+  .eventos-box {
+    width: 100%;
+    margin-top: 20px;
+    padding-left: 0;
+    border-left: none;
+    max-height: 260px;
+  }
+
+  /* Scroll interno */
   .listas-box ul,
   .lembretes-box ul {
-    max-height: 300px; /* Restaura altura máxima para listas em tablet */
+    max-height: 280px;
   }
 }
 
-/* ================== 900px ============================= */
+/* ================== 900px =============================
+   Tablet pequeno
+====================================================== */
 @media (max-width: 900px) {
   main {
     margin-left: 0;
-    padding: 40px 30px;
-    justify-content: center;
+    padding: 30px;
     gap: 25px;
-    margin-top: 80px !important;
   }
 
+  /* Cards empilhados */
   .cardcal,
   .cardlist,
   .cardlemb,
   .carddiario {
     width: 100%;
     max-width: 100%;
-    min-width: 100%;
-  }
-
-  .cardcal {
-    flex-direction: column;
-    height: auto;
-    max-height: 100%;
-  }
-
-  .calendario-box {
-    width: 100%;
-  }
-
-  .eventos-box {
-    width: 100%;
-    margin-top: 20px;
-    padding-left: 0;
-    border-left: none;
-    max-height: 300px; /* Ajuste para mobile */
-  }
-
-  /* AJUSTE DE ROLAGEM MOBILE: Dá mais altura para as listas internas no celular/tablet */
-  .listas-box ul,
-  .lembretes-box ul {
-    max-height: 45vh;
   }
 }
 
-/* ================== 768px ============================= */
+/* ================== 768px =============================
+   Tablet / Mobile grande
+====================================================== */
 @media (max-width: 768px) {
   main {
-    margin-left: 0;
-    padding: 20px;
-    justify-content: center;
+     margin-top: 60px; /* tablet costuma precisar um pouco mais */
+    padding: 25px;
     gap: 20px;
-    margin-top: 80px !important;
   }
 
   .cardcal,
   .cardlist,
   .cardlemb,
   .carddiario {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  .cardcal {
-    flex-direction: column;
-    height: auto;
-    max-height: 100%;
-  }
-
-  .calendario-box {
-    width: 100% !important;
+    padding: 20px;
   }
 
   .eventos-box {
-    width: 100% !important;
-    margin-top: 20px;
-    padding-left: 0;
-    border-left: none;
-  }
-
-  .listas-box,
-  .lembretes-box {
-    width: 100%;
-    padding-left: 0;
-    border-left: none;
-    margin-top: 20px;
+    max-height: 240px;
   }
 
   .mini-calendar {
@@ -563,72 +535,18 @@ main {
   }
 
   .day {
-    padding: 8px 5px;
+    padding: 8px;
     font-size: 14px;
   }
 }
 
-/* ================== 700px ============================= */
-@media (max-width: 700px) {
-  main {
-    padding: 25px;
-    margin-top: 80px !important;
-  }
-}
-
-/* ================== 650px ============================= */
-@media (max-width: 650px) {
-  main {
-    padding: 22px;
-    margin-top: 60px !important;
-  }
-
-  .cardcal,
-  .cardlist,
-  .cardlemb,
-  .carddiario {
-    padding: 20px;
-  }
-}
-
-/* ================== 600px ============================= */
+/* ================== 600px =============================
+   Mobile
+====================================================== */
 @media (max-width: 600px) {
-  .mini-calendar {
-    gap: 6px;
-  }
-  .day {
-    padding: 7px 5px;
-    font-size: 13px;
-  }
-}
-
-/* ================== 550px ============================= */
-@media (max-width: 550px) {
-  main {
-    padding: 20px;
-  }
-  .cardcal h2,
-  .listas-box h2,
-  .lembretes-box h2 {
-    font-size: 18px;
-  }
-}
-
-/* ================== 500px ============================= */
-@media (max-width: 500px) {
-  .day {
-    padding: 6px;
-    font-size: 12px;
-  }
-  .diario-card {
-    min-width: 180px;
-  }
-}
-
-/* ================== 480px ============================= */
-@media (max-width: 480px) {
   main {
     padding: 15px;
+    gap: 15px;
   }
 
   .cardcal,
@@ -638,86 +556,43 @@ main {
     padding: 15px;
   }
 
-  .calendario-box {
-    width: 100% !important;
+  /* Calendário compacto */
+  .mini-calendar {
+    gap: 5px;
   }
 
-  .eventos-box {
-    width: 100% !important;
-    margin-top: 16px;
-    padding-left: 0;
-    border-left: none;
-  }
-
-  .listas-box li,
-  .lembretes-box li {
-    padding: 8px 10px;
+  .day {
+    padding: 6px 0;
     font-size: 13px;
+    border-radius: 8px;
   }
 
-  .diario-card h3 {
-    font-size: 14px;
-  }
-  .diario-card p {
-    font-size: 12px;
-  }
-
-  .mini-calendar {
-    gap: 6px;
-  }
-}
-
-/* ================== 420px ============================= */
-@media (max-width: 420px) {
-  .day {
-    padding: 5px;
-    font-size: 12px;
-  }
-  .mini-calendar {
-    gap: 4px;
-  }
-}
-
-/* ================== 380px ============================= */
-@media (max-width: 380px) {
-  main {
-    padding: 12px;
-  }
-  .cardcal,
-  .cardlist,
-  .cardlemb,
-  .carddiario {
-    padding: 12px;
-  }
-}
-
-/* ================== 350px ============================= */
-@media (max-width: 350px) {
-  .day {
-    padding: 4px;
+  .week-days-header span {
     font-size: 11px;
   }
+
+  /* Scroll interno menor */
+  .listas-box ul,
+  .lembretes-box ul {
+    max-height: 220px;
+  }
+
+  /* Modal */
+  .modal-content {
+    padding: 20px;
+  }
 }
 
-/* ================== 320px ============================= */
-@media (max-width: 320px) {
-  main {
-    padding: 10px;
+/* ================== 480px =============================
+   Mobile pequeno
+====================================================== */
+@media (max-width: 480px) {
+  .diario-card {
+    min-width: 170px;
+    height: 140px;
   }
 
-  .cardcal,
-  .cardlist,
-  .cardlemb,
-  .carddiario {
-    padding: 10px;
-  }
-
-  .day {
-    padding: 3px;
-    font-size: 10px;
-  }
-
-  .mini-calendar {
-    gap: 3px;
+  .diario-header h2 {
+    font-size: 20px;
   }
 }
