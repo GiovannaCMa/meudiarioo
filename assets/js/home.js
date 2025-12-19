@@ -77,13 +77,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const diaHoje = hoje.getDate();
 
   const meses = [
-    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
 
   const mesesAbreviados = [
-    "Jan","Fev","Mar","Abr","Mai","Jun",
-    "Jul","Ago","Set","Out","Nov","Dez"
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
   ];
 
   /* ================== STORAGE ================== */
@@ -135,7 +155,10 @@ document.addEventListener("DOMContentLoaded", () => {
     (document.getElementById(id).style.display = "none");
 
   const formatarDataISO = (date) =>
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
 
   const formatarDataBR = (dateStr) => {
     if (!dateStr) return "sem data";
@@ -151,21 +174,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function statusTexto(status) {
     switch (status) {
-      case "concluida": return "Concluída";
-      case "andamento": return "Em andamento";
-      case "pendente": return "Pendente";
-      default: return "Não iniciada";
+      case "concluida":
+        return "Concluída";
+      case "andamento":
+        return "Em andamento";
+      case "pendente":
+        return "Pendente";
+      default:
+        return "Não iniciada";
     }
   }
 
   /* ================== ORDENAÇÃO ================== */
   function prioridadeStatus(status) {
     switch (status) {
-      case "pendente": return 0;
-      case "andamento": return 1;
+      case "pendente":
+        return 0;
+      case "andamento":
+        return 1;
       case "nao-iniciada":
-      case "normal": return 2;
-      default: return 3;
+      case "normal":
+        return 2;
+      default:
+        return 3;
     }
   }
 
@@ -182,49 +213,78 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ================== CALENDÁRIO ================== */
-  function renderCalendar() {
-    if (!el.calendar) return;
-    el.calendar.innerHTML = "";
-    el.calendarMonth.textContent = `${meses[mesAtual]} ${anoAtual}`;
+function renderCalendar() {
+  if (!el.calendar) return;
+  el.calendar.innerHTML = "";
+  el.calendarMonth.textContent = `${meses[mesAtual]} ${anoAtual}`;
 
-    const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
-    const diasMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
+  const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
+  const diasMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
 
-    for (let i = 0; i < primeiroDia; i++)
-      el.calendar.appendChild(document.createElement("div"));
-
-    for (let dia = 1; dia <= diasMes; dia++) {
-      const div = document.createElement("div");
-      div.className = "day";
-      div.textContent = dia;
-
-      const dataISO = formatarDataISO(new Date(anoAtual, mesAtual, dia));
-     const ehHoje = (dia === diaHoje && mesAtual === hoje.getMonth() && anoAtual === hoje.getFullYear());
-      const temEvento = eventos.some(e => e.data === dataISO);
-
-      // Lógica de classes corrigida para a legenda hjeven
-      if (ehHoje && temEvento) div.classList.add("hjeven");
-      else if (ehHoje) div.classList.add("today");
-      else if (temEvento) div.classList.add("evento");
-
-      div.onclick = () => {
-        el.eventDate.value = dataISO;
-        openModal("eventModal");
-      };
-
-      el.calendar.appendChild(div);
-    }
+  // 1. Cria os espaços vazios para alinhar o calendário
+  for (let i = 0; i < primeiroDia; i++) {
+    const empty = document.createElement("div");
+    empty.className = "day empty";
+    el.calendar.appendChild(empty);
   }
+
+  // 2. Renderiza os dias do mês
+  for (let dia = 1; dia <= diasMes; dia++) {
+    const div = document.createElement("div");
+    div.className = "day";
+    div.textContent = dia;
+
+    const dataISO = formatarDataISO(new Date(anoAtual, mesAtual, dia));
+    const ehHoje =
+      dia === diaHoje &&
+      mesAtual === hoje.getMonth() &&
+      anoAtual === hoje.getFullYear();
+
+    // Filtra os eventos do dia
+    const eventosDoDia = eventos.filter((e) => e.data === dataISO);
+    const temEvento = eventosDoDia.length > 0;
+
+    // --- HOVER: Título do evento aparece aqui ---
+    if (temEvento) {
+      // Cria a lista de textos para o balão do navegador (title)
+      const listaTextos = eventosDoDia.map(
+        (e) => `${e.hora || "00:00"} - ${e.texto}`
+      );
+      
+      // O title cria o "hover" automático por fora da data
+      div.title = listaTextos.join("\n"); 
+
+      // Opcional: Atributo para customização avançada via CSS
+      div.setAttribute("data-evento", listaTextos.join(", "));
+    }
+
+    // Aplica as classes de cores
+    if (ehHoje && temEvento) div.classList.add("hjeven");
+    else if (ehHoje) div.classList.add("today");
+    else if (temEvento) div.classList.add("evento");
+
+    div.onclick = () => {
+      el.eventDate.value = dataISO;
+      openModal("eventModal");
+    };
+
+    el.calendar.appendChild(div);
+  }
+}
 
   function renderEventos() {
     if (!el.eventosLista) return;
     el.eventosLista.innerHTML = "";
 
-    const hojeZero = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+    const hojeZero = new Date(
+      hoje.getFullYear(),
+      hoje.getMonth(),
+      hoje.getDate()
+    );
 
     const futuros = eventos
-      .filter(ev => parseDateLocal(ev.data) >= hojeZero)
-      .sort((a,b) => parseDateLocal(a.data) - parseDateLocal(b.data))
+      .filter((ev) => parseDateLocal(ev.data) >= hojeZero)
+      .sort((a, b) => parseDateLocal(a.data) - parseDateLocal(b.data))
       .slice(0, 10);
 
     if (!futuros.length) {
@@ -232,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    futuros.forEach(ev => {
+    futuros.forEach((ev) => {
       const li = document.createElement("li");
       const data = parseDateLocal(ev.data);
       const dia = data.getDate();
@@ -246,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ================== LISTAS ================== */
   const getListStatus = (list) => {
-    const feitos = list.items?.filter(i => i.done).length || 0;
+    const feitos = list.items?.filter((i) => i.done).length || 0;
     if (!list.items || list.items.length === 0) return "nao-iniciada";
     if (feitos === list.items.length) return "concluida";
     if (list.dueDate && new Date(list.dueDate + "T23:59:59") < new Date())
@@ -259,8 +319,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const listasAtuais = JSON.parse(localStorage.getItem(LISTAS_KEY)) || [];
 
     const ativas = listasAtuais
-      .filter(l => getListStatus(l) !== "concluida")
-      .sort((a,b) => ordenarPorPrioridade(a,b,getListStatus));
+      .filter((l) => getListStatus(l) !== "concluida")
+      .sort((a, b) => ordenarPorPrioridade(a, b, getListStatus));
 
     el.listasContainer.innerHTML = "";
 
@@ -270,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    ativas.forEach(list => {
+    ativas.forEach((list) => {
       const li = document.createElement("li");
       li.className = `list-item-summary ${getListStatus(list)}`;
       li.innerHTML = `
@@ -286,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function abrirListaPadronizada(id) {
     const listasAtuais = JSON.parse(localStorage.getItem(LISTAS_KEY)) || [];
-    const list = listasAtuais.find(l => l.id === id);
+    const list = listasAtuais.find((l) => l.id === id);
     if (!list) return;
 
     el.viewListTitle.textContent = list.title;
@@ -307,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <label for="item-${i}">${item.name}</label>
       `;
 
-      li.querySelector("input").onchange = e => {
+      li.querySelector("input").onchange = (e) => {
         item.done = e.target.checked;
         localStorage.setItem(LISTAS_KEY, JSON.stringify(listasAtuais));
         abrirListaPadronizada(id);
@@ -325,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
     el.viewListStatus.className = status;
 
     el.uncheckAllBtn.onclick = () => {
-      list.items.forEach(i => i.done = false);
+      list.items.forEach((i) => (i.done = false));
       localStorage.setItem(LISTAS_KEY, JSON.stringify(listasAtuais));
       abrirListaPadronizada(id);
       renderListas();
@@ -336,36 +396,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ================== LEMBRETES ================== */
   const getLembStatusHome = (lemb) => {
-    const feitos = lemb.items?.filter(i => i.done).length || 0;
+    const feitos = lemb.items?.filter((i) => i.done).length || 0;
     if (feitos && feitos === lemb.items?.length) return "concluida";
     if (lemb.dueDate && new Date(lemb.dueDate + "T00:00:00") < new Date())
       return "pendente";
     return feitos > 0 ? "andamento" : "normal";
   };
 
-/* ================== LEMBRETES (FUNCIONAL) ================== */
-function renderLembretes() {
-  if (!el.lembretesContainer) return;
-  // Busca os dados atualizados do localStorage
-  const dados = JSON.parse(localStorage.getItem(LEMBRETES_KEY)) || [];
+  /* ================== LEMBRETES (FUNCIONAL) ================== */
+  function renderLembretes() {
+    if (!el.lembretesContainer) return;
+    // Busca os dados atualizados do localStorage
+    const dados = JSON.parse(localStorage.getItem(LEMBRETES_KEY)) || [];
 
-  const ativos = dados
-    .filter(l => getLembStatusHome(l) !== "concluida")
-    .sort((a,b) => ordenarPorPrioridade(a,b,getLembStatusHome));
+    const ativos = dados
+      .filter((l) => getLembStatusHome(l) !== "concluida")
+      .sort((a, b) => ordenarPorPrioridade(a, b, getLembStatusHome));
 
-  el.lembretesContainer.innerHTML = "";
+    el.lembretesContainer.innerHTML = "";
 
-  if (!ativos.length) {
-    el.lembretesContainer.innerHTML =
-      '<li class="empty-list-state">Nenhum lembrete pendente</li>';
-    return;
-  }
+    if (!ativos.length) {
+      el.lembretesContainer.innerHTML =
+        '<li class="empty-list-state">Nenhum lembrete pendente</li>';
+      return;
+    }
 
-  ativos.forEach((lemb, index) => {
-    const li = document.createElement("li");
-    li.className = `list-item-summary ${getLembStatusHome(lemb)}`;
-    
-    li.innerHTML = `
+    ativos.forEach((lemb, index) => {
+      const li = document.createElement("li");
+      li.className = `list-item-summary ${getLembStatusHome(lemb)}`;
+
+      li.innerHTML = `
       <span class="list-item-text">${lemb.title}</span>
       <div class="quick-actions">
           <span class="due-date">${formatarDataBR(lemb.dueDate)}</span>
@@ -375,42 +435,42 @@ function renderLembretes() {
       </div>
     `;
 
-    // Lógica para marcar como concluído ao clicar no ícone
-    const btnConcluir = li.querySelector(".btn-concluir");
-    btnConcluir.addEventListener("click", (e) => {
-      e.stopPropagation(); // Impede de abrir o modal/link ao clicar no botão
+      // Lógica para marcar como concluído ao clicar no ícone
+      const btnConcluir = li.querySelector(".btn-concluir");
+      btnConcluir.addEventListener("click", (e) => {
+        e.stopPropagation(); // Impede de abrir o modal/link ao clicar no botão
 
-      // Encontra o lembrete original no array completo (usando ID ou Título)
-      const indexOriginal = dados.findIndex(item => item.title === lemb.title && item.dueDate === lemb.dueDate);
-      
-      if (indexOriginal !== -1) {
-        // Marca todos os itens internos como concluídos
-        if (dados[indexOriginal].items) {
-          dados[indexOriginal].items.forEach(item => item.done = true);
-        } else {
-          // Se for um lembrete simples sem sub-itens
-          dados[indexOriginal].done = true;
+        // Encontra o lembrete original no array completo (usando ID ou Título)
+        const indexOriginal = dados.findIndex(
+          (item) => item.title === lemb.title && item.dueDate === lemb.dueDate
+        );
+
+        if (indexOriginal !== -1) {
+          // Marca todos os itens internos como concluídos
+          if (dados[indexOriginal].items) {
+            dados[indexOriginal].items.forEach((item) => (item.done = true));
+          } else {
+            // Se for um lembrete simples sem sub-itens
+            dados[indexOriginal].done = true;
+          }
+
+          // Salva de volta no localStorage
+          localStorage.setItem(LEMBRETES_KEY, JSON.stringify(dados));
+
+          // Efeito visual rápido antes de sumir
+          li.style.transform = "translateX(100px)";
+          li.style.opacity = "0";
+
+          // Recarrega a lista após a animação
+          setTimeout(() => {
+            renderLembretes();
+          }, 300);
         }
+      });
 
-        // Salva de volta no localStorage
-        localStorage.setItem(LEMBRETES_KEY, JSON.stringify(dados));
-        
-        // Efeito visual rápido antes de sumir
-        li.style.transform = "translateX(100px)";
-        li.style.opacity = "0";
-        
-        // Recarrega a lista após a animação
-        setTimeout(() => {
-          renderLembretes();
-        }, 300);
-      }
+      el.lembretesContainer.appendChild(li);
     });
-    
-    el.lembretesContainer.appendChild(li);
-  });
-}
-
-
+  }
 
   /* ================== DIÁRIO ================== */
   function renderDiario() {
@@ -424,13 +484,13 @@ function renderLembretes() {
     }
 
     [...diario]
-      .sort((a,b) => new Date(b.data) - new Date(a.data))
-      .slice(0,5)
-      .forEach((e,i) => {
+      .sort((a, b) => new Date(b.data) - new Date(a.data))
+      .slice(0, 5)
+      .forEach((e, i) => {
         const div = document.createElement("div");
         div.className = "diario-card";
         div.innerHTML = `<h3>${e.titulo}</h3><p>${formatarDataBR(e.data)}</p>`;
-        div.onclick = () => location.href = `diario.html?index=${i}`;
+        div.onclick = () => (location.href = `diario.html?index=${i}`);
         el.carrossel.appendChild(div);
       });
   }
@@ -458,9 +518,7 @@ function renderLembretes() {
     renderEventos();
   });
 
-  el.closeModalBtn?.addEventListener("click", () =>
-    closeModal("eventModal")
-  );
+  el.closeModalBtn?.addEventListener("click", () => closeModal("eventModal"));
 
   el.closeViewListModalBtn?.addEventListener("click", () =>
     closeModal("viewListModal")
@@ -468,18 +526,25 @@ function renderLembretes() {
 
   el.prevMonthBtn?.addEventListener("click", () => {
     mesAtual--;
-    if (mesAtual < 0) { mesAtual = 11; anoAtual--; }
+    if (mesAtual < 0) {
+      mesAtual = 11;
+      anoAtual--;
+    }
     renderCalendar();
   });
 
   el.nextMonthBtn?.addEventListener("click", () => {
     mesAtual++;
-    if (mesAtual > 11) { mesAtual = 0; anoAtual++; }
+    if (mesAtual > 11) {
+      mesAtual = 0;
+      anoAtual++;
+    }
     renderCalendar();
   });
 
-  el.addDiarioBtn?.addEventListener("click", () =>
-    location.href = "diario.html"
+  el.addDiarioBtn?.addEventListener(
+    "click",
+    () => (location.href = "diario.html")
   );
 
   /* ================== INIT ================== */
@@ -489,4 +554,3 @@ function renderLembretes() {
   renderLembretes();
   renderDiario();
 });
-

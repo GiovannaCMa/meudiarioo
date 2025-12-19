@@ -206,8 +206,10 @@ function renderCalendar() {
       
       dayDiv.setAttribute(
         "data-evento",
-        eventosDoDia.map(ev => ev.texto).join(", ")
+        eventosDoDia.map(ev => `${ev.hora || "00:00"} - ${ev.texto}`)
       );
+
+   
     }
 
     dayDiv.addEventListener("click", () => {
