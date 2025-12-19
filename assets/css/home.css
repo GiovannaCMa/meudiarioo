@@ -12,20 +12,9 @@ main {
   
   overflow: visible; 
 }
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
 
 /* Body e layout */
 body {
-  background: linear-gradient(135deg, var(--grad1), var(--grad2), var(--grad3));
-  min-height: 100vh;
-  display: flex;
-  /* background-attachment: fixed impede que o fundo acabe na metade da página */
   background-attachment: fixed; 
   overflow-y: auto;
   overflow-x: hidden;
@@ -149,11 +138,28 @@ body {
 
 
 .eventos-box ul {
+  overflow-y: auto;
   list-style: none;
   line-height: 1.6;
   font-size: 14px;
   padding-left: 10px;
   padding-right: 8px;
+  max-height: calc(320px - 45px);
+}
+
+.eventos-box li {
+  background: var(--cor-input-bg);
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.eventos-box li:hover {
+  background: var(--grad2);
 }
 
 /* ------------------------ Diário (ORIGINAL) ------------------------------- */
