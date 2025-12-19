@@ -1,0 +1,460 @@
+main {
+  flex: 1;
+  padding: 60px;
+  margin-left: 230px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: calc(100% - 230px); /* Garante que ocupe o restante */
+  box-sizing: border-box;
+}
+
+/* ESTILOS DOS CARDS DE LEMBRETES (Categoria)                                */
+
+.cardlemb {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--branco);
+  border: 2px dashed var(--cor-borda);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  min-height: auto;
+  max-height: none;
+}
+.cardlemb.active {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 8px 18px rgba(109, 65, 216, 0.3);
+}
+.cardlemb h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  margin-top: 0;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cardlemb h2 i {
+  margin-right: -4px;
+  color: inherit;
+  font-size: 1.1em;
+}
+
+.lemb-container-principal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  width: 100%;
+}
+#customLembsContainer {
+  display: contents; /* Usado para manter os itens no grid do pai */
+}
+
+/* Estilo do Botão principal do Card (Adicionar Lista) */
+.cardlemb .btn-primary {
+  padding: 10px 15px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-bottom: 12px;
+  background: var(--cor-lilas);
+  color: var(--branco);
+  transition: 0.2s;
+  box-shadow: 0 4px 8px rgba(109, 65, 216, 0.2);
+}
+.cardlemb .btn-primary:hover {
+  background: var(--cor-rosa);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(229, 115, 115, 0.4);
+}
+
+/* BOTÃO DE NOVA CATEGORIA (Fora do Card) */
+#addLembCatBtn {
+  align-self: flex-start;
+  margin-bottom: 12px;
+  background: var(--cor-primaria) !important;
+  color: var(--branco) !important;
+  padding: 10px 18px !important;
+  font-size: 15px !important;
+  box-shadow: 0 4px 10px rgba(109, 65, 216, 0.4);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#addLembCatBtn:hover {
+  background: var(--cor-primaria-hover) !important;
+  box-shadow: 0 6px 15px rgba(109, 65, 216, 0.6);
+}
+
+/* LISTAS DE ITENS (ROLAGEM DENTRO DO CARD)                                  */
+.lembretes-container,
+#remindersLembsContainer {
+  list-style: none;
+  padding: 0;
+  flex-grow: 1;
+  max-height: 260px; /* Altura máxima para rolar */
+  overflow-y: auto;
+  padding-right: 8px; /* Espaço para a barra de rolagem */
+}
+
+/* ITENS DE SUMÁRIO (NA LISTA PRINCIPAL) */
+/* CONTAINER DA LISTA (UL) */
+.lembretes-container {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+/* O ITEM DA LISTA (LI) - A PÍLULA */
+.lemb-item-summary {
+  background: var(--cor-input-bg);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 50px;
+  border-left: 6px solid var(--cor-lilas);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-sizing: border-box;
+
+  /* ATIVA A ROLAGEM HORIZONTAL INDIVIDUAL */
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Esconde a barra de rolagem no Chrome/Safari */
+.lemb-item-summary::-webkit-scrollbar {
+  display: none;
+}
+
+/* O TEXTO DENTRO DA LI */
+.lemb-item-summary .lemb-item-text {
+  display: inline-block;
+  padding: 10px 0 10px 20px; /* Padding apenas no texto para não afastar a borda */
+  font-weight: 500;
+  flex-shrink: 0; /* Impede o texto de espremer */
+  min-width: 0;
+}
+
+/* A DATA (VEM LOGO APÓS O TEXTO) */
+.lemb-item-summary .due-date {
+  display: inline-block;
+  font-size: 0.75em;
+  color: var(--cor-label);
+  margin-left: 15px;
+  padding-right: 15px; /* Espaço para não colar no final ao rolar */
+  flex-shrink: 0;
+}
+
+/* AÇÕES RÁPIDAS (LIXEIRA) AO FINAL DA ROLAGEM */
+.lemb-item-summary .quick-actions {
+  display: inline-flex;
+  gap: 12px;
+  padding-right: 20px;
+  flex-shrink: 0;
+}
+
+/* CORES DE STATUS - PREENCHIMENTO TOTAL */
+.lemb-item-summary.pendente {
+  border-left-color: var(--cor-pendente);
+  background: #ffe3e3 !important; /* Cor roxinha/avermelhada */
+}
+
+.lemb-item-summary.concluida {
+  border-left-color: var(--cor-concluida);
+  background: #e8f5e9 !important; /* Verde */
+}
+
+.lemb-item-summary:hover {
+  background: var(--grad2);
+
+  transform: translateY(-2px);
+}
+
+.category-actions .btn {
+  /* Faz os botões terem largura igual */
+  flex-grow: 1;
+  font-size: 0.8rem;
+  padding: 8px;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 10px; /* Espaçamento entre os ícones */
+  align-items: center;
+}
+
+.delete-lemb-item i {
+  color: var(--cor-delete, #e74c3c);
+  font-size: 1.1em;
+}
+
+/* ESTILOS DOS MODAIS (Pop-ups de Categoria/Lembrete)                        */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.modal.open {
+  opacity: 1;
+  display: flex;
+}
+.modal-content {
+  background: var(--branco);
+  padding: 20px 25px;
+  border-radius: 18px;
+  width: 350px;
+  max-width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--cor-primaria);
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+.modal-content label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--cor-label);
+  margin-top: 8px;
+  font-size: 13px;
+}
+.modal-content input[type="text"],
+.modal-content input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-input-bg);
+  color: var(--texto);
+  font-size: 14px;
+  transition: 0.2s;
+  box-sizing: border-box;
+}
+.modal-content input:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 6px rgba(109, 65, 216, 0.3);
+}
+
+/* BOTÕES */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn:disabled:hover {
+  background: inherit;
+}
+
+/* ESTILOS IN-PLACE EDITOR/VIEW                                              */
+.hidden {
+  display: none !important;
+}
+
+.editor-area {
+  padding: 10px 0;
+  border-top: 1px solid var(--cor-borda);
+  margin-top: 10px;
+}
+
+/* Wrapper de Itens com Rolagem no Editor */
+#editorLembWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+/* GRUPO DE INPUT + LIXEIRA (CRUCIAL PARA O EDITOR) */
+.item-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.item-input-group input {
+  flex-grow: 1;
+  padding: 7px 10px;
+  margin-bottom: 0 !important; /* Sobrescreve o estilo do modal */
+  font-size: 13px;
+  box-sizing: border-box;
+}
+.remove-item-btn {
+  flex-shrink: 0;
+  height: 36px;
+  width: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.remove-item-btn i {
+  color: var(--cor-pendente);
+  font-size: 16px;
+  transition: color 0.2s;
+}
+.remove-item-btn:hover i {
+  color: #c82333;
+}
+
+/* Estilos de Botões de Ação na Área de Visualização/Edição */
+.editor-actions,
+.view-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.editor-actions .btn,
+.view-actions .btn {
+  flex: 1 1 120px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.view-actions #closeViewBtn {
+  flex: 1 1 100%;
+  order: 5; /* Força o botão de fechar para o final */
+}
+
+/* Cores dos botões de ação in-place */
+#uncheckAllBtn {
+  background: var(--cor-amarelo);
+  color: var(--texto);
+}
+#uncheckAllBtn:hover {
+  background: #ffc266;
+}
+#editLembInPlaceBtn {
+  background: var(--cor-primaria);
+  color: var(--branco);
+}
+#editLembInPlaceBtn:hover {
+  background: var(--cor-primaria-hover);
+}
+#deleteLembInPlaceBtn {
+  background: var(--cor-pendente);
+  color: var(--branco);
+}
+#deleteLembInPlaceBtn:hover {
+  background: #c62828;
+}
+#cancelEditorLembBtn,
+#closeViewBtn {
+  background: #eee;
+  color: #555;
+}
+#cancelEditorLembBtn:hover,
+#closeViewBtn:hover {
+  background: #ddd;
+}
+
+/* Aplica o estilo de ícone discreto ao elemento <button> */
+.icon-action,
+.btn-icon {
+  background: none; /* Remove o fundo */
+  border: none; /* Remove a borda */
+  padding: 0; /* Remove o padding, fazendo-o parecer um ícone puro */
+  margin: 0;
+  cursor: pointer; /* Mantém o cursor de clique */
+  transition: color 0.2s, transform 0.2s; /* Adiciona transição para o hover */
+  line-height: 1; /* Garante alinhamento vertical */
+  color: #888; /* Cor discreta para o ícone padrão */
+}
+
+/* Estilo ao passar o mouse */
+.icon-action:hover,
+.btn-icon:hover {
+  background-color: transparent; /* Garante que o hover não tenha fundo */
+  color: var(
+    --cor-principal,
+    #333
+  ); /* Mudar para uma cor mais escura no hover */
+  transform: scale(1.1); /* Efeito sutil de zoom */
+}
+
+.lembretes-container::-webkit-scrollbar,
+#remindersLembsContainer::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+.lembretes-container::-webkit-scrollbar-thumb,
+#remindersLembsContainer::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 0.625rem;
+}
+
+.lembretes-container::-webkit-scrollbar-track,
+#remindersLembsContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+/* ========================================================================= */
+/* RESPONSIVIDADE (Ajustes para telas menores)                               */
+/* ========================================================================= */
+
+@media (max-width: 992px) {
+  main {
+    margin-left: 0; /* remove espaço do menu lateral */
+    padding: 30px 25px; /* distância interna confortável */
+    gap: 25px; /* distância entre os cards */
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .resumo-total {
+    flex: 1 1 100%;
+  }
+
+  .card-resumo {
+    flex: 1 1 1 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .resumo-total {
+    flex: 1 1 100%;
+  }
+  .card-resumo {
+    flex: 45% 1 1;
+  }
+}

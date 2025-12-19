@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Diário - Lembretes</title>
+    <link rel="stylesheet" href="../assets/css/geral.css" />
+    <link rel="stylesheet" href="../assets/css/lembretes.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+
+  <body>
+    <button id="toggleMenu">☰</button>
+    <aside>
+      <h1>Meu Diário</h1>
+      <ul>
+        <li>
+          <a href="home.html"><i class="fas fa-home"></i> Início</a>
+        </li>
+        <li>
+          <a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a>
+        </li>
+        <li>
+          <a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a>
+        </li>
+        <li class="active">
+          <a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a>
+        </li>
+        <!--
+        <li>
+          <a href="diario.html"><i class="fas fa-book-open"></i> Diário</a>
+        </li>
+        <li>
+          <a href="configuracao.html"
+            ><i class="fas fa-cog"></i> Configurações</a
+          >
+        </li>
+        -->
+      </ul>
+    </aside>
+
+    <main>
+      <section class="top-widgets">
+        <article class="resumo-total">
+          <h2><i class="fa-solid fa-chart-simple"></i> Total de Lembretes</h2>
+          <span id="totalLembs">0</span>
+        </article>
+
+        <article class="card-resumo">
+          <div class="resumo-pend">
+            <h2>
+              <i class="fa-solid fa-circle-exclamation"></i> Lembretes pendentes
+            </h2>
+            <ul id="lembsPendentes"></ul>
+          </div>
+        </article>
+
+        <article class="card-resumo">
+          <div class="resumo-conc">
+            <h2>
+              <i class="fa-solid fa-circle-check"></i> Lembretes concluídos
+            </h2>
+            <ul id="lembsConcluidas"></ul>
+          </div>
+        </article>
+
+        <article class="card-resumo">
+          <div class="resumo-sete">
+            <h2><i class="fas fa-exclamation-circle"></i> Próximos (7 dias)</h2>
+            <ul id="proximaslembs"></ul>
+          </div>
+        </article>
+      </section>
+
+      <button class="btn btn-primary" id="addLembCatBtn">
+        + Nova Categoria
+      </button>
+
+      <section class="lemb-container-principal">
+        <article class="cardlemb default-card" data-category-id="default-lembs">
+          <h2><i class="fas fa-clipboard-list"></i> Meus Lembretes</h2>
+          <button
+            class="btn btn-primary add-lemb-btn"
+            id="addLembBtn"
+            data-action="add-lemb"
+            data-cat-id="default-lembs"
+          >
+            + Adicionar Lembrete
+          </button>
+
+          <ul
+            id="remindersLembsContainer"
+            class="lembretes-container lembs-container"
+          ></ul>
+
+          <div class="category-actions">
+            <button class="btn btn-secondary edit-cat-btn" disabled>
+              <i class="fas fa-edit"></i> Editar Categoria
+            </button>
+            <button class="btn btn-delete delete-cat-btn" disabled>
+              <i class="fas fa-trash-alt"></i> Excluir Categoria
+            </button>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="modal" id="createLembCatModal">
+      <div class="modal-content">
+        <h3>Criar Categoria</h3>
+        <label>Título</label>
+        <input type="text" id="createLembCatTitle" />
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveLembCreateCatBtn">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+          <button class="btn btn-cancel" id="closeLembCreateCatModalBtn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="editLembCatModal">
+      <div class="modal-content">
+        <h3>Editar Categoria</h3>
+        <label>Título</label>
+        <input type="text" id="editLembCatTitle" />
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveLembEditCatBtn">
+            <i class="fas fa-sync-alt"></i> Salvar
+          </button>
+          <button class="btn btn-cancel" id="closeLembEditCatModalBtn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="reminderLembModal" class="modal">
+      <div class="modal-content">
+        <h3>Novo Lembrete</h3>
+        <label for="reminderTextId">Descrição</label>
+        <input type="text" id="reminderTextId" name="reminderText" required />
+
+        <label for="reminderDateId">Data Limite</label>
+        <input type="date" id="reminderDateId" name="reminderDate" />
+
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveReminderLembBtn">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+
+          <button class="btn btn-cancel" id="closeReminderLembModalBtn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="editLembModal" class="modal">
+      <div class="modal-content">
+        <h3>Editar Lembrete</h3>
+
+        <label for="editLembTitle">Descrição</label>
+        <input type="text" id="editLembTitle" name="editLembTitle" required />
+
+        <label for="editLembDueDate">Data Limite</label>
+        <input type="date" id="editLembDueDate" name="editLembDueDate" />
+
+        <div class="btn-group">
+          <button class="btn btn-save" id="saveEditListBtn">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+          <button class="btn btn-cancel" id="closeEditListModalBtn">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../assets/js/lembretes.js"></script>
+  </body>
+</html>
