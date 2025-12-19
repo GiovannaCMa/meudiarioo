@@ -33,6 +33,7 @@
         <li>
           <a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a>
         </li>
+        <!--
         <li>
           <a href="diario.html"><i class="fas fa-book-open"></i> Diário</a>
         </li>
@@ -41,6 +42,7 @@
             ><i class="fas fa-cog"></i> Configurações</a
           >
         </li>
+        -->
       </ul>
     </aside>
 
@@ -105,20 +107,12 @@
           <ul class="listas-container" id="listasContainer-default-listas"></ul>
 
           <div class="category-actions">
-            <button
-              class="btn btn-secondary edit-cat-btn"
-              id="editCatBtnGlobal"
-              disabled
-            >
-              <i class="fas fa-edit"></i> Editar Categoria
+            <button class="btn btn-secondary edit-cat-btn" disabled>
+              <i class="fas fa-edit"></i> Editar
             </button>
 
-            <button
-              class="btn btn-delete delete-cat-btn"
-              id="deleteCatBtnGlobal"
-              disabled
-            >
-              <i class="fas fa-trash-alt"></i> Excluir Categoria
+            <button class="btn btn-delete delete-cat-btn" disabled>
+              <i class="fas fa-trash-alt"></i> Excluir
             </button>
           </div>
         </article>
@@ -205,8 +199,11 @@
         </button>
 
         <div class="btn-group">
-          <button class="btn btn-save" id="saveEditListBtn"><i class="fas fa-edit"></i> Salvar</button>
-          <button class="btn btn-cancel" id="closeEditListModalBtn"><i class="fas fa-times"></i>
+          <button class="btn btn-save" id="saveEditListBtn">
+            <i class="fas fa-edit"></i> Salvar
+          </button>
+          <button class="btn btn-cancel" id="closeEditListModalBtn">
+            <i class="fas fa-times"></i>
             Cancelar
           </button>
         </div>
@@ -220,7 +217,6 @@
         <p class="view-info">
           <strong>Data limite:</strong>
           <span id="viewListDueDate"></span>
-          
         </p>
 
         <p class="view-info">

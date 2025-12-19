@@ -99,25 +99,24 @@ document.addEventListener("DOMContentLoaded", () => {
       addEditItem: document.getElementById("addEditItemBtn"),
       uncheckAll: document.getElementById("uncheckAllBtn"),
       deleteList: document.getElementById("deleteListBtn"),
-      editList: document.getElementById("editListBtn")
-    }
+      editList: document.getElementById("editListBtn"),
+    },
   };
 
   let allLists = [];
   let currentFilter = "all";
 
   /* 2. UTILITÁRIOS */
-  
   const getListStatus = (list) => {
     const { items, dueDate } = list;
-    if (!items || items.length === 0) return "nao-iniciada"; 
+    if (!items || items.length === 0) return "nao-iniciada";
     const total = items.length;
     const feitos = items.filter((i) => i.done).length;
     if (total > 0 && feitos === total) return "concluida";
     if (dueDate) {
       const dueDateTime = Date.parse(dueDate + "T00:00:00");
       const today = new Date();
-      today.setHours(0, 0, 0, 0); 
+      today.setHours(0, 0, 0, 0);
       if (dueDateTime < today.getTime()) return "pendente";
     }
     return feitos === 0 ? "nao-iniciada" : "andamento";
@@ -130,7 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const closeModal = () => {
-    Object.values(elements.modals).forEach(m => m && m.classList.remove("open"));
+    Object.values(elements.modals).forEach(
+      (m) => m && m.classList.remove("open")
+    );
   };
 
   const addItemInput = (wrapper, initialValue = "") => {
@@ -147,27 +148,41 @@ document.addEventListener("DOMContentLoaded", () => {
   /* 3. LOCAL STORAGE */
   const saveAll = () => {
     localStorage.setItem("diaryAppLists", JSON.stringify(allLists));
-    const cats = [...elements.containers.customLists.querySelectorAll(".cardlist:not(.default-card)")].map(card => ({
+    const cats = [
+      ...elements.containers.customLists.querySelectorAll(
+        ".cardlist:not(.default-card)"
+      ),
+    ].map((card) => ({
       id: card.dataset.categoryId,
-      title: card.querySelector("h2").textContent.replace(/^\S+\s/, "").trim()
+      title: card
+        .querySelector("h2")
+        .textContent.replace(/^\S+\s/, "")
+        .trim(),
     }));
     localStorage.setItem("diaryAppCategories", JSON.stringify(cats));
   };
 
   /* 4. RENDERIZAÇÃO */
-
   const renderLists = () => {
-    document.querySelectorAll(".listas-container").forEach(ul => ul.innerHTML = "");
-    const weights = { "pendente": 0, "nao-iniciada": 1, "andamento": 1, "concluida": 2 };
+    document
+      .querySelectorAll(".listas-container")
+      .forEach((ul) => (ul.innerHTML = ""));
+    const weights = {
+      pendente: 0,
+      "nao-iniciada": 1,
+      andamento: 1,
+      concluida: 2,
+    };
 
     const sortedLists = [...allLists].sort((a, b) => {
       const statusA = getListStatus(a);
       const statusB = getListStatus(b);
-      if (weights[statusA] !== weights[statusB]) return weights[statusA] - weights[statusB];
+      if (weights[statusA] !== weights[statusB])
+        return weights[statusA] - weights[statusB];
       return (a.dueDate || "9999") > (b.dueDate || "9999") ? 1 : -1;
     });
 
-    sortedLists.forEach(list => {
+    sortedLists.forEach((list) => {
       const status = getListStatus(list);
       if (currentFilter !== "all" && currentFilter !== status) return;
       const ul = document.getElementById(`listasContainer-${list.categoryId}`);
@@ -175,12 +190,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const li = document.createElement("li");
       li.className = `list-item-summary ${status}`;
-      li.innerHTML = `<span>${list.title}</span><span class="due-date">${formatDueDate(list.dueDate)}</span>`;
+      li.innerHTML = `<span>${
+        list.title
+      }</span><span class="due-date">${formatDueDate(list.dueDate)}</span>`;
       li.onclick = () => openViewListModal(list.id);
       ul.appendChild(li);
     });
 
-    document.querySelectorAll(".listas-container").forEach(ul => {
+    document.querySelectorAll(".listas-container").forEach((ul) => {
       if (ul.children.length === 0) {
         const li = document.createElement("li");
         li.className = "list-item-summary";
@@ -193,30 +210,36 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTopWidgets();
   };
 
-const renderTopWidgets = () => {
+  const renderTopWidgets = () => {
     const totalEl = document.getElementById("totalListas");
     if (totalEl) totalEl.textContent = allLists.length;
-    const ids = ["listasAndamento", "listasNaoIniciadas", "listasConcluidas", "proximaslistas", "listasPendentes"];
+    const ids = [
+      "listasAndamento",
+      "listasNaoIniciadas",
+      "listasConcluidas",
+      "proximaslistas",
+      "listasPendentes",
+    ];
     const uls = {};
-    ids.forEach(id => {
+    ids.forEach((id) => {
       uls[id] = document.getElementById(id);
       if (uls[id]) uls[id].innerHTML = "";
     });
 
     const today = new Date();
-    today.setHours(0,0,0,0);
+    today.setHours(0, 0, 0, 0);
     const nextWeek = new Date(today);
     nextWeek.setDate(today.getDate() + 7);
 
     // CRIAMOS UMA CÓPIA ORDENADA ALFABETICAMENTE PELO TÍTULO
-    const sortedAlphabetically = [...allLists].sort((a, b) => 
-      a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+    const sortedAlphabetically = [...allLists].sort((a, b) =>
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
     );
 
     // USAMOS O ARRAY ORDENADO PARA DISTRIBUIR NOS WIDGETS
-    sortedAlphabetically.forEach(list => {
-      const status = getListStatus(list); 
-      const feitos = list.items.filter(i => i.done).length;
+    sortedAlphabetically.forEach((list) => {
+      const status = getListStatus(list);
+      const feitos = list.items.filter((i) => i.done).length;
       const total = list.items.length;
 
       const li = document.createElement("li");
@@ -252,14 +275,16 @@ const renderTopWidgets = () => {
           const proxyLi = li.cloneNode(true);
           proxyLi.onclick = () => openViewListModal(list.id);
           const diff = Math.ceil((due - today) / 86400000);
-          proxyLi.textContent = `${list.title} (${diff === 0 ? 'Hoje' : diff === 1 ? 'Amanhã' : diff + ' dias'})`;
+          proxyLi.textContent = `${list.title} (${
+            diff === 0 ? "Hoje" : diff === 1 ? "Amanhã" : diff + " dias"
+          })`;
           if (uls.proximaslistas) uls.proximaslistas.appendChild(proxyLi);
         }
       }
     });
 
     // Mensagens de "Vazio"
-    ids.forEach(id => {
+    ids.forEach((id) => {
       if (uls[id] && uls[id].children.length === 0) {
         const emptyLi = document.createElement("li");
         emptyLi.style.opacity = "0.5";
@@ -273,7 +298,6 @@ const renderTopWidgets = () => {
   };
 
   /* 5. CATEGORIAS */
-
   const createCategoryCard = (title, id = `cat-${Date.now()}`) => {
     const card = document.createElement("article");
     card.className = "cardlist";
@@ -286,20 +310,24 @@ const renderTopWidgets = () => {
       <button class="btn btn-primary add-list-btn">+ Adicionar Lista</button>
       <ul class="listas-container" id="listasContainer-${id}"></ul>
       <div class="category-actions">
-          <button class="btn btn-secondary edit-cat-btn" ${isDefault ? 'disabled' : ''}><i class="fas fa-edit"></i> Editar Categoria</button>
-          <button class="btn btn-delete delete-cat-btn" ${isDefault ? 'disabled' : ''}><i class="fas fa-trash-alt"></i> Excluir Categoria</button>
+          <button class="btn btn-secondary edit-cat-btn" ${
+            isDefault ? "disabled" : ""
+          }><i class="fas fa-edit"></i> Editar</button>
+          <button class="btn btn-delete delete-cat-btn" ${
+            isDefault ? "disabled" : ""
+          }><i class="fas fa-trash-alt"></i> Excluir</button>
       </div>`;
 
     card.querySelector(".add-list-btn").onclick = (e) => {
-        e.stopPropagation();
-        openCreateListModal(id);
+      e.stopPropagation();
+      openCreateListModal(id);
     };
-    
+
     if (!isDefault) {
       card.querySelector(".delete-cat-btn").onclick = (e) => {
         e.stopPropagation();
         if (confirm(`Excluir categoria "${title}"?`)) {
-          allLists = allLists.filter(l => l.categoryId !== id);
+          allLists = allLists.filter((l) => l.categoryId !== id);
           card.remove();
           saveAll();
           renderLists();
@@ -316,7 +344,6 @@ const renderTopWidgets = () => {
   };
 
   /* 6. MODAIS E EVENTOS */
-
   const openCreateListModal = (catId) => {
     closeModal();
     elements.modals.createList.dataset.targetCat = catId;
@@ -328,12 +355,12 @@ const renderTopWidgets = () => {
   };
 
   const openViewListModal = (id) => {
-    const listIndex = allLists.findIndex(l => l.id === id);
+    const listIndex = allLists.findIndex((l) => l.id === id);
     const list = allLists[listIndex];
     if (!list) return;
 
     document.getElementById("viewListTitle").textContent = list.title;
-    
+
     // Exibe a Data no Modal
     const dateEl = document.getElementById("viewListDueDate");
     if (dateEl) dateEl.textContent = formatDueDate(list.dueDate);
@@ -343,7 +370,9 @@ const renderTopWidgets = () => {
       const li = document.createElement("li");
       if (item.done) li.classList.add("done");
       const checkboxId = `chk-${id}-${i}`;
-      li.innerHTML = `<input type="checkbox" id="${checkboxId}" ${item.done ? 'checked' : ''}><label for="${checkboxId}">${item.name}</label>`;
+      li.innerHTML = `<input type="checkbox" id="${checkboxId}" ${
+        item.done ? "checked" : ""
+      }><label for="${checkboxId}">${item.name}</label>`;
 
       li.querySelector("input").onchange = (e) => {
         allLists[listIndex].items[i].done = e.target.checked;
@@ -361,14 +390,16 @@ const renderTopWidgets = () => {
       const statusSpan = document.getElementById("viewListStatus");
       statusSpan.textContent = status.toUpperCase();
       statusSpan.className = status;
-      document.getElementById("contadorFeitos").textContent = currentList.items.filter(it => it.done).length;
-      document.getElementById("contadorTotal").textContent = currentList.items.length;
+      document.getElementById("contadorFeitos").textContent =
+        currentList.items.filter((it) => it.done).length;
+      document.getElementById("contadorTotal").textContent =
+        currentList.items.length;
     };
 
     updateModalStatus(list);
 
     elements.btns.uncheckAll.onclick = () => {
-      allLists[listIndex].items.forEach(item => item.done = false);
+      allLists[listIndex].items.forEach((item) => (item.done = false));
       saveAll();
       renderLists();
       openViewListModal(id);
@@ -392,7 +423,7 @@ const renderTopWidgets = () => {
   };
 
   const openEditListModal = (id) => {
-    const listIndex = allLists.findIndex(l => l.id === id);
+    const listIndex = allLists.findIndex((l) => l.id === id);
     const list = allLists[listIndex];
     if (!list) return;
 
@@ -400,20 +431,27 @@ const renderTopWidgets = () => {
     elements.inputs.editListTitle.value = list.title;
     elements.inputs.editListDate.value = list.dueDate;
     elements.containers.editItens.innerHTML = "";
-    list.items.forEach(item => addItemInput(elements.containers.editItens, item.name));
+    list.items.forEach((item) =>
+      addItemInput(elements.containers.editItens, item.name)
+    );
     elements.modals.editList.classList.add("open");
   };
 
-  elements.btns.addEditItem.onclick = () => addItemInput(elements.containers.editItens);
+  elements.btns.addEditItem.onclick = () =>
+    addItemInput(elements.containers.editItens);
 
   elements.btns.saveEditList.onclick = () => {
     const id = elements.modals.editList.dataset.editingId;
-    const listIndex = allLists.findIndex(l => l.id === id);
+    const listIndex = allLists.findIndex((l) => l.id === id);
     const title = elements.inputs.editListTitle.value.trim();
-    const items = [...elements.containers.editItens.querySelectorAll("input")].map((i, idx) => {
-        const wasDone = allLists[listIndex].items[idx] ? allLists[listIndex].items[idx].done : false;
+    const items = [...elements.containers.editItens.querySelectorAll("input")]
+      .map((i, idx) => {
+        const wasDone = allLists[listIndex].items[idx]
+          ? allLists[listIndex].items[idx].done
+          : false;
         return { name: i.value.trim(), done: wasDone };
-    }).filter(i => i.name);
+      })
+      .filter((i) => i.name);
 
     if (title && items.length) {
       allLists[listIndex].title = title;
@@ -426,19 +464,23 @@ const renderTopWidgets = () => {
   };
 
   if (elements.btns.addListGlobal) {
-    elements.btns.addListGlobal.onclick = () => openCreateListModal("default-listas");
+    elements.btns.addListGlobal.onclick = () =>
+      openCreateListModal("default-listas");
   }
 
   elements.btns.saveCreateList.onclick = () => {
     const title = elements.inputs.createListTitle.value.trim();
-    const items = [...elements.containers.createItens.querySelectorAll("input")].map(i => ({ name: i.value.trim(), done: false })).filter(i => i.name);
+    const items = [...elements.containers.createItens.querySelectorAll("input")]
+      .map((i) => ({ name: i.value.trim(), done: false }))
+      .filter((i) => i.name);
     if (title && items.length) {
       allLists.push({
         id: `list-${Date.now()}`,
         title,
         dueDate: elements.inputs.createListDate.value,
-        categoryId: elements.modals.createList.dataset.targetCat || "default-listas",
-        items
+        categoryId:
+          elements.modals.createList.dataset.targetCat || "default-listas",
+        items,
       });
       saveAll();
       renderLists();
@@ -450,10 +492,12 @@ const renderTopWidgets = () => {
     const title = elements.inputs.createCatTitle.value.trim();
     if (title) {
       saveAll();
-      const savedCats = JSON.parse(localStorage.getItem("diaryAppCategories") || "[]");
+      const savedCats = JSON.parse(
+        localStorage.getItem("diaryAppCategories") || "[]"
+      );
       savedCats.push({ id: `cat-${Date.now()}`, title });
       localStorage.setItem("diaryAppCategories", JSON.stringify(savedCats));
-      init(); 
+      init();
       closeModal();
     }
   };
@@ -462,8 +506,10 @@ const renderTopWidgets = () => {
     const editingId = elements.modals.editCat.dataset.editingId;
     const newTitle = elements.inputs.editCatTitle.value.trim();
     if (newTitle) {
-      const savedCats = JSON.parse(localStorage.getItem("diaryAppCategories") || "[]");
-      const catIdx = savedCats.findIndex(c => c.id === editingId);
+      const savedCats = JSON.parse(
+        localStorage.getItem("diaryAppCategories") || "[]"
+      );
+      const catIdx = savedCats.findIndex((c) => c.id === editingId);
       if (catIdx !== -1) savedCats[catIdx].title = newTitle;
       localStorage.setItem("diaryAppCategories", JSON.stringify(savedCats));
       init();
@@ -476,8 +522,11 @@ const renderTopWidgets = () => {
     elements.modals.createCat.classList.add("open");
   };
 
-  elements.btns.addItem.onclick = () => addItemInput(elements.containers.createItens);
-  document.querySelectorAll("[id^='close']").forEach(btn => btn.onclick = closeModal);
+  elements.btns.addItem.onclick = () =>
+    addItemInput(elements.containers.createItens);
+  document
+    .querySelectorAll("[id^='close']")
+    .forEach((btn) => (btn.onclick = closeModal));
 
   const init = () => {
     const savedLists = localStorage.getItem("diaryAppLists");
@@ -485,11 +534,16 @@ const renderTopWidgets = () => {
     const savedCats = localStorage.getItem("diaryAppCategories");
     elements.containers.customLists.innerHTML = "";
     if (savedCats) {
-      const cats = JSON.parse(savedCats).sort((a,b) => a.title.localeCompare(b.title));
-      cats.forEach(c => elements.containers.customLists.appendChild(createCategoryCard(c.title, c.id)));
+      const cats = JSON.parse(savedCats).sort((a, b) =>
+        a.title.localeCompare(b.title)
+      );
+      cats.forEach((c) =>
+        elements.containers.customLists.appendChild(
+          createCategoryCard(c.title, c.id)
+        )
+      );
     }
     renderLists();
   };
-
   init();
 });

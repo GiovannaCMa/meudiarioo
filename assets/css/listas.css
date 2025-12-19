@@ -97,32 +97,45 @@ main {
   padding-right: 8px;
 }
 
-.list-item,
-.list-item-summary {
-  padding: 10px 14px;
-  margin-bottom: 10px;
-  background: var(--grad1);
-  border-radius: 14px;
-  font-weight: 600;
-  color: var(--texto);
-  cursor: pointer;
-  transition: 0.2s;
-  border-left: 5px solid var(--cor-primaria);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+
+
+/* Container do item da lista */
+.list-item-summary,
+.list-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  justify-content: space-between;
+  width: 100%; /* Ocupa toda a largura do card/modal */
+  min-width: 0; /* Permite encolhimento para o texto não vazar */
+  padding: 12px 20px; /* Padding generoso para o formato pílula */
+  margin-bottom: 10px;
+  border-radius: 50px; /* Formato pílula/cápsula */
+  box-sizing: border-box; /* Impede que o padding quebre a largura */
+  transition: 0.2s;
+  cursor: pointer;
+  border-left: 6px solid var(--cor-primaria);
+background: var(--grad1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden; /* Garante que nada saia do limite arredondado */
 }
+
+/* O texto do título (o primeiro span dentro do item) */
+.list-item-summary span:first-child,
+.list-item span:first-child {
+  flex: 1; /* Ocupa todo o espaço disponível */
+  white-space: nowrap; /* Impede que o texto quebre linha */
+  overflow: hidden; /* Esconde o que sobrar */
+  text-overflow: ellipsis; /* Adiciona o "..." */
+  min-width: 0; /* Força o elemento a aceitar ser comprimido */
+  font-weight: 600;
+}
+
+/* A data (o segundo span) */
 .list-item-summary .due-date {
+  flex-shrink: 0; /* Impede que a data seja espremida */
   font-size: 0.75em;
   color: var(--cor-label);
-  margin-left: 8px;
-}
-.list-item:hover,
-.list-item-summary:hover {
-  background: var(--grad2);
-  transform: translateY(-2px);
+  white-space: nowrap;
 }
 
 /* CORREÇÃO: ESTILO PARA LISTAS NO CONTAINER DE RESUMO */
@@ -218,7 +231,6 @@ main {
   margin-top: 8px;
   font-size: 13px;
 }
-
 
 .modal-content input[type="text"],
 .modal-content input[type="date"] {
@@ -346,20 +358,24 @@ main {
   margin-top: 20px;
   margin-bottom: 20px;
   flex-grow: 1; /* Ocupa o espaço central entre o cabeçalho e o rodapé */
+  width: 100%;
 }
 
 /* ESTILO DO ITEM DE LISTA - CORRIGIDO PARA TIRAR O MARCADOR */
 #viewListItems li {
-  padding: 10px 12px;
-  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 0;               /* Zeramos o padding aqui para o label ocupar tudo */
+  border-radius: 50px;      /* Mantém o formato pílula */
   margin-bottom: 8px;
   background: var(--cor-input-bg);
   cursor: pointer;
   font-weight: 500;
   transition: 0.2s;
-  border-left: 3px solid var(--cor-lilas);
-  position: relative; /* Base para o posicionamento do input */
-  display: flex;
+  border-left: 6px solid var(--cor-lilas);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;         /* O item pai segura o arredondamento */
 }
 
 /* 1. Esconde o checkbox padrão */
@@ -373,9 +389,15 @@ main {
 /* 2. Estiliza o Label (o texto do item) para ocupar o espaço */
 #viewListItems li label {
   display: block;
-  flex-grow: 1;
+  flex: 1;
+  padding: 10px 20px;       /* Padding transferido para dentro do label */
   cursor: pointer;
-  padding-left: 0;
+  white-space: nowrap;      /* Mantém o texto em uma linha */
+  
+  /* REGRAS DA ROLAGEM */
+  overflow-x: auto;         /* Cria a barra de rolagem horizontal */
+  overflow-y: hidden;       /* Garante que não role para cima/baixo */
+  scrollbar-width: none;    /* Esconde a barra no Firefox */
 }
 
 /* 3. Estilo para o estado Concluído (usando a classe 'done' adicionada pelo JS) */
@@ -384,6 +406,7 @@ main {
   opacity: 0.8;
   background: #f1f1f1;
   border-left: 3px solid var(--cor-concluida);
+  width: 100%;
 }
 /* Estilo para o estado Pendente (para contraste) */
 #viewListItems li:not(.done) {
@@ -417,12 +440,6 @@ main {
   min-width: 90px;
 }
 
-
-
-
-
-
-
 #uncheckAllBtn {
   background: var(--cor-amarelo);
   color: var(--texto);
@@ -453,55 +470,48 @@ main {
   background: #ddd;
 }
 
-
 /* REGRAS CRUCIAIS PARA ALINHAR O INPUT E O BOTÃO */
-/* 1. Estilos para o ícone (mantendo-o discreto) */
 .icon-action {
-    /* Remove a aparência padrão do botão */
-    background: none;
-    border: none;
-    cursor: pointer;
-    /* Ajusta a área de clique para ser maior que o ícone */
-    padding: 5px; 
-    transition: color 0.2s;
-    flex-shrink: 0; /* Impede que o botão encolha */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s;
+  flex-shrink: 0; /* Impede que o botão encolha */
 }
 
 /* 2. Cor do Ícone de Lixeira (Vermelho) */
 .icon-action .fa-trash-alt {
-    color: #dc3545; /* Cor vermelha padrão de delete */
-    font-size: 16px; 
+  color: #dc3545;
+  font-size: 16px;
 }
 
-/* 3. Efeito ao passar o mouse */
 .icon-action:hover .fa-trash-alt {
-    color: #c82333; /* Vermelho mais escuro no hover */
+  color: #c82333; 
 }
 
 /* 4. Alinhamento (Regras repetidas, mas cruciais) */
 .item-input-group {
-    display: flex;
-    align-items: center;
-    gap: 8px; 
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .item-input-group input {
-    flex-grow: 1; 
+  flex-grow: 1;
 }
 
 /* Ajustes visuais para o botão de lixeira */
 .item-input-group .remove-item-btn {
-    height: 36px;
-    width: 36px; 
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0; /* Impede que o botão encolha */
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0; /* Impede que o botão encolha */
 }
-
-
 
 /* BOTÃO DE NOVA CATEGORIA */
 #addCatBtn {
@@ -527,178 +537,131 @@ main {
   cursor: pointer;
   align-self: flex-start;
   margin-bottom: 12px;
- background: var(--cor-lilas);
- color: #fff;
- transition: 0.2s;
+  background: var(--cor-lilas);
+  color: #fff;
+  transition: 0.2s;
 }
 .cardlist .btn-primary:hover {
   background: var(--cor-rosa);
   transform: translateY(-2px);
 }
 
+.category-actions .btn {
+  /* Faz os botões terem largura igual */
+  flex-grow: 1;
+  font-size: 0.8rem;
+  padding: 8px;
+}
 
 
+#viewListTitle {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
 
-/*RESPONSIVIDADE (MEDIA QUERIES)*/
+#listasContainer::-webkit-scrollbar,
+.listas-container::-webkit-scrollbar {
+  width: 0.375rem;
+}
 
+#listasContainer::-webkit-scrollbar-thumb,
+.listas-container::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 0.625rem;
+}
+
+#listasContainer::-webkit-scrollbar-track,
+.listas-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+#viewListItems::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+#viewListItems::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 0.625rem;
+}
+
+#viewListItems::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#itensWrapper::-webkit-scrollbar,
+#editItensWrapper::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+#itensWrapper::-webkit-scrollbar-thumb,
+#editItensWrapper::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 0.625rem;
+}
+
+#itensWrapper::-webkit-scrollbar-track,
+#editItensWrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================================== */
+
+/* Ajustes para Notebooks pequenos e Tablets em modo paisagem */
 @media (max-width: 1024px) {
   main {
     padding: 40px;
+    margin-left: 230px; /* Mantém o menu se ele ainda estiver visível */
   }
 }
 
-/* ================== 900px ============================
-   Tablet / Mobile grande
-====================================================== */
-@media (max-width: 900px) {
-  /* MAIN */
+/* ================== 900px (Tablet / Mobile grande) ==================== */
+@media (max-width: 992px) {
   main {
-    margin-left: 0;          /* remove espaço do menu lateral */
-    padding: 30px 25px;      /* distância interna confortável */
-    gap: 25px;               /* distância entre os cards */
+    margin-left: 0; /* remove espaço do menu lateral */
+    padding: 30px 25px; /* distância interna confortável */
+    gap: 25px; /* distância entre os cards */
     width: 100%;
     margin-top: 50px;
   }
 
-/* Resumo total ocupa a linha inteira */
-.resumo-total {
-  flex: 1 1 100%;
-}
-
-/* Demais cards de resumo em 2 colunas */
-.card-resumo {
-  flex: 1 1 45%;
-}
-
-  /* CARD LISTA (container principal) */
-  .cardlist {
-    padding: 18px;
-    border-radius: 16px;
-  }
-
-  /* GRID DAS LISTAS */
-  .listas-container-principal {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-  }
-
-  /* LISTAS COM ROLAGEM */
-  #listasContainer,
-  .listas-container {
-    max-height: 240px;
-  }
-
-  /* ITENS DAS LISTAS */
-  .list-item,
-  .list-item-summary {
-    padding: 9px 12px;
-    font-size: 13.5px;
-  }
-
-  /* BOTÃO NOVA CATEGORIA */
-  #addCatBtn {
-    padding: 9px 16px !important;
-    font-size: 14px !important;
-  }
-
-  /* MODAL */
-  .modal-content {
-    width: 320px;
-    padding: 18px 20px;
-  }
-
-  .modal-content h3 {
-    font-size: 19px;
-  }
-
-  /* INPUTS DO MODAL */
-  .modal-content input[type="text"],
-  .modal-content input[type="date"] {
-    font-size: 13.5px;
-  }
-
-  /* LISTA DE ITENS NO MODAL */
-  #viewListItems {
-    max-height: 45vh;
-  }
-
-  /* BOTÕES NO MODAL */
-  #viewListModal .btn-group {
-    gap: 6px;
-  }
-
-  #viewListModal .btn-group .btn {
-    min-width: 85px;
-    font-size: 13px;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-@media (max-width: 768px) {
-  main {
-    margin-left: 0;
-    padding: 20px;
-    padding-top: 80px;
-  }
-
-  .top-widgets {
-    flex-direction: column;
-    gap: 15px;
-  }
+  /* Resumo total ocupa a linha inteira */
   .resumo-total {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-around;
+    flex: 1 1 100%;
+  }
+
+  /* Demais cards de resumo em 2 colunas */
+  .card-resumo {
+    flex: 1 1 1 45%;
+  }
+}
+/* ================== 768px (Mobile padrão) ============================ */
+@media (max-width: 768px) {
+  /* Cards de lembretes em uma coluna */
+  .list-container-principal {
+    grid-template-columns: 1fr;
+  }
+
+  /* Top Widgets em uma coluna */
+  .resumo-total {
+    flex: 1 1 100%;
+  }
+  .card-resumo {
+    flex: 1 1 45%;
+  }
+}
+
+/* ================== 480px (Mobile pequeno) ============================ */
+@media (max-width: 480px) {
+  .modal-content {
     padding: 15px;
   }
-  .resumo-total h2 {
-    font-size: 1.2rem;
-  }
-  .resumo-total span {
-    font-size: 2.8rem;
-  }
 
-  .card-resumo {
-    flex-wrap: wrap;
-  }
-  .card-resumo > div {
-    flex: 1 1 45%; /* 2 colunas */
-    border-inline-end: none;
-    padding-inline-end: 0;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .card-resumo > div:nth-child(2n) {
-    border-inline-end: none;
-  }
-  .card-resumo > div:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
-
-  .listas-container-principal {
-    grid-template-columns: 1fr; 
-  }
-
-  .modal-content {
-    max-width: 95%;
-    width: 100%;
-  }
-
-  #viewListModal .btn-group {
-    flex-direction: column;
-  }
-  #viewListModal .btn-group .btn {
-    min-width: 100%;
+  #viewListTitle {
+    font-size: 20px;
   }
 }

@@ -18,21 +18,40 @@
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li class="active"><a><i class="fas fa-home"></i> Início</a></li>
-        <li><a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a></li>
-        <li><a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a></li>
-        <li><a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a></li>
-        <li><a href="diario.html"><i class="fas fa-book-open"></i> Diário</a></li>
-        <li><a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a></li>
+        <li class="active">
+          <a><i class="fas fa-home"></i> Início</a>
+        </li>
+        <li>
+          <a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a>
+        </li>
+        <li>
+          <a href="listas.html"><i class="fas fa-list-ul"></i> Listas</a>
+        </li>
+        <li>
+          <a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a>
+        </li>
+        <!--
+        <li>
+          <a href="diario.html"><i class="fas fa-book-open"></i> Diário</a>
+        </li>
+        <li>
+          <a href="configuracao.html"
+            ><i class="fas fa-cog"></i> Configurações</a
+          >
+        </li>
+        -->
       </ul>
     </aside>
 
     <main>
       <section class="cardcal">
         <article class="calendario-box">
-          <h2><i class="fa-solid fa-calendar-days"></i> Calendário</h2>
-          <div class="calendar">
+          <h2>
+            <i class="fa-solid fa-calendar-days"></i>
+            Calendário
+          </h2>
 
+          <div class="calendar">
             <button class="btn" id="prevMonthBtn" style="padding: 4px 8px">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
@@ -45,20 +64,26 @@
             <button class="btn" id="nextMonthBtn" style="padding: 4px 8px">
               <i class="fa-solid fa-chevron-right"></i>
             </button>
-
           </div>
 
           <div class="week-days-header">
-            <span>Dom</span><span>Seg</span><span>Ter</span> <span>Qua</span
-            ><span>Qui</span><span>Sex</span><span>Sáb</span>
+            <span>Dom</span>
+            <span>Seg</span>
+            <span>Ter</span>
+            <span>Qua</span>
+            <span>Qui</span>
+            <span>Sex</span>
+            <span>Sáb</span>
           </div>
 
           <div class="mini-calendar" id="calendar"></div>
+
           <button class="btn" id="addEventBtn">+ Adicionar evento</button>
         </article>
 
         <article class="eventos-box">
           <h2><i class="fa-solid fa-clock"></i> Próximos eventos</h2>
+
           <ul id="eventosLista"></ul>
         </article>
       </section>
@@ -73,11 +98,10 @@
       <section class="cardlemb">
         <article class="listas-box">
           <h2><i class="fa-solid fa-bell"></i> Lembretes</h2>
-          <button class="btn" id="addReminderBtn">+ Novo lembrete</button>
           <ul id="lembretesContainer"></ul>
         </article>
       </section>
-
+      <!--
       <section class="carddiario">
         <article class="diario-header">
           <h2><i class="fa-solid fa-book-open"></i> Meu Diário</h2>
@@ -88,20 +112,16 @@
           <p class="diario-vazio">Nenhuma entrada de diário ainda...</p>
         </article>
       </section>
+-->
     </main>
 
     <div class="modal" id="eventModal">
       <div class="modal-content">
-        <h3>Adicionar Evento</h3>
+        <h3>Novo Evento</h3>
 
-        <label>Data:</label>
         <input type="date" id="eventDate" />
-
-        <label>Hora:</label>
         <input type="time" id="eventTime" />
-
-        <label>Descrição:</label>
-        <input type="text" id="eventText" />
+        <input type="text" id="eventText" placeholder="Descrição" />
 
         <div class="btn-group">
           <button class="btn btn-save" id="saveEventBtn">
@@ -116,11 +136,11 @@
 
     <div class="modal" id="viewListModal">
       <div class="modal-content">
-        <h3 id="viewListTitle">Título</h3>
+        <h3 id="viewListTitle"></h3>
 
         <p class="view-info">
           <strong>Data limite:</strong>
-          <span id="viewListDueDate">—</span>
+          <span id="viewListDueDate"></span>
         </p>
 
         <p class="view-info">
@@ -128,8 +148,17 @@
           <span id="viewListStatus"></span>
         </p>
 
-        <ul id="viewListItems"></ul>
+        <ul id="viewListItems" class="view-list-items-padrao"></ul>
+
+        <div class="contador">
+          <span id="contadorFeitos">0</span> /
+          <span id="contadorTotal">0</span> itens concluídos
+        </div>
+
         <div class="btn-group">
+          <button class="btn" id="uncheckAllBtn">
+            <i class="fas fa-undo-alt"></i> Todos
+          </button>
           <button class="btn btn-cancel" id="closeViewListModalBtn">
             <i class="fas fa-times"></i> Fechar
           </button>
@@ -137,22 +166,6 @@
       </div>
     </div>
 
-    <div id="reminderModal" class="modal">
-      <div class="modal-content">
-        <h3>Novo Lembrete</h3>
-
-        <label>Lembrete:</label>
-        <input type="text" id="reminderText" />
-
-        <div class="btn-group">
-          <button class="btn btn-save" id="saveReminderBtn">Salvar</button>
-          <button class="btn btn-cancel" id="closeReminderModal">
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <script src="../assets/js/home.js"></script>
+    <script type="module" src="../assets/js/home.js"></script>
   </body>
 </html>

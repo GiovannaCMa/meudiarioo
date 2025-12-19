@@ -342,7 +342,7 @@ main {
 }
 
 /* ================== 900px (MOBILE/LAYOUT VERTICAL) ===== */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   main {
     margin-left: 0;
     padding: 40px 30px 10px;
