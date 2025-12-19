@@ -397,38 +397,156 @@ body {
 }
 
 
+/* DESIGN PARA O ESTADO VAZIO (IGUAL AOS ITENS DA LISTA) */
+.empty-list-state {
+  display: flex !important;
+  align-items: center;
+  justify-content: center; /* Centraliza o texto "Ainda não há..." */
+  width: 100%;
+  min-height: 44px; /* Altura reduzida conforme sua preferência */
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  
+  /* CÓPIA FIEL DO DESIGN DOS SEUS ITENS */
+  border-radius: 50px; /* Formato pílula idêntico à foto */
+  background: var(--grad1, #f3f0ff); /* Fundo lilás bem clarinho ou seu gradiente */
+  border-left: 6px solid var(--cor-lilas, #6a5acd); /* Mesma borda lateral da foto */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08); /* Sombra suave idêntica */
+  
+  /* ESTILO DO TEXTO */
+  color: #888; /* Cinza para indicar que é um estado informativo */
+  font-size: 12px !important; /* Fonte pequena como você pediu */
+  font-weight: 500;
+  font-style: italic; /* Um toque de diferenciação por estar vazio */
+  
+  box-sizing: border-box;
+  opacity: 0.8; /* Leve transparência para diferenciar de um item real */
+}
 
 
+/* MODAL DE VISUALIZAÇÃO */
+#viewListTitle {
+  font-size: 24px;
+  color: var(--cor-primaria);
+  margin-bottom: 15px;
+}
+.view-info {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 8px;
+}
+.view-info strong {
+  color: var(--texto);
+  font-weight: 700;
+  margin-right: 5px;
+}
+#viewListStatus {
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+}
+#viewListStatus.pendente {
+  background: #fce4e4;
+  color: var(--cor-pendente);
+}
+#viewListStatus.andamento {
+  background: #e3f2fd;
+  color: var(--cor-andamento);
+}
+#viewListStatus.concluida {
+  background: #e8f5e9;
+  color: var(--cor-concluida);
+}
 
-
-
-/* Estilos para o Modal de Visualização (mantendo o que você já tinha) */
+/* Lista de Itens no Modal de Visualização - AGORA COM ROLAGEM AQUI */
 #viewListItems {
   list-style: none;
   padding: 0;
-  max-height: 40vh;
-  overflow-y: auto;
-  margin: 20px 0;
+  max-height: 40vh; /* Altura máxima para a rolagem */
+  overflow-y: auto; /* Garante que SÓ A LISTA ROLA */
+  padding-right: 4px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  flex-grow: 1; /* Ocupa o espaço central entre o cabeçalho e o rodapé */
+  width: 100%;
 }
 
+/* ESTILO DO ITEM DE LISTA - CORRIGIDO PARA TIRAR O MARCADOR */
 #viewListItems li {
   display: flex;
   align-items: center;
-  background: var(--cor-input-bg);
-  border-left: 3px solid var(--cor-lilas);
-  border-radius: 50px;
+  padding: 0;               /* Zeramos o padding aqui para o label ocupar tudo */
+  border-radius: 50px;      /* Mantém o formato pílula */
   margin-bottom: 8px;
-  overflow: hidden;
+  background: var(--cor-input-bg);
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+  border-left: 6px solid var(--cor-lilas);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;         /* O item pai segura o arredondamento */
 }
 
-#viewListItems li label {
-  flex: 1;
-  padding: 10px 20px;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
+/* 1. Esconde o checkbox padrão */
+#viewListItems li input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
+
+/* 2. Estiliza o Label (o texto do item) para ocupar o espaço */
+#viewListItems li label {
+  display: block;
+  flex: 1;
+  padding: 10px 20px;       /* Padding transferido para dentro do label */
+  cursor: pointer;
+  white-space: nowrap;      /* Mantém o texto em uma linha */
+  
+  /* REGRAS DA ROLAGEM */
+  overflow-x: auto;         /* Cria a barra de rolagem horizontal */
+  overflow-y: hidden;       /* Garante que não role para cima/baixo */
+  scrollbar-width: none;    /* Esconde a barra no Firefox */
+}
+
+/* 3. Estilo para o estado Concluído (usando a classe 'done' adicionada pelo JS) */
+#viewListItems li.done {
+  text-decoration: line-through;
+  opacity: 0.8;
+  background: #f1f1f1;
+  border-left: 3px solid var(--cor-concluida);
+  width: 100%;
+}
+/* Estilo para o estado Pendente (para contraste) */
+#viewListItems li:not(.done) {
+  text-decoration: none;
+  opacity: 1;
+  background: var(--cor-input-bg);
+  border-left: 3px solid var(--cor-lilas);
+}
+
+/* Contador de Itens - FICA VISÍVEL */
+.contador {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+  color: var(--cor-label);
+  flex-shrink: 0; /* Impede que o contador seja espremido */
+}
+
+#viewListTitle {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+
+
+
+
 
 /* ===============================
    Scroll discreto – Listas

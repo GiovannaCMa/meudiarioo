@@ -109,17 +109,17 @@ document.addEventListener("DOMContentLoaded", () => {
   /* 2. UTILITÁRIOS */
   const getListStatus = (list) => {
     const { items, dueDate } = list;
-    if (!items || items.length === 0) return "nao-iniciada";
+    if (!items || items.length === 0) return "Não iniciada";
     const total = items.length;
     const feitos = items.filter((i) => i.done).length;
-    if (total > 0 && feitos === total) return "concluida";
+    if (total > 0 && feitos === total) return "Concluída";
     if (dueDate) {
       const dueDateTime = Date.parse(dueDate + "T00:00:00");
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (dueDateTime < today.getTime()) return "pendente";
+      if (dueDateTime < today.getTime()) return "Pendente";
     }
-    return feitos === 0 ? "nao-iniciada" : "andamento";
+    return feitos === 0 ? "Não iniciada" : "Andamento";
   };
 
   const formatDueDate = (date) => {
