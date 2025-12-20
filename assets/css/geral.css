@@ -338,42 +338,17 @@ aside li.active {
   background: #ffecb3;
 }
 
+/* 1. Remove a barra visual no Chrome, Safari e Edge */
 .card-resumo ul::-webkit-scrollbar {
-  width: 0.375rem;
-}
-.card-resumo ul::-webkit-scrollbar-thumb {
-  background-color: #ddd;
-  border-radius: 0.625rem;
-}
-
-.modal {
   display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  width: 0;
 }
 
-.modal.open {
-  display: flex;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 25px;
-  border-radius: 18px;
-  width: 360px;
-  max-width: 95%;
-}
-
-.actions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 6px;
+/* 2. Configura a rolagem e esconde no Firefox e IE */
+.card-resumo ul {
+  overflow-y: auto;          /* Garante que continue rolando */
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE/Edge antigo */
 }
 
 

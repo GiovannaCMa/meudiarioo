@@ -1,67 +1,91 @@
 // 1. LÓGICA DO MENU LATERAL (TOGGLE E SCROLL)
 (function () {
-    const btn = document.getElementById("toggleMenu");
-    const aside = document.querySelector("aside");
-    
-    // Configura a transição para o botão 
-    if (btn) {
-        btn.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  const btn = document.getElementById("toggleMenu");
+  const aside = document.querySelector("aside");
+
+  if (!btn || !aside) return;
+
+  // Configura a transição inicial para o botão
+  btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+
+  // Função auxiliar para controlar o ícone do livro
+  function updateIcon(isOpen) {
+    const icon = btn.querySelector("i");
+    if (!icon) return;
+
+    if (isOpen) {
+      icon.classList.remove("fa-book");
+      icon.classList.add("fa-book-open");
+    } else {
+      icon.classList.remove("fa-book-open");
+      icon.classList.add("fa-book");
     }
+  }
 
-    if (!btn || !aside) return; 
+  // --- 1. Lógica de Abrir/Fechar (Toggle) ---
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    aside.classList.toggle("menu-open");
+    
+    // Atualiza o ícone baseado se a classe menu-open foi adicionada ou não
+    const isOpen = aside.classList.contains("menu-open");
+    updateIcon(isOpen);
+  });
 
-    // --- 1. Lógica de Abrir/Fechar (Toggle) ---
-    btn.addEventListener("click", (e) => {
-        e.stopPropagation(); 
-        aside.classList.toggle("menu-open");
-    });
+  // --- 2. Fechar ao Clicar Fora e Resize ---
+  document.addEventListener("click", (e) => {
+    if (
+      window.innerWidth <= 900 &&
+      aside.classList.contains("menu-open") &&
+      !aside.contains(e.target) &&
+      e.target !== btn
+    ) {
+      aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
+    }
+  });
 
-    // --- 2. Fechar ao Clicar Fora (melhor usabilidade mobile) ---
-    document.addEventListener('click', (e) => {
-        // Verifica se o menu está aberto E se o clique não foi no próprio menu E não foi no botão
-        if (window.innerWidth <= 900 && aside.classList.contains('menu-open') && !aside.contains(e.target) && e.target !== btn) {
-            aside.classList.remove('menu-open');
-        }
-    });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) {
+      aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
+    }
+  });
 
-    // --- 3. Fechar em Desktop e Resize ---
-    window.addEventListener("resize", () => {
-        if (window.innerWidth > 900) {
-            aside.classList.remove("menu-open");
-        }
-    });
+  // --- 3. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
+  let lastScrollY = window.scrollY;
 
-    // --- 4. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
-    let lastScrollY = window.scrollY; 
+  window.addEventListener("scroll", () => {
+    if (window.innerWidth <= 900) {
+      // Se o menu estiver aberto, não escondemos o botão para não confundir o usuário
+      if (aside.classList.contains("menu-open")) return;
 
-    window.addEventListener("scroll", () => {
-      if (window.innerWidth <= 900) { 
-        if (window.scrollY > 200) { 
-          if (window.scrollY > lastScrollY) {
-            // Rolando para baixo: Esconde o botão
-            btn.style.opacity = '0';
-            btn.style.pointerEvents = 'none'; 
-            btn.style.transform = 'translateY(-20px)';
-          } else { 
-            // Rolando para cima: Mostra o botão
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto'; 
-            btn.style.transform = 'translateY(0)';
-          }
+      if (window.scrollY > 200) {
+        if (window.scrollY > lastScrollY) {
+          // Rolando para baixo: Esconde o botão
+          btn.style.opacity = "0";
+          btn.style.pointerEvents = "none";
+          btn.style.transform = "translateY(-20px)";
         } else {
-          // No topo da página: Visível
-          btn.style.opacity = '1';
-          btn.style.pointerEvents = 'auto';
-          btn.style.transform = 'translateY(0)';
+          // Rolando para cima: Mostra o botão
+          btn.style.opacity = "1";
+          btn.style.pointerEvents = "auto";
+          btn.style.transform = "translateY(0)";
         }
-        lastScrollY = window.scrollY; 
       } else {
-        // Em Desktop: Garante estado padrão
-        btn.style.opacity = '1';
-        btn.style.pointerEvents = 'auto';
-        btn.style.transform = 'translateY(0)';
+        // No topo da página: Visível
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+        btn.style.transform = "translateY(0)";
       }
-    });
+      lastScrollY = window.scrollY;
+    } else {
+      // Em Desktop: Garante estado padrão
+      btn.style.opacity = "1";
+      btn.style.pointerEvents = "auto";
+      btn.style.transform = "translateY(0)";
+    }
+  });
 })();
 
 // VARIÁVEIS & CONSTANTES (DOM e Dados)

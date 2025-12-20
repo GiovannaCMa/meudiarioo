@@ -254,6 +254,11 @@ body {
   z-index: 10000;
   padding: 15px;
 }
+.modal.open {
+  opacity: 1;
+  display: flex;
+}
+
 .modal-content {
   background: var(--branco);
   padding: 20px 25px;
@@ -268,18 +273,22 @@ body {
 }
 .modal-content h3 {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: var(--cor-primaria);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   text-align: center;
 }
+
 .modal-content label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   font-weight: 600;
   color: var(--cor-label);
+  margin-top: 8px;
+  font-size: 13px;
 }
+
 .modal-content input {
   width: 100%;
   padding: 10px 12px;
@@ -399,30 +408,11 @@ body {
   cursor: pointer;
   transition: transform 0.2s, color 0.2s;
   line-height: 1;
-  color: #888;
+  color: var(--cor-concluida);
   font-size: 1.1em;
 }
 
-.icon-action:hover {
-  transform: scale(1.2);
-  color: var(--cor-primaria);
-}
 
-.btn-check i {
-  color: var(--cor-concluida, #2ecc71);
-}
-
-/* ============================================================
-   STATUS E CORES ESPECÍFICAS
-   ============================================================ */
-.concluida {
-  border-left-color: var(--cor-concluida) !important;
-  opacity: 0.7;
-}
-
-.pendente {
-  border-left-color: var(--cor-pendente) !important;
-}
 
 
 /* AÇÕES RÁPIDAS (LIXEIRA) AO FINAL DA ROLAGEM */
@@ -433,22 +423,6 @@ body {
   flex-shrink: 0;
 }
 
-/* CORES DE STATUS - PREENCHIMENTO TOTAL */
-.list-item-summary.pendente {
-  border-left-color: var(--cor-pendente);
-  background: #ffe3e3 !important; /* Cor roxinha/avermelhada */
-}
-
-.list-item-summary.concluida {
-  border-left-color: var(--cor-concluida);
-  background: #e8f5e9 !important; /* Verde */
-}
-
-.list-item-summary:hover {
-  background: var(--grad2);
-
-  transform: translateY(-2px);
-}
 
 .category-actions .btn {
   /* Faz os botões terem largura igual */
@@ -493,12 +467,12 @@ body {
 
 /* MODAL DE VISUALIZAÇÃO */
 #viewListTitle {
-  font-size: 24px;
+  font-size: 22px;
   color: var(--cor-primaria);
   margin-bottom: 15px;
 }
 .view-info {
-  font-size: 15px;
+  font-size: 13px;
   color: #666;
   margin-bottom: 8px;
 }
@@ -652,76 +626,7 @@ body {
 
 /* ================== 1200px =========================== */
 
-@media (max-width: 1200px) {
-  main {
-    padding: 40px;
-    gap: 25px;
-  }
-
-  .cardcal {
-    max-width: 100%;
-  }
-}
-
-/* ================== 1024px (TABLET) =================*/
-
-@media (max-width: 1024px) {
-  main {
-    margin-top: 50px; /* tablet costuma precisar um pouco mais */
-
-    margin-left: 230px;
-
-    padding: 35px;
-
-    gap: 25px;
-
-    justify-content: center;
-  }
-
-  /* Cards */
-
-  .cardcal,
-  .cardlist,
-  .cardlemb,
-  .carddiario {
-    width: 48%;
-
-    min-width: 320px;
-
-    height: auto;
-  }
-
-  /* 🔥 Calendário em coluna */
-
-  .cardcal {
-    flex-direction: column;
-    max-width: 100%;
-  }
-
-  .calendario-box {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .eventos-box {
-    width: 100%;
-    margin-top: 20px;
-
-    padding-left: 0;
-
-    border-left: none;
-
-    max-height: 260px;
-  }
-}
-
-/* ================== 900px =============================
-
-   Tablet pequeno
-
-====================================================== */
-
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   main {
     margin-left: 0;
 
@@ -742,11 +647,7 @@ body {
   }
 }
 
-/* ================== 768px =============================
-
-   Tablet / Mobile grande
-
-====================================================== */
+/* ================== 768px ============================= */
 
 @media (max-width: 768px) {
   main {
@@ -779,11 +680,7 @@ body {
   }
 }
 
-/* ================== 600px =============================
-
-   Mobile
-
-====================================================== */
+/* ================== 600px ============================= */
 
 @media (max-width: 600px) {
   main {
@@ -831,11 +728,7 @@ body {
   }
 }
 
-/* ================== 480px =============================
-
-   Mobile pequeno
-
-====================================================== */
+/* ================== 480px ============================= */
 
 @media (max-width: 480px) {
   .diario-card {

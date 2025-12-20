@@ -1,21 +1,38 @@
-// 1: LÓGICA DO MENU LATERAL
+// ================= MENU LATERAL =================
 (function () {
   const btn = document.getElementById("toggleMenu");
   const aside = document.querySelector("aside");
 
-  if (btn) {
-    btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-  }
-
   if (!btn || !aside) return;
+
+  // Configura a transição inicial para o botão
+  btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+
+  // Função auxiliar para controlar o ícone do livro
+  function updateIcon(isOpen) {
+    const icon = btn.querySelector("i");
+    if (!icon) return;
+
+    if (isOpen) {
+      icon.classList.remove("fa-book");
+      icon.classList.add("fa-book-open");
+    } else {
+      icon.classList.remove("fa-book-open");
+      icon.classList.add("fa-book");
+    }
+  }
 
   // --- 1. Lógica de Abrir/Fechar (Toggle) ---
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     aside.classList.toggle("menu-open");
+    
+    // Atualiza o ícone baseado se a classe menu-open foi adicionada ou não
+    const isOpen = aside.classList.contains("menu-open");
+    updateIcon(isOpen);
   });
 
-  // --- 2. Fechar ao Clicar Fora (melhor usabilidade mobile) ---
+  // --- 2. Fechar ao Clicar Fora e Resize ---
   document.addEventListener("click", (e) => {
     if (
       window.innerWidth <= 900 &&
@@ -24,38 +41,46 @@
       e.target !== btn
     ) {
       aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
     }
   });
 
-  // --- 3. Fechar em Desktop e Resize ---
   window.addEventListener("resize", () => {
     if (window.innerWidth > 900) {
       aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
     }
   });
 
-  // --- 4. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
+  // --- 3. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
   let lastScrollY = window.scrollY;
 
   window.addEventListener("scroll", () => {
     if (window.innerWidth <= 900) {
+      // Se o menu estiver aberto, não escondemos o botão para não confundir o usuário
+      if (aside.classList.contains("menu-open")) return;
+
       if (window.scrollY > 200) {
         if (window.scrollY > lastScrollY) {
+          // Rolando para baixo: Esconde o botão
           btn.style.opacity = "0";
           btn.style.pointerEvents = "none";
           btn.style.transform = "translateY(-20px)";
         } else {
+          // Rolando para cima: Mostra o botão
           btn.style.opacity = "1";
           btn.style.pointerEvents = "auto";
           btn.style.transform = "translateY(0)";
         }
       } else {
+        // No topo da página: Visível
         btn.style.opacity = "1";
         btn.style.pointerEvents = "auto";
         btn.style.transform = "translateY(0)";
       }
       lastScrollY = window.scrollY;
     } else {
+      // Em Desktop: Garante estado padrão
       btn.style.opacity = "1";
       btn.style.pointerEvents = "auto";
       btn.style.transform = "translateY(0)";
@@ -63,9 +88,9 @@
   });
 })();
 
-// 2. LÓGICA PRINCIPAL
+// ================= LISTAS =================
 document.addEventListener("DOMContentLoaded", () => {
-  /* 1. VARIÁVEIS E SELETORES */
+  // 1. MAPEAMENTO DE ELEMENTOS
   const elements = {
     modals: {
       createCat: document.getElementById("createCatModal"),
@@ -106,32 +131,52 @@ document.addEventListener("DOMContentLoaded", () => {
   let allLists = [];
   let currentFilter = "all";
 
-  /* 2. UTILITÁRIOS */
+  const STATUS_LABELS = {
+    pendente: "Pendente",
+    "nao-iniciada": "Não iniciada",
+    andamento: "Em andamento",
+    concluida: "Concluída",
+  };
+
+  // 2. LÓGICA DE FECHAR MODAL
+  const closeModal = () => {
+    Object.values(elements.modals).forEach(m => {
+      if (m) m.classList.remove("open");
+    });
+  };
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id.startsWith("close") || 
+        e.target.closest("[id^='close']") || 
+        e.target.classList.contains("btn-cancel") ||
+        e.target.classList.contains("modal")) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+
+  // 3. UTILITÁRIOS
   const getListStatus = (list) => {
     const { items, dueDate } = list;
-    if (!items || items.length === 0) return "Não iniciada";
-    const total = items.length;
-    const feitos = items.filter((i) => i.done).length;
-    if (total > 0 && feitos === total) return "Concluída";
+    if (!items || items.length === 0) return "nao-iniciada";
+    const feitos = items.filter(i => i.done).length;
+    if (items.length > 0 && feitos === items.length) return "concluida";
     if (dueDate) {
-      const dueDateTime = Date.parse(dueDate + "T00:00:00");
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (dueDateTime < today.getTime()) return "Pendente";
+      const [y, m, d] = dueDate.split("-").map(Number);
+      const due = new Date(y, m - 1, d).getTime();
+      const today = new Date().setHours(0, 0, 0, 0);
+      if (due < today && feitos < items.length) return "pendente";
     }
-    return feitos === 0 ? "Não iniciada" : "Andamento";
+    return feitos === 0 ? "nao-iniciada" : "andamento";
   };
 
   const formatDueDate = (date) => {
     if (!date) return "Sem data";
     const [y, m, d] = date.split("-");
     return `${d}/${m}/${y}`;
-  };
-
-  const closeModal = () => {
-    Object.values(elements.modals).forEach(
-      (m) => m && m.classList.remove("open")
-    );
   };
 
   const addItemInput = (wrapper, initialValue = "") => {
@@ -145,405 +190,306 @@ document.addEventListener("DOMContentLoaded", () => {
     wrapper.appendChild(div);
   };
 
-  /* 3. LOCAL STORAGE */
   const saveAll = () => {
     localStorage.setItem("diaryAppLists", JSON.stringify(allLists));
-    const cats = [
-      ...elements.containers.customLists.querySelectorAll(
-        ".cardlist:not(.default-card)"
-      ),
-    ].map((card) => ({
+    const cats = [...document.querySelectorAll(".cardlist:not(.default-card)")].map(card => ({
       id: card.dataset.categoryId,
-      title: card
-        .querySelector("h2")
-        .textContent.replace(/^\S+\s/, "")
-        .trim(),
+      title: card.querySelector("h2").textContent.trim()
     }));
     localStorage.setItem("diaryAppCategories", JSON.stringify(cats));
   };
 
-  /* 4. RENDERIZAÇÃO */
-  const renderLists = () => {
-    document
-      .querySelectorAll(".listas-container")
-      .forEach((ul) => (ul.innerHTML = ""));
-    const weights = {
-      pendente: 0,
-      "nao-iniciada": 1,
-      andamento: 1,
-      concluida: 2,
-    };
+  // 4. RENDERIZAÇÃO
+   const createEmptyMessage = () => {
+    const li = document.createElement("li");
+    li.className = "list-item-summary empty-msg";
+    li.style.display = "flex";
+    li.style.justifyContent = "center";
+    li.style.alignItems = "center";
+    li.style.minHeight = "40px";
+    li.style.color = "#888";
+    li.style.fontStyle = "italic";
+    li.innerHTML = `<span>Ainda não há listas aqui</span>`;
+    return li;
+  };
 
-    const sortedLists = [...allLists].sort((a, b) => {
-      const statusA = getListStatus(a);
-      const statusB = getListStatus(b);
-      if (weights[statusA] !== weights[statusB])
-        return weights[statusA] - weights[statusB];
-      return (a.dueDate || "9999") > (b.dueDate || "9999") ? 1 : -1;
-    });
+const renderLists = () => {
+  // Limpa os containers antes de renderizar
+  document.querySelectorAll(".listas-container").forEach(ul => ul.innerHTML = "");
 
-    sortedLists.forEach((list) => {
-      const status = getListStatus(list);
-      if (currentFilter !== "all" && currentFilter !== status) return;
-      const ul = document.getElementById(`listasContainer-${list.categoryId}`);
-      if (!ul) return;
+  const statusWeights = {
+    "pendente": 0,
+    "andamento": 1,
+    "nao-iniciada": 2,
+    "concluida": 3
+  };
 
+  const sortedLists = [...allLists].sort((a, b) => {
+    const statusA = getListStatus(a);
+    const statusB = getListStatus(b);
+
+    if (statusWeights[statusA] !== statusWeights[statusB]) {
+      return statusWeights[statusA] - statusWeights[statusB];
+    }
+
+    const dateA = a.dueDate || "9999-12-31";
+    const dateB = b.dueDate || "9999-12-31";
+    if (dateA !== dateB) {
+      return dateA.localeCompare(dateB);
+    }
+
+    return a.title.localeCompare(b.title);
+  });
+
+  sortedLists.forEach(list => {
+    const statusKey = getListStatus(list);
+    const ul = document.getElementById(`listasContainer-${list.categoryId}`);
+
+    if (ul) {
       const li = document.createElement("li");
-      li.className = `list-item-summary ${status}`;
-      li.innerHTML = `<span>${
-        list.title
-      }</span><span class="due-date">${formatDueDate(list.dueDate)}</span>`;
+      li.className = `list-item-summary ${statusKey}`;
+      li.innerHTML = `
+        <span style="text-transform:none;">${list.title}</span>
+        <span class="due-date">${formatDueDate(list.dueDate)}</span>
+      `;
       li.onclick = () => openViewListModal(list.id);
       ul.appendChild(li);
-    });
+    }
+  });
 
-    document.querySelectorAll(".listas-container").forEach((ul) => {
-      if (ul.children.length === 0) {
-        const li = document.createElement("li");
-        li.className = "list-item-summary";
-        li.style.opacity = "0.5";
-        li.style.cursor = "default";
-        li.innerHTML = `<span style="width:100%; text-align:center;">Ainda não há listas aqui</span>`;
-        ul.appendChild(li);
-      }
-    });
-    renderTopWidgets();
-  };
+  // 👉 AQUI entra a mensagem de lista vazia
+  document.querySelectorAll(".listas-container").forEach(ul => {
+    if (ul.children.length === 0) {
+      ul.appendChild(createEmptyMessage());
+    }
+  });
+
+  renderTopWidgets();
+};
 
   const renderTopWidgets = () => {
     const totalEl = document.getElementById("totalListas");
     if (totalEl) totalEl.textContent = allLists.length;
-    const ids = [
-      "listasAndamento",
-      "listasNaoIniciadas",
-      "listasConcluidas",
-      "proximaslistas",
-      "listasPendentes",
-    ];
-    const uls = {};
-    ids.forEach((id) => {
-      uls[id] = document.getElementById(id);
-      if (uls[id]) uls[id].innerHTML = "";
-    });
+    
+    const mapWidgets = {
+      andamento: document.getElementById("listasAndamento"),
+      pendente: document.getElementById("listasPendentes"),
+      concluida: document.getElementById("listasConcluidas")
+    };
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const nextWeek = new Date(today);
-    nextWeek.setDate(today.getDate() + 7);
+    Object.values(mapWidgets).forEach(ul => { if (ul) ul.innerHTML = ""; });
 
-    // CRIAMOS UMA CÓPIA ORDENADA ALFABETICAMENTE PELO TÍTULO
-    const sortedAlphabetically = [...allLists].sort((a, b) =>
-      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
-    );
-
-    // USAMOS O ARRAY ORDENADO PARA DISTRIBUIR NOS WIDGETS
-    sortedAlphabetically.forEach((list) => {
-      const status = getListStatus(list);
-      const feitos = list.items.filter((i) => i.done).length;
-      const total = list.items.length;
-
-      const li = document.createElement("li");
-      li.className = "summary-item";
-      li.textContent = list.title;
-      li.onclick = () => openViewListModal(list.id);
-
-      if (status === "concluida") {
-        if (uls.listasConcluidas) uls.listasConcluidas.appendChild(li);
-      } else {
-        // Aparece em ANDAMENTO se tiver pelo menos 1 item feito
-        if (feitos > 0 && uls.listasAndamento) {
-          const andamentoLi = li.cloneNode(true);
-          andamentoLi.onclick = () => openViewListModal(list.id);
-          uls.listasAndamento.appendChild(andamentoLi);
-        }
-        // Aparece em PENDENTE se a data venceu
-        if (status === "pendente" && uls.listasPendentes) {
-          const pendenteLi = li.cloneNode(true);
-          pendenteLi.onclick = () => openViewListModal(list.id);
-          uls.listasPendentes.appendChild(pendenteLi);
-        }
-        // Aparece em NÃO INICIADA
-        if (feitos === 0 && status !== "pendente" && uls.listasNaoIniciadas) {
-          uls.listasNaoIniciadas.appendChild(li);
-        }
-      }
-
-      // Widget Próximos 7 dias
-      if (list.dueDate && status !== "concluida" && status !== "pendente") {
-        const due = new Date(list.dueDate + "T00:00:00");
-        if (due >= today && due <= nextWeek) {
-          const proxyLi = li.cloneNode(true);
-          proxyLi.onclick = () => openViewListModal(list.id);
-          const diff = Math.ceil((due - today) / 86400000);
-          proxyLi.textContent = `${list.title} (${
-            diff === 0 ? "Hoje" : diff === 1 ? "Amanhã" : diff + " dias"
-          })`;
-          if (uls.proximaslistas) uls.proximaslistas.appendChild(proxyLi);
-        }
-      }
-    });
-
-    // Mensagens de "Vazio"
-    ids.forEach((id) => {
-      if (uls[id] && uls[id].children.length === 0) {
-        const emptyLi = document.createElement("li");
-        emptyLi.style.opacity = "0.5";
-        emptyLi.style.fontSize = "0.85rem";
-        emptyLi.style.textAlign = "center";
-        emptyLi.style.listStyle = "none";
-        emptyLi.textContent = "Vazio";
-        uls[id].appendChild(emptyLi);
+    allLists.forEach(list => {
+      const key = getListStatus(list);
+      const ul = mapWidgets[key];
+      if (ul) {
+        const li = document.createElement("li");
+        li.className = "summary-item";
+        li.textContent = list.title;
+        li.onclick = () => openViewListModal(list.id);
+        ul.appendChild(li);
       }
     });
   };
 
-  /* 5. CATEGORIAS */
-  const createCategoryCard = (title, id = `cat-${Date.now()}`) => {
-    const card = document.createElement("article");
-    card.className = "cardlist";
-    card.dataset.categoryId = id;
-    const isDefault = id === "default-listas";
-    if (isDefault) card.classList.add("default-card");
-
-    card.innerHTML = `
+  // 5. LÓGICA DE CATEGORIAS
+  const createCategoryCard = (title, id) => {
+    const article = document.createElement("article");
+    article.className = "cardlist";
+    article.dataset.categoryId = id;
+    article.innerHTML = `
       <h2><i class="fa-solid fa-list-check"></i> ${title}</h2>
       <button class="btn btn-primary add-list-btn">+ Adicionar Lista</button>
       <ul class="listas-container" id="listasContainer-${id}"></ul>
       <div class="category-actions">
-          <button class="btn btn-secondary edit-cat-btn" ${
-            isDefault ? "disabled" : ""
-          }><i class="fas fa-edit"></i> Editar</button>
-          <button class="btn btn-delete delete-cat-btn" ${
-            isDefault ? "disabled" : ""
-          }><i class="fas fa-trash-alt"></i> Excluir</button>
-      </div>`;
+        <button class="btn btn-secondary edit-cat-btn"><i class="fas fa-edit"></i> Editar</button>
+        <button class="btn btn-delete delete-cat-btn"><i class="fas fa-trash-alt"></i> Excluir</button>
+      </div>
+    `;
 
-    card.querySelector(".add-list-btn").onclick = (e) => {
-      e.stopPropagation();
-      openCreateListModal(id);
+    article.querySelector(".add-list-btn").onclick = () => {
+      elements.modals.createList.dataset.targetCat = id;
+      elements.inputs.createListTitle.value = "";
+      elements.containers.createItens.innerHTML = "";
+      addItemInput(elements.containers.createItens);
+      elements.modals.createList.classList.add("open");
     };
 
-    if (!isDefault) {
-      card.querySelector(".delete-cat-btn").onclick = (e) => {
-        e.stopPropagation();
-        if (confirm(`Excluir categoria "${title}"?`)) {
-          allLists = allLists.filter((l) => l.categoryId !== id);
-          card.remove();
-          saveAll();
-          renderLists();
-        }
-      };
-      card.querySelector(".edit-cat-btn").onclick = (e) => {
-        e.stopPropagation();
-        elements.inputs.editCatTitle.value = title;
-        elements.modals.editCat.dataset.editingId = id;
-        elements.modals.editCat.classList.add("open");
-      };
-    }
-    return card;
+    article.querySelector(".edit-cat-btn").onclick = () => {
+      elements.modals.editCat.dataset.editingCatId = id;
+      elements.inputs.editCatTitle.value = title;
+      elements.modals.editCat.classList.add("open");
+    };
+
+    article.querySelector(".delete-cat-btn").onclick = () => {
+      if (confirm(`Excluir a categoria "${title}"?`)) {
+        allLists = allLists.filter(l => l.categoryId !== id);
+        article.remove();
+        saveAll();
+        renderLists();
+      }
+    };
+
+    return article;
   };
 
-  /* 6. MODAIS E EVENTOS */
-  const openCreateListModal = (catId) => {
-    closeModal();
-    elements.modals.createList.dataset.targetCat = catId;
-    elements.inputs.createListTitle.value = "";
-    elements.inputs.createListDate.value = "";
-    elements.containers.createItens.innerHTML = "";
-    addItemInput(elements.containers.createItens);
-    elements.modals.createList.classList.add("open");
-  };
-
+  // 6. EVENTOS DE MODAIS
   const openViewListModal = (id) => {
-    const listIndex = allLists.findIndex((l) => l.id === id);
-    const list = allLists[listIndex];
+    const list = allLists.find(l => l.id === id);
     if (!list) return;
 
+    elements.modals.viewList.dataset.currentListId = id;
     document.getElementById("viewListTitle").textContent = list.title;
-
-    // Exibe a Data no Modal
-    const dateEl = document.getElementById("viewListDueDate");
-    if (dateEl) dateEl.textContent = formatDueDate(list.dueDate);
-
+    document.getElementById("viewListDueDate").textContent = formatDueDate(list.dueDate);
+    
     elements.containers.viewListItems.innerHTML = "";
     list.items.forEach((item, i) => {
       const li = document.createElement("li");
       if (item.done) li.classList.add("done");
-      const checkboxId = `chk-${id}-${i}`;
-      li.innerHTML = `<input type="checkbox" id="${checkboxId}" ${
-        item.done ? "checked" : ""
-      }><label for="${checkboxId}">${item.name}</label>`;
-
+      li.innerHTML = `
+        <input type="checkbox" id="chk-${i}" ${item.done ? "checked" : ""}>
+        <label for="chk-${i}">${item.name}</label>
+      `;
       li.querySelector("input").onchange = (e) => {
-        allLists[listIndex].items[i].done = e.target.checked;
-        saveAll();
-        renderLists();
-        if (e.target.checked) li.classList.add("done");
-        else li.classList.remove("done");
-        updateModalStatus(allLists[listIndex]);
+        item.done = e.target.checked;
+        saveAll(); renderLists(); li.classList.toggle("done", e.target.checked);
+        updateModalStatus(list);
       };
       elements.containers.viewListItems.appendChild(li);
     });
 
-    const updateModalStatus = (currentList) => {
-      const status = getListStatus(currentList);
-      const statusSpan = document.getElementById("viewListStatus");
-      statusSpan.textContent = status.toUpperCase();
-      statusSpan.className = status;
-      document.getElementById("contadorFeitos").textContent =
-        currentList.items.filter((it) => it.done).length;
-      document.getElementById("contadorTotal").textContent =
-        currentList.items.length;
+    const updateModalStatus = (l) => {
+      const key = getListStatus(l);
+      const span = document.getElementById("viewListStatus");
+      span.textContent = STATUS_LABELS[key];
+      span.className = key;
+      document.getElementById("contadorFeitos").textContent = l.items.filter(it => it.done).length;
+      document.getElementById("contadorTotal").textContent = l.items.length;
     };
-
     updateModalStatus(list);
-
-    elements.btns.uncheckAll.onclick = () => {
-      allLists[listIndex].items.forEach((item) => (item.done = false));
-      saveAll();
-      renderLists();
-      openViewListModal(id);
-    };
-
-    elements.btns.deleteList.onclick = () => {
-      if (confirm("Excluir esta lista?")) {
-        allLists.splice(listIndex, 1);
-        saveAll();
-        renderLists();
-        closeModal();
-      }
-    };
-
-    elements.btns.editList.onclick = () => {
-      closeModal();
-      openEditListModal(id);
-    };
-
     elements.modals.viewList.classList.add("open");
   };
 
   const openEditListModal = (id) => {
-    const listIndex = allLists.findIndex((l) => l.id === id);
-    const list = allLists[listIndex];
+    const list = allLists.find(l => l.id === id);
     if (!list) return;
-
     elements.modals.editList.dataset.editingId = id;
     elements.inputs.editListTitle.value = list.title;
-    elements.inputs.editListDate.value = list.dueDate;
+    elements.inputs.editListDate.value = list.dueDate || "";
     elements.containers.editItens.innerHTML = "";
-    list.items.forEach((item) =>
-      addItemInput(elements.containers.editItens, item.name)
-    );
+    list.items.forEach(it => addItemInput(elements.containers.editItens, it.name));
     elements.modals.editList.classList.add("open");
   };
 
-  elements.btns.addEditItem.onclick = () =>
-    addItemInput(elements.containers.editItens);
-
-  elements.btns.saveEditList.onclick = () => {
-    const id = elements.modals.editList.dataset.editingId;
-    const listIndex = allLists.findIndex((l) => l.id === id);
-    const title = elements.inputs.editListTitle.value.trim();
-    const items = [...elements.containers.editItens.querySelectorAll("input")]
-      .map((i, idx) => {
-        const wasDone = allLists[listIndex].items[idx]
-          ? allLists[listIndex].items[idx].done
-          : false;
-        return { name: i.value.trim(), done: wasDone };
-      })
-      .filter((i) => i.name);
-
-    if (title && items.length) {
-      allLists[listIndex].title = title;
-      allLists[listIndex].dueDate = elements.inputs.editListDate.value;
-      allLists[listIndex].items = items;
-      saveAll();
-      renderLists();
-      closeModal();
-    }
-  };
-
-  if (elements.btns.addListGlobal) {
-    elements.btns.addListGlobal.onclick = () =>
-      openCreateListModal("default-listas");
-  }
-
-  elements.btns.saveCreateList.onclick = () => {
-    const title = elements.inputs.createListTitle.value.trim();
-    const items = [...elements.containers.createItens.querySelectorAll("input")]
-      .map((i) => ({ name: i.value.trim(), done: false }))
-      .filter((i) => i.name);
-    if (title && items.length) {
-      allLists.push({
-        id: `list-${Date.now()}`,
-        title,
-        dueDate: elements.inputs.createListDate.value,
-        categoryId:
-          elements.modals.createList.dataset.targetCat || "default-listas",
-        items,
-      });
-      saveAll();
-      renderLists();
-      closeModal();
-    }
-  };
-
-  elements.btns.saveCreateCat.onclick = () => {
-    const title = elements.inputs.createCatTitle.value.trim();
-    if (title) {
-      saveAll();
-      const savedCats = JSON.parse(
-        localStorage.getItem("diaryAppCategories") || "[]"
-      );
-      savedCats.push({ id: `cat-${Date.now()}`, title });
-      localStorage.setItem("diaryAppCategories", JSON.stringify(savedCats));
-      init();
-      closeModal();
-    }
-  };
-
-  elements.btns.saveEditCat.onclick = () => {
-    const editingId = elements.modals.editCat.dataset.editingId;
-    const newTitle = elements.inputs.editCatTitle.value.trim();
-    if (newTitle) {
-      const savedCats = JSON.parse(
-        localStorage.getItem("diaryAppCategories") || "[]"
-      );
-      const catIdx = savedCats.findIndex((c) => c.id === editingId);
-      if (catIdx !== -1) savedCats[catIdx].title = newTitle;
-      localStorage.setItem("diaryAppCategories", JSON.stringify(savedCats));
-      init();
-      closeModal();
-    }
-  };
-
+  // 7. CLIQUES EM BOTÕES
   elements.btns.addCat.onclick = () => {
     elements.inputs.createCatTitle.value = "";
     elements.modals.createCat.classList.add("open");
   };
 
-  elements.btns.addItem.onclick = () =>
-    addItemInput(elements.containers.createItens);
-  document
-    .querySelectorAll("[id^='close']")
-    .forEach((btn) => (btn.onclick = closeModal));
+  elements.btns.saveCreateCat.onclick = () => {
+    const title = elements.inputs.createCatTitle.value.trim();
+    if (title) {
+      const id = `cat-${Date.now()}`;
+      elements.containers.customLists.appendChild(createCategoryCard(title, id));
+      saveAll();
+      closeModal();
+    }
+  };
 
+  elements.btns.saveEditCat.onclick = () => {
+    const id = elements.modals.editCat.dataset.editingCatId;
+    const newTitle = elements.inputs.editCatTitle.value.trim();
+    if (newTitle && id) {
+      const card = document.querySelector(`[data-category-id="${id}"]`);
+      if (card) {
+        card.querySelector("h2").innerHTML = `<i class="fa-solid fa-list-check"></i> ${newTitle}`;
+        saveAll();
+        closeModal();
+      }
+    }
+  };
+
+  elements.btns.addListGlobal.onclick = () => {
+    elements.modals.createList.dataset.targetCat = "default-listas";
+    elements.inputs.createListTitle.value = "";
+    elements.containers.createItens.innerHTML = "";
+    addItemInput(elements.containers.createItens);
+    elements.modals.createList.classList.add("open");
+  };
+
+  elements.btns.addItem.onclick = () => addItemInput(elements.containers.createItens);
+  elements.btns.addEditItem.onclick = () => addItemInput(elements.containers.editItens);
+
+  elements.btns.saveCreateList.onclick = () => {
+    const title = elements.inputs.createListTitle.value.trim();
+    const items = [...elements.containers.createItens.querySelectorAll("input")].map(i => ({
+      name: i.value.trim(), done: false
+    })).filter(i => i.name);
+    
+    if (title) {
+      allLists.push({
+        id: `list-${Date.now()}`,
+        title,
+        dueDate: elements.inputs.createListDate.value,
+        categoryId: elements.modals.createList.dataset.targetCat || "default-listas",
+        items
+      });
+      saveAll(); renderLists(); closeModal();
+    }
+  };
+
+  elements.btns.saveEditList.onclick = () => {
+    const id = elements.modals.editList.dataset.editingId;
+    const list = allLists.find(l => l.id === id);
+    if (list) {
+      list.title = elements.inputs.editListTitle.value.trim();
+      list.dueDate = elements.inputs.editListDate.value;
+      list.items = [...elements.containers.editItens.querySelectorAll("input")].map((inp, idx) => ({
+        name: inp.value.trim(),
+        done: list.items[idx] ? list.items[idx].done : false
+      })).filter(i => i.name);
+      saveAll(); renderLists(); closeModal();
+    }
+  };
+
+  elements.btns.uncheckAll.onclick = () => {
+    const id = elements.modals.viewList.dataset.currentListId;
+    const list = allLists.find(l => l.id === id);
+    if (list) {
+      list.items.forEach(i => i.done = false);
+      saveAll(); renderLists(); openViewListModal(id);
+    }
+  };
+
+  elements.btns.deleteList.onclick = () => {
+    const id = elements.modals.viewList.dataset.currentListId;
+    if (id && confirm("Excluir esta lista?")) {
+      allLists = allLists.filter(l => l.id !== id);
+      saveAll(); renderLists(); closeModal();
+    }
+  };
+
+  elements.btns.editList.onclick = () => {
+    const id = elements.modals.viewList.dataset.currentListId;
+    if (id) { closeModal(); openEditListModal(id); }
+  };
+
+  // 8. INICIALIZAÇÃO
   const init = () => {
-    const savedLists = localStorage.getItem("diaryAppLists");
-    if (savedLists) allLists = JSON.parse(savedLists);
-    const savedCats = localStorage.getItem("diaryAppCategories");
-    elements.containers.customLists.innerHTML = "";
-    if (savedCats) {
-      const cats = JSON.parse(savedCats).sort((a, b) =>
-        a.title.localeCompare(b.title)
-      );
-      cats.forEach((c) =>
-        elements.containers.customLists.appendChild(
-          createCategoryCard(c.title, c.id)
-        )
-      );
+    const sL = localStorage.getItem("diaryAppLists");
+    const sC = localStorage.getItem("diaryAppCategories");
+    
+    if (sL) allLists = JSON.parse(sL);
+    if (sC) {
+      JSON.parse(sC).forEach(c => {
+        if (c.id !== "default-listas") {
+          elements.containers.customLists.appendChild(createCategoryCard(c.title, c.id));
+        }
+      });
     }
     renderLists();
   };
+
   init();
 });

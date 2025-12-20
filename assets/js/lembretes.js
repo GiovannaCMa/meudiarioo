@@ -3,19 +3,36 @@
   const btn = document.getElementById("toggleMenu");
   const aside = document.querySelector("aside");
 
-  if (btn) {
-    btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-  }
-
   if (!btn || !aside) return;
+
+  // Configura a transição inicial para o botão
+  btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+
+  // Função auxiliar para controlar o ícone do livro
+  function updateIcon(isOpen) {
+    const icon = btn.querySelector("i");
+    if (!icon) return;
+
+    if (isOpen) {
+      icon.classList.remove("fa-book");
+      icon.classList.add("fa-book-open");
+    } else {
+      icon.classList.remove("fa-book-open");
+      icon.classList.add("fa-book");
+    }
+  }
 
   // --- 1. Lógica de Abrir/Fechar (Toggle) ---
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     aside.classList.toggle("menu-open");
+    
+    // Atualiza o ícone baseado se a classe menu-open foi adicionada ou não
+    const isOpen = aside.classList.contains("menu-open");
+    updateIcon(isOpen);
   });
 
-  // --- 2. Fechar ao Clicar Fora (melhor usabilidade mobile) ---
+  // --- 2. Fechar ao Clicar Fora e Resize ---
   document.addEventListener("click", (e) => {
     if (
       window.innerWidth <= 900 &&
@@ -24,38 +41,46 @@
       e.target !== btn
     ) {
       aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
     }
   });
 
-  // --- 3. Fechar em Desktop e Resize ---
   window.addEventListener("resize", () => {
     if (window.innerWidth > 900) {
       aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
     }
   });
 
-  // --- 4. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
+  // --- 3. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
   let lastScrollY = window.scrollY;
 
   window.addEventListener("scroll", () => {
     if (window.innerWidth <= 900) {
+      // Se o menu estiver aberto, não escondemos o botão para não confundir o usuário
+      if (aside.classList.contains("menu-open")) return;
+
       if (window.scrollY > 200) {
         if (window.scrollY > lastScrollY) {
+          // Rolando para baixo: Esconde o botão
           btn.style.opacity = "0";
           btn.style.pointerEvents = "none";
           btn.style.transform = "translateY(-20px)";
         } else {
+          // Rolando para cima: Mostra o botão
           btn.style.opacity = "1";
           btn.style.pointerEvents = "auto";
           btn.style.transform = "translateY(0)";
         }
       } else {
+        // No topo da página: Visível
         btn.style.opacity = "1";
         btn.style.pointerEvents = "auto";
         btn.style.transform = "translateY(0)";
       }
       lastScrollY = window.scrollY;
     } else {
+      // Em Desktop: Garante estado padrão
       btn.style.opacity = "1";
       btn.style.pointerEvents = "auto";
       btn.style.transform = "translateY(0)";
@@ -183,8 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
         li.className = `lemb-item-summary ${status}`;
         li.innerHTML = `
             <span class="lemb-item-text" title="${lemb.title}">${lemb.title}</span>
-            <span class="due-date">${formatDueDate(lemb.dueDate)}</span>
+            
             <div class="quick-actions">
+            <span class="due-date">${formatDueDate(lemb.dueDate)}</span>
                 <button class="icon-action edit-lemb-item" title="Editar"><i class="fas fa-edit"></i></button>
                 <button class="icon-action undo-lemb-item" title="Alternar Status"><i class="fas fa-undo"></i></button>
                 <button class="icon-action delete-lemb-item" title="Excluir"><i class="fas fa-trash-alt"></i></button>

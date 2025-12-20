@@ -10,7 +10,6 @@ main {
 }
 
 /* ESTILOS DOS CARDS DE LEMBRETES (Categoria)                                */
-
 .cardlemb {
   display: flex;
   flex-direction: column;
@@ -152,8 +151,9 @@ main {
   font-size: 0.75em;
   color: var(--cor-label);
   margin-left: 15px;
-  padding-right: 15px; /* Espaço para não colar no final ao rolar */
+
   flex-shrink: 0;
+  
 }
 
 /* AÇÕES RÁPIDAS (LIXEIRA) AO FINAL DA ROLAGEM */
@@ -190,8 +190,11 @@ main {
 
 .quick-actions {
   display: flex;
-  gap: 10px; /* Espaçamento entre os ícones */
+  gap: 10px;
   align-items: center;
+  
+  /* EMPURRA PARA A DIREITA */
+  margin-left: auto; 
 }
 
 .delete-lemb-item i {
@@ -390,41 +393,40 @@ main {
 /* Aplica o estilo de ícone discreto ao elemento <button> */
 .icon-action,
 .btn-icon {
-  background: none; /* Remove o fundo */
-  border: none; /* Remove a borda */
-  padding: 0; /* Remove o padding, fazendo-o parecer um ícone puro */
+  background: none; 
+  border: none; 
+  padding: 0;
   margin: 0;
-  cursor: pointer; /* Mantém o cursor de clique */
-  transition: color 0.2s, transform 0.2s; /* Adiciona transição para o hover */
-  line-height: 1; /* Garante alinhamento vertical */
-  color: #888; /* Cor discreta para o ícone padrão */
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s; 
+  line-height: 1; 
+  color: #888;
 }
 
 /* Estilo ao passar o mouse */
 .icon-action:hover,
 .btn-icon:hover {
-  background-color: transparent; /* Garante que o hover não tenha fundo */
+  background-color: transparent; 
   color: var(
     --cor-principal,
     #333
   ); /* Mudar para uma cor mais escura no hover */
-  transform: scale(1.1); /* Efeito sutil de zoom */
+  transform: scale(1.1); 
 }
 
+/* 1. Remove a barra visual nos navegadores Chrome, Safari e Edge */
 .lembretes-container::-webkit-scrollbar,
 #remindersLembsContainer::-webkit-scrollbar {
-  width: 0.375rem;
+  display: none;
+  width: 0;
 }
 
-.lembretes-container::-webkit-scrollbar-thumb,
-#remindersLembsContainer::-webkit-scrollbar-thumb {
-  background-color: #ddd;
-  border-radius: 0.625rem;
-}
-
-.lembretes-container::-webkit-scrollbar-track,
-#remindersLembsContainer::-webkit-scrollbar-track {
-  background: transparent;
+/* 2. Garante que o container continue rolando e esconde no Firefox/IE */
+.lembretes-container,
+#remindersLembsContainer {
+  overflow-y: auto;          /* Mantém a função de rolar */
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE/Edge antigo */
 }
 
 

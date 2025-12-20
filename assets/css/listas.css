@@ -104,12 +104,13 @@ main {
   margin-bottom: 10px !important;
   border-radius: 50px !important;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08) !important;
-  font-size: 14px !important;
+  font-size: 13.1px !important;
   cursor: pointer !important;
   transition: 0.2s !important;
   box-sizing: border-box !important;
   border-left: 6px solid var(--cor-lilas);
 }
+
 
 /* Container do item da lista */
 .list-item-summary,
@@ -119,37 +120,45 @@ main {
   justify-content: space-between;
   width: 100%;
   min-width: 0;
-  font-size: 14px !important;
-  padding: 12px 20px; 
+  padding: 12px 20px;
   margin-bottom: 10px;
-  border-radius: 50px;
+  border-radius: 50px; 
   box-sizing: border-box; 
   transition: 0.2s;
   cursor: pointer;
   border-left: 6px solid var(--cor-primaria);
-  background: var(--grad1);
+background: var(--grad1);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 /* O texto do título (o primeiro span dentro do item) */
 .list-item-summary span:first-child,
 .list-item span:first-child {
-  padding-right: 0;
+  flex: 1; 
   white-space: nowrap; 
-  overflow: hidden;
+  overflow: hidden; 
   text-overflow: ellipsis; 
   min-width: 0; 
   font-weight: 600;
-  font-size: 13px !important;
 }
 
 /* A data (o segundo span) */
 .list-item-summary .due-date {
-  flex-shrink: 0; 
+  flex-shrink: 0; /* Impede que a data seja espremida */
   font-size: 0.75em;
   color: var(--cor-label);
   white-space: nowrap;
+}
+
+.cardlist .list-item-summary span:first-child,
+.cardlist .list-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  font-weight: 600;
+  min-width: 0;
 }
 
 /* CORREÇÃO: ESTILO PARA LISTAS NO CONTAINER DE RESUMO */
@@ -242,18 +251,16 @@ main {
   font-weight: 600;
   color: var(--cor-label);
   margin-top: 8px;
-  font-size: 13px;
+  font-size: 13.px;
 }
 
-.modal-content input[type="text"],
-.modal-content input[type="date"] {
+.modal-content input {
   width: 100%;
-  padding: 8px 10px;
+  padding: 10px 12px;
   margin-bottom: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid var(--cor-borda);
   background: var(--cor-input-bg);
-  color: var(--texto);
   font-size: 14px;
   transition: 0.2s;
 }
@@ -333,10 +340,11 @@ main {
   margin-bottom: 15px;
 }
 .view-info {
-  font-size: 15px;
+  font-size: 13.2px;
   color: #666;
   margin-bottom: 8px;
 }
+
 .view-info strong {
   color: var(--texto);
   font-weight: 700;
@@ -378,8 +386,8 @@ main {
 #viewListItems li {
   display: flex;
   align-items: center;
-  padding: 0; /* Zeramos o padding aqui para o label ocupar tudo */
-  border-radius: 50px; /* Mantém o formato pílula */
+  padding: 0;               /* Zeramos o padding aqui para o label ocupar tudo */
+  border-radius: 50px;      /* Mantém o formato pílula */
   margin-bottom: 8px;
   background: var(--cor-input-bg);
   cursor: pointer;
@@ -388,7 +396,7 @@ main {
   border-left: 6px solid var(--cor-lilas);
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden; /* O item pai segura o arredondamento */
+  overflow: hidden;         /* O item pai segura o arredondamento */
 }
 
 /* 1. Esconde o checkbox padrão */
@@ -403,14 +411,14 @@ main {
 #viewListItems li label {
   display: block;
   flex: 1;
-  padding: 10px 20px; /* Padding transferido para dentro do label */
+  padding: 10px 20px;       /* Padding transferido para dentro do label */
   cursor: pointer;
-  white-space: nowrap; /* Mantém o texto em uma linha */
-
+  white-space: nowrap;      /* Mantém o texto em uma linha */
+  
   /* REGRAS DA ROLAGEM */
-  overflow-x: auto; /* Cria a barra de rolagem horizontal */
-  overflow-y: hidden; /* Garante que não role para cima/baixo */
-  scrollbar-width: none; /* Esconde a barra no Firefox */
+  overflow-x: auto;         /* Cria a barra de rolagem horizontal */
+  overflow-y: hidden;       /* Garante que não role para cima/baixo */
+  scrollbar-width: none;    /* Esconde a barra no Firefox */
 }
 
 /* 3. Estilo para o estado Concluído (usando a classe 'done' adicionada pelo JS) */
@@ -500,7 +508,7 @@ main {
 }
 
 .icon-action:hover .fa-trash-alt {
-  color: #c82333;
+  color: #c82333; 
 }
 
 /* 4. Alinhamento (Regras repetidas, mas cruciais) */
@@ -566,6 +574,7 @@ main {
   padding: 8px;
 }
 
+
 #viewListTitle {
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -573,49 +582,40 @@ main {
   max-width: 100%;
 }
 
+
+
+
+/* 1. Seleciona todos os seus containers de lista e wrappers */
+#listasContainer,
+.listas-container,
+#viewListItems,
+#itensWrapper,
+#editItensWrapper,
+.listas-box ul,
+.lembretes-box ul,
+.eventos-box ul {
+  /* Mantém a rolagem funcional */
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  /* Esconde no Firefox */
+  scrollbar-width: none;
+  /* Esconde no IE/Edge antigo */
+  -ms-overflow-style: none;
+}
+
+/* 2. Esconde a barra visual nos navegadores Webkit (Chrome, Safari, Edge) */
 #listasContainer::-webkit-scrollbar,
-.listas-container::-webkit-scrollbar {
-  width: 0.375rem;
-}
-
-#listasContainer::-webkit-scrollbar-thumb,
-.listas-container::-webkit-scrollbar-thumb {
-  background-color: #ddd;
-  border-radius: 0.625rem;
-}
-
-#listasContainer::-webkit-scrollbar-track,
-.listas-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-#viewListItems::-webkit-scrollbar {
-  width: 0.375rem;
-}
-
-#viewListItems::-webkit-scrollbar-thumb {
-  background-color: #ddd;
-  border-radius: 0.625rem;
-}
-
-#viewListItems::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+.listas-container::-webkit-scrollbar,
+#viewListItems::-webkit-scrollbar,
 #itensWrapper::-webkit-scrollbar,
-#editItensWrapper::-webkit-scrollbar {
-  width: 0.375rem;
-}
-
-#itensWrapper::-webkit-scrollbar-thumb,
-#editItensWrapper::-webkit-scrollbar-thumb {
-  background-color: #ddd;
-  border-radius: 0.625rem;
-}
-
-#itensWrapper::-webkit-scrollbar-track,
-#editItensWrapper::-webkit-scrollbar-track {
-  background: transparent;
+#editItensWrapper::-webkit-scrollbar,
+.listas-box ul::-webkit-scrollbar,
+.lembretes-box ul::-webkit-scrollbar,
+.eventos-box ul::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* ==========================================================================

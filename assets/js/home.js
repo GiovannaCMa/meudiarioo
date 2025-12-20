@@ -1,24 +1,39 @@
-// 1. LÓGICA DO MENU LATERAL (TOGGLE E SCROLL)
+// 1. LÓGICA DO MENU LATERAL
 (function () {
   const btn = document.getElementById("toggleMenu");
   const aside = document.querySelector("aside");
 
-  // Configura a transição para o botão
-  if (btn) {
-    btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-  }
-
   if (!btn || !aside) return;
+
+  // Configura a transição inicial para o botão
+  btn.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+
+  // Função auxiliar para controlar o ícone do livro
+  function updateIcon(isOpen) {
+    const icon = btn.querySelector("i");
+    if (!icon) return;
+
+    if (isOpen) {
+      icon.classList.remove("fa-book");
+      icon.classList.add("fa-book-open");
+    } else {
+      icon.classList.remove("fa-book-open");
+      icon.classList.add("fa-book");
+    }
+  }
 
   // --- 1. Lógica de Abrir/Fechar (Toggle) ---
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     aside.classList.toggle("menu-open");
+    
+    // Atualiza o ícone baseado se a classe menu-open foi adicionada ou não
+    const isOpen = aside.classList.contains("menu-open");
+    updateIcon(isOpen);
   });
 
-  // --- 2. Fechar ao Clicar Fora (melhor usabilidade mobile) ---
+  // --- 2. Fechar ao Clicar Fora e Resize ---
   document.addEventListener("click", (e) => {
-    // Verifica se o menu está aberto E se o clique não foi no próprio menu E não foi no botão
     if (
       window.innerWidth <= 900 &&
       aside.classList.contains("menu-open") &&
@@ -26,21 +41,25 @@
       e.target !== btn
     ) {
       aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
     }
   });
 
-  // --- 3. Fechar em Desktop e Resize ---
   window.addEventListener("resize", () => {
     if (window.innerWidth > 900) {
       aside.classList.remove("menu-open");
+      updateIcon(false); // Fecha o livro
     }
   });
 
-  // --- 4. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
+  // --- 3. Lógica de Esconder/Mostrar ao Rolar (Scroll em Mobile) ---
   let lastScrollY = window.scrollY;
 
   window.addEventListener("scroll", () => {
     if (window.innerWidth <= 900) {
+      // Se o menu estiver aberto, não escondemos o botão para não confundir o usuário
+      if (aside.classList.contains("menu-open")) return;
+
       if (window.scrollY > 200) {
         if (window.scrollY > lastScrollY) {
           // Rolando para baixo: Esconde o botão
@@ -161,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     )}-${String(date.getDate()).padStart(2, "0")}`;
 
   const formatarDataBR = (dateStr) => {
-    if (!dateStr) return "sem data";
+    if (!dateStr) return "Sem data";
     const [y, m, d] = dateStr.split("-");
     return `${d}/${m}/${y}`;
   };
@@ -336,8 +355,8 @@ function renderCalendar() {
       li.innerHTML = `
         <span class="list-title">${list.title}</span>
         <div class="date-container">
-    <span class="due-date">${formatarDataBR(list.dueDate)}</span>
-  </div>
+          <span class="due-date">${formatarDataBR(list.dueDate)}</span>
+        </div>
       `;
       li.onclick = () => abrirListaPadronizada(list.id);
       el.listasContainer.appendChild(li);
