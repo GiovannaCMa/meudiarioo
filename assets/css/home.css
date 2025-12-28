@@ -54,13 +54,17 @@ body {
 }
 
 .carddiario {
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
-  max-width: 700px; 
-  min-width: 360px;
-  margin-bottom: 60px;
+    width: 100%; /* Ocupa a linha toda */
+    background: #ffffff;
+    border: 2px dashed var(--cor-borda);
+    border-radius: 24px;
+    padding: 25px;
+    margin-top: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column; /* Cabeçalho em cima, carrossel embaixo */
 }
+
 
 /* Estilo para todos os ícones nos títulos dos cards */
 .cardcal h2 i,
@@ -74,7 +78,8 @@ body {
 .calendario-box h2,
 .eventos-box h2,
 .listas-box h2,
-.lembretes-box h2 {
+.lembretes-box h2 
+.carddiario-box h2{
   color: var(--cor-primaria);
   font-size: 20px;
   margin-bottom: 12px;
@@ -224,7 +229,14 @@ body {
 }
 
 /* ------------------------ Diário (ORIGINAL) ------------------------------- */
-.diario-header { display: flex; justify-content: space-between; align-items: center; }
+.diario-header {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 .diario-carrossel { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
 .diario-card {
   min-width: 200px;
@@ -238,6 +250,406 @@ body {
 }
 .diario-card h3 { font-size: 16px; margin-bottom: 8px; }
 .diario-card p { font-size: 13px; opacity: 0.8; }
+
+
+/* Header do Diário */
+.diario-header {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.diario-header h2 {
+  color: var(--cor-primaria);
+  font-size: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diario-header h2 i {
+      color: var(--cor-primaria);
+  font-size: 1.1em;
+}
+
+/* Grid Responsiva */
+.diario-grid {
+    display: grid;
+    /* Cria colunas de no mínimo 200px. Se couber mais, ele expande */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+/* Card Individual */
+.diario-card-item {
+    background: var(--cor-borda);
+    border: 1px solid var(--cor-borda);
+    border-radius: 18px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+
+    /* --- NOVAS REGRAS PARA TAMANHO FIXO --- */
+    width: 200px;         /* Largura fixa */
+    height: 130px;        /* Altura fixa (ajuste conforme sua preferência) */
+    flex-shrink: 0;       /* Impede que o card "esmague" no carrossel */
+    overflow: hidden;     /* Garante que nada saia para fora do card */
+}
+
+.diario-card-item:hover {
+    background: #ffffff;
+    border-color: #ddd6fe;
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.08);
+    transform: translateY(-5px);
+}
+
+/* Elementos Internos do Card */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #8b5cf6;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.diario-card-item h3 {
+    font-size: 1rem;
+    color: #1e293b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.diario-card-item p {
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.6;
+    /* Corta o texto em 3 linhas */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
+/* Customização da barra de rolagem do carrossel */
+#listaDiario::-webkit-scrollbar {
+    height: 8px;
+}
+#listaDiario::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+#listaDiario::-webkit-scrollbar-thumb {
+    background: var(--cor-borda);
+    border-radius: 10px;
+}
+
+/* --- MODAL (FIXO NA TELA) --- */
+#modalDiario .modal,
+#modalVerRegistro .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+#modalDiario .modal.open,
+#modalVerRegistro .modal.open {
+  opacity: 1;
+  display: flex;
+}
+
+#modalDiario .modal-content,
+#modalVerRegistro .modal-content {
+    background: var(--branco);
+    padding: 30px 25px;
+    width: 1000px; /* Largura ideal para as 6 colunas ficarem lado a lado */
+    max-width: 95%;
+    max-height: 90vh;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden; 
+}
+
+.scroll-interno-diario {
+    flex: 1; 
+    overflow-y: auto;
+    padding-right: 5px; 
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.scroll-interno-diario::-webkit-scrollbar {
+    display: none; 
+}
+
+#modalDiario .modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--cor-primaria);
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* --- FORMULÁRIO DENTRO DO MODAL - escrever --- */
+.grid-metricas-form {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 12px;
+    margin: 15px 0;
+    align-items: start; /* Alinha pelo topo para manter os ícones alinhados */
+    width: 100%;
+}
+
+.grid-metricas-form div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+ .grid-metricas-form label {
+    font-size: 11px; /* Reduzimos levemente para caber os 7 itens sem apertar */
+    font-weight: 600;
+    color: var(--cor-label);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Se o texto for muito grande, ele coloca "..." */
+}
+/* Estilo para os inputs ficarem uniformes */
+.scroll-interno-diario label {
+    font-weight: 600;
+    font-size: 0.90rem;
+    color: var(--cor-label);
+    margin-top: 0; /* Removido o margin-top de 10px que separa do input */
+    display: block;
+    white-space: nowrap; /* Impede o texto de quebrar linha */
+}
+
+.scroll-interno-diario input, 
+.scroll-interno-diario select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--cor-borda);
+    background: var(--cor-input-bg);
+    box-sizing: border-box; /* Essencial para o padding não estourar a largura */
+}
+
+.grid-metricas-form input:focus {
+    border-color: #8b5cf6;
+}
+
+
+/* --- TEXTAREA PAPEL LISTRADO --- */
+.papel-listrado-container {
+    background: var(--cor-input-bg);
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    margin-top: 15px;
+    overflow: hidden; 
+}
+
+#textoDiario,
+#verTexto {
+    min-height: 520px;
+    width: 100%;
+    padding: 19px 15px 20px 15px; 
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--texto);
+    resize: none;
+    display: block;
+    line-height: 28px; /* Altura exata da linha */
+    background-image: linear-gradient(var(--cor-borda) 1px, transparent 1px);
+    background-size: 100% 28px; 
+    background-attachment: local; 
+    background-position: 0 66px; 
+    background-color: transparent; 
+}
+
+/* Container das fotos no modal de criação/edição */
+.grid-fotos-preview {
+    display: grid;
+    /* Ajuste o 200px para o tamanho que você deseja que o card tenha no fundo */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.preview-item {
+    position: relative;
+    width: 100%;
+    /* Define a altura ou proporção do fundo */
+    aspect-ratio: 16 / 9; 
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f0f0f0; /* Cor de fundo caso a imagem demore a carregar */
+    border: 1px solid var(--cor-borda);
+}
+
+.foto-preview-card {
+    width: 100%;
+    height: 100%;
+    /* ESTA É A PROPRIEDADE CHAVE: faz a imagem cobrir todo o fundo */
+    object-fit: cover; 
+    /* Garante que a imagem comece do topo/centro */
+    object-position: center; 
+    display: block;
+}
+
+/* Botão de remover posicionado sobre a imagem */
+.btn-remove-foto {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #ff4d4d;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Ajuste específico para o modal de visualização (para manter a consistência) */
+#verFotos img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.titulo-container {
+    margin-bottom: 15px;
+}
+/* Container que segura todos os badges */
+#verMetricas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    background: #f8faff;
+    padding: 15px;
+    border-radius: 16px;
+    border: 1px solid #eef2ff;
+    margin-bottom: 20px;
+}
+
+/* Cada "quadradinho" de métrica */
+.badge-metrica {
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    border: 1px solid #f1f5f9;
+}
+
+.badge-metrica i {
+    font-size: 1.1rem;
+    color: var(--cor-lilas);
+    background: #f3f0ff;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.metrica-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.metrica-info strong {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+
+.metrica-info span {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cor-primaria);
+}
+/* Ajuste no container de fotos para não colar no caderno */
+.area-upload {
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px dashed var(--cor-borda);
+    border-radius: 12px;
+}
+
+
+/* --- ESTILO PARA DIÁRIO VAZIO --- */
+.diario-vazio {
+    grid-column: 1 / -1; /* Ocupa a largura total da grid se necessário */
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--cor-label); /* Usa a cor de label que você já definiu */
+    font-style: italic;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.5); /* Fundo levemente esbranquiçado */
+    border-radius: 15px;
+    border: 2px dashed var(--cor-borda); /* Borda tracejada para indicar vazio */
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Opcional: Adiciona um ícone via CSS antes da frase */
+.diario-vazio::before {
+    content: '📖'; 
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 5px;
+    opacity: 0.6;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* ----------------- Modal Base -----------------*/
@@ -647,6 +1059,95 @@ body {
   }
 }
 
+
+/* ================== 1200px =========================== */
+
+@media (max-width: 1200px) {
+  main {
+    padding: 40px;
+    gap: 25px;
+  }
+
+  .cardcal {
+    max-width: 100%;
+  }
+}
+
+/* ================== 1024px (TABLET) =================*/
+
+@media (max-width: 1024px) {
+  main {
+    margin-top: 50px; /* tablet costuma precisar um pouco mais */
+
+    margin-left: 230px;
+
+    padding: 35px;
+
+    gap: 25px;
+
+    justify-content: center;
+  }
+
+  /* Cards */
+
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    width: 48%;
+
+    min-width: 320px;
+
+    height: auto;
+  }
+
+  /* 🔥 Calendário em coluna */
+
+  .cardcal {
+    flex-direction: column;
+    max-width: 100%;
+  }
+
+  .calendario-box {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .eventos-box {
+    width: 100%;
+    margin-top: 20px;
+
+    padding-left: 0;
+
+    border-left: none;
+
+    max-height: 260px;
+  }
+}
+
+/* ================== 900px ============================= */
+
+@media (max-width: 900px) {
+  main {
+    margin-left: 0;
+
+    padding: 30px;
+
+    gap: 25px;
+  }
+
+  /* Cards empilhados */
+
+  .cardcal,
+  .cardlist,
+  .cardlemb,
+  .carddiario {
+    width: 100%;
+
+    max-width: 100%;
+  }
+}
+
 /* ================== 768px ============================= */
 
 @media (max-width: 768px) {
@@ -740,4 +1241,55 @@ body {
   .diario-header h2 {
     font-size: 20px;
   }
+}
+
+@media (max-width: 1024px) {
+
+    .grid-metricas-form {
+        grid-template-columns: repeat(4, 1fr); /* 4 colunas em tablets */
+    }
+}
+
+/* Telemóveis (Ecrãs Pequenos) */
+@media (max-width: 768px) {
+
+    .diario-grid {
+        grid-template-columns: 1fr; /* Cards do diário em lista única */
+    }
+
+    .grid-metricas-form {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas para os inputs no modal */
+        gap: 15px;
+    }
+
+    #textoDiario {
+        min-height: 300px; /* Reduz a altura do caderno no telemóvel */
+    }
+
+    .grid-fotos-preview {
+        grid-template-columns: repeat(2, 1fr); /* Fotos 2 por linha */
+    }
+
+    .diario-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+/* Telemóveis Muito Pequenos */
+@media (max-width: 480px) {
+    .grid-metricas-form {
+      grid-template-columns: 1fr; /* Tudo em uma coluna no formulário */
+    }
+
+    .grid-metricas-form {
+      grid-template-columns: repeat(2, 1fr); /* 2 colunas para os inputs no modal */
+      gap: 15px;
+    }
+    
+    .btn-filtro {
+      flex: 1 1 40%; /* Botões de filtro maiores para facilitar o toque */
+      text-align: center;
+    }
 }

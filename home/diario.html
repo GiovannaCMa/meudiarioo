@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,17 +9,18 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <title>Diário App - Início</title>
+    <title>Meu Diário Pessoal</title>
+
     <link rel="stylesheet" href="../assets/css/geral.css" />
-    <link rel="stylesheet" href="../assets/css/home.css" />
+    <link rel="stylesheet" href="../assets/css/diario.css" />
   </head>
   <body>
     <button id="toggleMenu"><i class="fa-solid fa-book"></i></button>
     <aside>
       <h1>Meu Diário</h1>
       <ul>
-        <li class="active">
-          <a><i class="fas fa-home"></i> Início</a>
+        <li>
+          <a href="home.html"><i class="fas fa-home"></i> Início</a>
         </li>
         <li>
           <a href="eventos.html"><i class="fas fa-calendar-alt"></i> Eventos</a>
@@ -30,8 +31,8 @@
         <li>
           <a href="lembretes.html"><i class="fas fa-bell"></i> Lembretes</a>
         </li>
-        <li>
-          <a href="diario.html"><i class="fas fa-book-open"></i> Diário</a>
+        <li class="active">
+          <a><i class="fas fa-book-open"></i> Diário</a>
         </li>
         <!--
         <li>
@@ -44,126 +45,50 @@
     </aside>
 
     <main>
-      <section class="cardcal">
-        <article class="calendario-box">
-          <h2>
-            <i class="fa-solid fa-calendar-days"></i>
-            Calendário
-          </h2>
-
-          <div class="calendar">
-            <button class="btn" id="prevMonthBtn" style="padding: 4px 8px">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
-
-            <span
-              id="calendarMonth"
-              style="font-weight: bold; font-size: 16px"
-            ></span>
-
-            <button class="btn" id="nextMonthBtn" style="padding: 4px 8px">
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
+      <section class="secao-estatisticas-mensais">
+        <article class="card-metrica-diario">
+          <div class="card-conteudo-metrica">
+            <h2>Humor Geral:</h2>
+            <ul id="estatisticasHumor"></ul>
           </div>
-
-          <div class="week-days-header">
-            <span>Dom</span>
-            <span>Seg</span>
-            <span>Ter</span>
-            <span>Qua</span>
-            <span>Qui</span>
-            <span>Sex</span>
-            <span>Sáb</span>
+        </article>
+        <article class="card-metrica-diario">
+          <div class="card-conteudo-metrica">
+            <h2>Sono e Energia:</h2>
+            <ul id="estatisticasSono"></ul>
           </div>
-
-          <div class="mini-calendar" id="calendar"></div>
-
-          <button class="btn" id="addEventBtn">+ Adicionar evento</button>
         </article>
-
-        <article class="eventos-box">
-          <h2><i class="fa-solid fa-clock"></i> Próximos eventos</h2>
-
-          <ul id="eventosLista"></ul>
+        <article class="card-metrica-diario">
+          <div class="card-conteudo-metrica">
+            <h2>Saúde Mental:</h2>
+            <ul id="estatisticasMental"></ul>
+          </div>
         </article>
-      </section>
-
-      <section class="cardlist">
-        <article class="listas-box">
-          <h2><i class="fa-solid fa-list-check"></i> Listas (Em Progresso)</h2>
-          <ul id="listasContainer"></ul>
+        <article class="card-metrica-diario">
+          <div class="card-conteudo-metrica">
+            <h2>Produtividade:</h2>
+            <ul id="estatisticasProdutividade"></ul>
+          </div>
         </article>
-      </section>
-
-      <section class="cardlemb">
-        <article class="listas-box">
-          <h2><i class="fa-solid fa-bell"></i> Lembretes</h2>
-          <ul id="lembretesContainer"></ul>
+        <article class="card-metrica-diario">
+          <div class="card-conteudo-metrica">
+            <h2>Movimento/Físico:</h2>
+            <ul id="estatisticasFisico"></ul>
+          </div>
         </article>
       </section>
 
-      <section class="carddiario">
-        <article class="diario-header">
+      <section class="card-lista-diario">
+        <header class="diario-header">
           <h2><i class="fa-solid fa-book-open"></i> Meu Diário</h2>
-        </article>
+          <button class="btn" id="btnAdicionarDiario">+ Adicionar</button>
+        </header>
 
-        <article class="diario-carrossel" id="listaDiario">
-          <p class="diario-vazio">Nenhuma entrada de diário ainda...</p>
-        </article>
+        <div class="diario-container-scroll">
+          <ul class="diario-grid" id="listaDiario"></ul>
+        </div>
       </section>
     </main>
-
-    <div class="modal" id="eventModal">
-      <div class="modal-content">
-        <h3>Novo Evento</h3>
-
-        <input type="date" id="eventDate" />
-        <input type="time" id="eventTime" />
-        <input type="text" id="eventText" placeholder="Descrição" />
-
-        <div class="btn-group">
-          <button class="btn btn-save" id="saveEventBtn">
-            <i class="fas fa-save"></i> Salvar
-          </button>
-          <button class="btn btn-cancel" id="closeModalBtn">
-            <i class="fas fa-times"></i> Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal" id="viewListModal">
-      <div class="modal-content">
-        <h3 id="viewListTitle"></h3>
-
-        <p class="view-info">
-          <strong>Data limite:</strong>
-          <span id="viewListDueDate"></span>
-        </p>
-
-        <p class="view-info">
-          <strong>Status:</strong>
-          <span id="viewListStatus"></span>
-        </p>
-
-        <ul id="viewListItems" class="view-list-items-padrao"></ul>
-
-        <div class="contador">
-          <span id="contadorFeitos">0</span> /
-          <span id="contadorTotal">0</span> itens concluídos
-        </div>
-
-        <div class="btn-group">
-          <button class="btn" id="uncheckAllBtn">
-            <i class="fas fa-undo-alt"></i> Todos
-          </button>
-          <button class="btn btn-cancel" id="closeViewListModalBtn">
-            <i class="fas fa-times"></i> Fechar
-          </button>
-        </div>
-      </div>
-    </div>
-
 
     <div id="modalDiario" class="modal">
       <div class="modal-content modal-diario-expandido">
@@ -259,10 +184,10 @@
 
         <div class="btn-group">
           <button class="btn btn-save" id="salvarRegistro">
-            Salvar Registro
+           <i class="fas fa-save"></i> Salvar
           </button>
           <button class="btn btn-cancel" id="fecharModalDiario">
-            Cancelar
+            <i class="fas fa-times"></i> Cancelar
           </button>
         </div>
       </div>
@@ -313,15 +238,22 @@
         </div>
 
         <div class="btn-group">
+          <button class="btn" id="editListBtn">
+            <i class="fas fa-edit"></i> Editar
+          </button>
 
-          <button class="btn btn-cancel" id="closeViewDiarioModalBtn">
+          <button class="btn btn-delete" id="deleteListBtn">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+
+          <button class="btn btn-cancel" id="closeViewListModalBtn">
             <i class="fas fa-times"></i> Fechar
           </button>
         </div>
       </div>
     </div>
 
-        <div
+    <div
       id="modalZoom"
       class="modal"
       style="background: rgba(0, 0, 0, 0.9); z-index: 11000"
@@ -351,6 +283,6 @@
       />
     </div>
 
-    <script type="module" src="../assets/js/home.js"></script>
+    <script src="../assets/js/diario.js"></script>
   </body>
 </html>

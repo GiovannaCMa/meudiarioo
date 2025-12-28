@@ -26,7 +26,7 @@
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     aside.classList.toggle("menu-open");
-    
+
     // Atualiza o ícone baseado se a classe menu-open foi adicionada ou não
     const isOpen = aside.classList.contains("menu-open");
     updateIcon(isOpen);
@@ -165,6 +165,11 @@ document.addEventListener("DOMContentLoaded", () => {
     closeViewListModalBtn: document.getElementById("closeViewListModalBtn"),
 
     addDiarioBtn: document.getElementById("addDiarioBtn"),
+    listaDiario: document.getElementById("listaDiario"),
+
+    // Modais
+    modalDiario: document.getElementById("modalDiario"),
+    modalVerRegistro: document.getElementById("modalVerRegistro"),
   };
 
   /* ================== HELPERS ================== */
@@ -232,64 +237,64 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ================== CALENDÁRIO ================== */
-function renderCalendar() {
-  if (!el.calendar) return;
-  el.calendar.innerHTML = "";
-  el.calendarMonth.textContent = `${meses[mesAtual]} ${anoAtual}`;
+  function renderCalendar() {
+    if (!el.calendar) return;
+    el.calendar.innerHTML = "";
+    el.calendarMonth.textContent = `${meses[mesAtual]} ${anoAtual}`;
 
-  const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
-  const diasMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
+    const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
+    const diasMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
 
-  // 1. Cria os espaços vazios para alinhar o calendário
-  for (let i = 0; i < primeiroDia; i++) {
-    const empty = document.createElement("div");
-    empty.className = "day empty";
-    el.calendar.appendChild(empty);
-  }
-
-  // 2. Renderiza os dias do mês
-  for (let dia = 1; dia <= diasMes; dia++) {
-    const div = document.createElement("div");
-    div.className = "day";
-    div.textContent = dia;
-
-    const dataISO = formatarDataISO(new Date(anoAtual, mesAtual, dia));
-    const ehHoje =
-      dia === diaHoje &&
-      mesAtual === hoje.getMonth() &&
-      anoAtual === hoje.getFullYear();
-
-    // Filtra os eventos do dia
-    const eventosDoDia = eventos.filter((e) => e.data === dataISO);
-    const temEvento = eventosDoDia.length > 0;
-
-    // --- HOVER: Título do evento aparece aqui ---
-    if (temEvento) {
-      // Cria a lista de textos para o balão do navegador (title)
-      const listaTextos = eventosDoDia.map(
-        (e) => `${e.hora || "00:00"} - ${e.texto}`
-      );
-      
-      // O title cria o "hover" automático por fora da data
-      div.title = listaTextos.join("\n"); 
-
-      // Opcional: Atributo para customização avançada via CSS
-      div.setAttribute("data-evento", listaTextos.join(", "));
+    // 1. Cria os espaços vazios para alinhar o calendário
+    for (let i = 0; i < primeiroDia; i++) {
+      const empty = document.createElement("div");
+      empty.className = "day empty";
+      el.calendar.appendChild(empty);
     }
 
-    // Aplica as classes de cores
-    if (ehHoje && temEvento) div.classList.add("hjeven");
-    else if (ehHoje) div.classList.add("today");
-    else if (temEvento) div.classList.add("evento");
+    // 2. Renderiza os dias do mês
+    for (let dia = 1; dia <= diasMes; dia++) {
+      const div = document.createElement("div");
+      div.className = "day";
+      div.textContent = dia;
 
-    div.onclick = () => {
-      el.eventDate.value = dataISO;
-      openModal("eventModal");
-    };
+      const dataISO = formatarDataISO(new Date(anoAtual, mesAtual, dia));
+      const ehHoje =
+        dia === diaHoje &&
+        mesAtual === hoje.getMonth() &&
+        anoAtual === hoje.getFullYear();
 
-    el.calendar.appendChild(div);
+      // Filtra os eventos do dia
+      const eventosDoDia = eventos.filter((e) => e.data === dataISO);
+      const temEvento = eventosDoDia.length > 0;
+
+      // --- HOVER: Título do evento aparece aqui ---
+      if (temEvento) {
+        // Cria a lista de textos para o balão do navegador (title)
+        const listaTextos = eventosDoDia.map(
+          (e) => `${e.hora || "00:00"} - ${e.texto}`
+        );
+
+        // O title cria o "hover" automático por fora da data
+        div.title = listaTextos.join("\n");
+
+        // Opcional: Atributo para customização avançada via CSS
+        div.setAttribute("data-evento", listaTextos.join(", "));
+      }
+
+      // Aplica as classes de cores
+      if (ehHoje && temEvento) div.classList.add("hjeven");
+      else if (ehHoje) div.classList.add("today");
+      else if (temEvento) div.classList.add("evento");
+
+      div.onclick = () => {
+        el.eventDate.value = dataISO;
+        openModal("eventModal");
+      };
+
+      el.calendar.appendChild(div);
+    }
   }
-}
 
   function renderEventos() {
     if (!el.eventosLista) return;
@@ -491,28 +496,174 @@ function renderCalendar() {
     });
   }
 
-  /* ================== DIÁRIO ================== */
-  function renderDiario() {
-    if (!el.carrossel) return;
-    el.carrossel.innerHTML = "";
+  /* ================== DIÁRIO (LOGICA HOME) ================== */
+  const DIARIO_KEY = "meuDiario";
+  let imagensTemporarias = [];
+  let idAcaoAtual = null;
 
-    if (!diario.length) {
-      el.carrossel.innerHTML =
+  function renderDiario() {
+    const registros = JSON.parse(localStorage.getItem(DIARIO_KEY) || "[]");
+    if (!el.listaDiario) return;
+    el.listaDiario.innerHTML = "";
+
+    if (registros.length === 0) {
+      el.listaDiario.innerHTML =
         "<p class='diario-vazio'>Nenhuma entrada ainda...</p>";
       return;
     }
 
-    [...diario]
-      .sort((a, b) => new Date(b.data) - new Date(a.data))
-      .slice(0, 5)
-      .forEach((e, i) => {
-        const div = document.createElement("div");
-        div.className = "diario-card";
-        div.innerHTML = `<h3>${e.titulo}</h3><p>${formatarDataBR(e.data)}</p>`;
-        div.onclick = () => (location.href = `diario.html?index=${i}`);
-        el.carrossel.appendChild(div);
-      });
+    registros.forEach((reg) => {
+      const card = document.createElement("div");
+      card.className = "diario-card-item";
+      card.onclick = () => window.verRegistro(reg.id);
+
+      card.innerHTML = `
+      <div class="card-header"><small>${reg.data}</small></div>
+      <h3>${reg.titulo}</h3>
+      <p class="humor-tag">${reg.humor}</p>
+    `;
+      el.listaDiario.appendChild(card);
+    });
   }
+
+  // Função global para abrir o registro
+  window.verRegistro = function (id) {
+    const registros = JSON.parse(localStorage.getItem(DIARIO_KEY) || "[]");
+    const reg = registros.find((r) => r.id === id);
+    if (!reg) return;
+
+    idAcaoAtual = id;
+    document.getElementById("verTitulo").innerText = reg.titulo;
+    document.getElementById("verData").innerText = reg.data;
+    document.getElementById("verTexto").innerText = reg.texto;
+
+    document.getElementById("verMetricas").innerHTML = `
+      <div class="badge-metrica"><i class="fas fa-smile"></i> <span>${reg.humor}</span></div>
+      <div class="badge-metrica"><i class="fas fa-bed"></i> <span>${reg.sono}h</span></div>
+      <div class="badge-metrica"><i class="fas fa-bolt"></i> <span>${reg.energia}/5</span></div>
+      <div class="badge-metrica"><i class="fas fa-heartbeat"></i> <span>${reg.saude}/5</span></div>
+      <div class="badge-metrica"><i class="fas fa-chart-line"></i> <span>${reg.produtividade}/5</span></div>
+       <div class="badge-metrica"><i class="fas fa-dumbbell"></i> <span>${reg.exercicio}</span></div>
+      <div class="badge-metrica"><i class="fas fa-tint"></i> <span>${reg.agua}L</span></div>
+
+       
+  `;
+
+    // Renderiza fotos com suporte ao ZOOM
+    const containerFotos = document.getElementById("verFotos");
+    if (containerFotos) {
+      if (reg.fotos && reg.fotos.length > 0) {
+        containerFotos.innerHTML = reg.fotos
+          .map(
+            (img) =>
+              `<img src="${img}" 
+              onclick="abrirZoom('${img}')" 
+              style="width:100px; height:100px; object-fit:cover; border-radius:12px; margin:5px; cursor:pointer;">`
+          )
+          .join("");
+      } else {
+        containerFotos.innerHTML = "<p>Sem fotos anexadas.</p>";
+      }
+    }
+
+    openModal("modalVerRegistro");
+  };
+
+  /* ================== ZOOM DA IMAGEM ================== */
+  const modalZoom = document.getElementById("modalZoom");
+  const imgZoomada = document.getElementById("imgZoomada");
+
+  window.abrirZoom = function (src) {
+    if (!modalZoom || !imgZoomada) return;
+    imgZoomada.src = src;
+    modalZoom.style.display = "flex";
+  };
+
+  document.getElementById("fecharZoom")?.addEventListener("click", () => {
+    modalZoom.style.display = "none";
+  });
+
+  /* ================== EVENTOS DE SALVAR E UPLOAD ================== */
+  document.getElementById("salvarRegistro")?.addEventListener("click", () => {
+    const texto = document.getElementById("textoDiario").value;
+    if (!texto) return alert("Escreva o seu relato!");
+
+    const banco = JSON.parse(localStorage.getItem(DIARIO_KEY) || "[]");
+    const registro = {
+      id: idAcaoAtual || Date.now(),
+      data: idAcaoAtual
+        ? banco.find((r) => r.id === idAcaoAtual).data
+        : new Date().toLocaleDateString("pt-BR"),
+      titulo: document.getElementById("tituloDiario").value || "Sem Título",
+      humor: document.getElementById("humor").value,
+      texto: texto,
+      sono: document.getElementById("sono").value || 0,
+      energia: document.getElementById("energia").value || 0,
+      saude: document.getElementById("saude").value || 0,
+      produtividade: document.getElementById("produtividade").value || 0,
+      exercicio: document.getElementById("metricaExercicio").value,
+      agua: document.getElementById("agua").value || 0,
+      fotos: [...imagensTemporarias],
+    };
+
+    if (idAcaoAtual) {
+      const index = banco.findIndex((r) => r.id === idAcaoAtual);
+      banco[index] = registro;
+    } else {
+      banco.unshift(registro);
+    }
+
+    localStorage.setItem(DIARIO_KEY, JSON.stringify(banco));
+    closeModal("modalDiario");
+    renderDiario();
+
+    // Limpar campos
+    document.getElementById("textoDiario").value = "";
+    document.getElementById("tituloDiario").value = "";
+    document.getElementById("containerPreview").innerHTML = "";
+    imagensTemporarias = [];
+  });
+
+  document
+    .getElementById("inputImgDiario")
+    ?.addEventListener("change", function (e) {
+      Array.from(e.target.files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          imagensTemporarias.push(ev.target.result);
+          const img = document.createElement("img");
+          img.src = ev.target.result;
+          img.style =
+            "width:60px; height:60px; object-fit:cover; border-radius:8px; margin:5px;";
+          document.getElementById("containerPreview").appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+  /* ================== CONTROLE DE MODAIS ================== */
+  document
+    .getElementById("btnAdicionarDiario")
+    ?.addEventListener("click", () => {
+      idAcaoAtual = null;
+      imagensTemporarias = [];
+      const preview = document.getElementById("containerPreview");
+      if (preview) preview.innerHTML = "";
+      openModal("modalDiario");
+    });
+
+  document
+    .getElementById("fecharModalDiario")
+    ?.addEventListener("click", () => closeModal("modalDiario"));
+  document
+    .getElementById("fecharViewRegistro")
+    ?.addEventListener("click", () => closeModal("modalVerRegistro"));
+  document
+    .getElementById("closeViewDiarioModalBtn")
+    ?.addEventListener("click", () => closeModal("modalVerRegistro"));
+  document
+    .getElementById("closeViewListModalBtn")
+    ?.addEventListener("click", () => closeModal("viewListModal"));
 
   /* ================== EVENTOS ================== */
   el.addEventBtn?.addEventListener("click", () => {
